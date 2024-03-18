@@ -1,0 +1,15 @@
+<div class="login-container">
+  <app-card>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input matInput placeholder="Nombre de usuario" formControlName="userName">
+      </mat-form-field>
+  
+      <mat-form-field>
+        <input matInput placeholder="Contraseña" type="password" formControlName="password">
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">Iniciar sesión</button>
+    </form>
+  </app-card>
+  </div>

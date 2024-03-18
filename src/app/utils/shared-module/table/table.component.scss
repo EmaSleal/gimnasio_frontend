@@ -1,0 +1,11 @@
+/* table.component.scss */
+
+th:hover {
+    background-color: #f0f0f0; /* Cambia este color según tus preferencias */
+    cursor: pointer;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    width: 100%;
+  }

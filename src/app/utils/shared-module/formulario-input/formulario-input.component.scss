@@ -1,0 +1,40 @@
+.text-center {
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.boton__registrar {
+  background-color: red;
+}
+
+.boton__limpiar {
+  background-color: black;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+}
+
+.radio-button {
+  margin: 5px;
+}
+
+.radio-container {
+  display: flex;
+  align-items: start;
+}
+
+.campo-fecha{
+  width: 80% !important;
+}

@@ -1,0 +1,16 @@
+<div>
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+
+  <mat-list role="list" class="list-items">
+      <mat-list-item  role="listitem" class="autocomplete-items" *ngFor="let suggestion of listDataSource" (click)="onSelect(suggestion)">
+        <span>
+          {{ suggestion.nombre }} {{suggestion.presentacion}} <!-- Ajusta esto según la estructura de tus objetos -->
+        </span>
+        
+      </mat-list-item>
+    </mat-list>
+  </div>
+  

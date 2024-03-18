@@ -1,0 +1,112 @@
+<form [formGroup]="form">
+  <div *ngFor="let field of fields">
+    <ng-container *ngIf="field.type === 'text' || field.type === 'number'">
+      <mat-form-field class="full-width" appearance="outline" color="primary">
+        <mat-label mat-raised-label>{{ field.label }}</mat-label>
+        <input
+          *ngIf="field.required"
+          matInput
+          [type]="field.type"
+          [formControlName]="field.name"
+          [placeholder]="field.placeholder"
+          [required]="field.required"
+        />
+        <input
+          *ngIf="!field.required"
+          matInput
+          [type]="field.type"
+          [formControlName]="field.name"
+          [placeholder]="field.placeholder"
+        />
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngIf="field.type === 'select'">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>{{ field.label }}</mat-label>
+
+        <mat-select [formControlName]="field.name" [required]="field.required">
+          <mat-option [value]="undefined">Seleccionar</mat-option>
+          <mat-option *ngFor="let option of field.options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="field.type === 'radio-button'" class="radio-container">
+      <mat-label>{{ field.label }}</mat-label>
+      <mat-radio-group class="radio-group" [formControlName]="field.name">
+        <mat-radio-button
+          class="radio-button"
+          *ngFor="let option of field.options"
+          [value]="option"
+        >
+          {{ option }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </ng-container>
+
+    <!-- input date-->
+    <ng-container *ngIf="field.type === 'date'">
+      <mat-form-field class="full-width" appearance="outline" color="primary">
+        <mat-label>{{ field.label }}</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [formControlName]="field.name"
+          [placeholder]="field.placeholder"
+          [required]="field.required"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="field.type === 'checkbox'">
+      <mat-grid-list cols="2" rowHeight="4:1">
+        <mat-grid-tile>
+          <mat-checkbox
+            [formControlName]="field.name"
+            (change)="toggleAdditionalField(field.label)"
+            [(ngModel)]="additionalFields[field.label]"
+            >{{ field.label }}</mat-checkbox
+          >
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field
+            *ngIf="additionalFields[field.label]"
+            class="full-width"
+            appearance="outline"
+            color="primary"
+          >
+            <input
+              matInput
+              [placeholder]="
+                'Ingrese el precio de ' + field.label.toLowerCase()
+              "
+              [formControlName]="field.label.toLowerCase() + '-input'"
+            />
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </ng-container>
+  </div>
+  <div class="button-container">
+    <button
+      class="boton__registrar"
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+    >
+      Registrar
+    </button>
+    <button
+      class="boton__limpiar"
+      mat-raised-button
+      color="accent"
+      (click)="onReset()"
+    >
+      Limpiar
+    </button>
+  </div>
+</form>
