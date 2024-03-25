@@ -5,7 +5,11 @@ import { appConfig } from './app.config';
 const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering()
-  ],
+    // angular material provider
+    // Add your Angular Material providers here
+
+
+  ]
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);

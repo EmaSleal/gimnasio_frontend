@@ -1,0 +1,41 @@
+<!-- table.component.html -->
+<div class="mat-elevation-z8 ">
+  <mat-form-field>
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+  </mat-form-field>
+  <section class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="tableDataSource" matSort>
+      <!-- Resto de las columnas -->
+      @for (column of displayedColumns; track $index) {
+      <ng-container [matColumnDef]="column">
+      
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column }}</th>
+        <td mat-cell *matCellDef="let row">
+          @if (column !== 'acciones') {
+            {{ row[column] }}
+          } @else if (column === 'acciones') {
+            <button mat-icon-button color="primary" (click)="editarFila(row)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarFila(row)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+          
+        </td>
+     
+      </ng-container>
+ }
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Agrega (click) en la fila -->
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="hoverable"
+        (click)="filaClickeada(row)"
+      ></tr>
+    </table>
+  </section>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
