@@ -9,7 +9,7 @@ export const navbarData: INavbarData[] = [
         label: 'Ejercicio',
         items: [
             {
-                routeLink: 'exercise/Agregar',
+                routeLink: 'exercise/add',
                 label: 'Agregar Ejercicio',
             },
             {

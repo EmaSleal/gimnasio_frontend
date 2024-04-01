@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import baseUrl from '../helper';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private cookieService: CookieService) {}
 
   isAuthenticated(): boolean {
       //si existe el usuario en el localstorage
@@ -27,7 +28,8 @@ export class LoginService {
         .post(`${baseUrl}/Login`, user)
         .pipe(
           tap((res) => {
-            localStorage.setItem('user', JSON.stringify(res));
+            this.cookieService.set('user', JSON.stringify(res));
+            
             resolve(res);
           })
         )
@@ -44,7 +46,7 @@ export class LoginService {
   }
 
   public logout() {
-    localStorage.removeItem('user');
+    this.cookieService.delete('user');
     this.router.navigateByUrl('/login');
   }
 }

@@ -24,7 +24,7 @@ export class ListExerciseComponent implements OnInit {
     "name",
     "muscularGroup",
     "muscularLoad",
-    "exerciseSpecified",
+
     "routineDay",
     "createdAt",
     "updatedAt",
@@ -32,3 +32,4 @@ export class ListExerciseComponent implements OnInit {
   dataSource: Exercise[] = [];
 
 }
+

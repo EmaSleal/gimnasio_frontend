@@ -1,5 +1,14 @@
 // table.component.ts
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -13,10 +22,17 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   standalone: true,
-  imports: [MatPaginator, MatSort,MatFormFieldModule,MatIconModule,MatTableModule, MatInputModule , MatButtonModule],
+  imports: [
+    MatPaginator,
+    MatSort,
+    MatFormFieldModule,
+    MatIconModule,
+    MatTableModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class TableComponent implements OnInit, AfterViewInit, OnChanges {
-
   @Input() displayedColumns!: string[];
   @Input() dataSource!: any[];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -50,6 +66,20 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     this.tableDataSource = new MatTableDataSource(this.dataSource);
     this.tableDataSource.paginator = this.paginator;
     this.tableDataSource.sort = this.sort;
+
+    // busco si en cada fila de dataSource hay un campo que es un objeto y si es así, busco si el objeto tiene un campo name o description
+
+    this.dataSource.forEach((element) => {
+      for (let key in element) {
+        if (typeof element[key] === 'object') {
+          if (element[key].name) {
+            element[key] = element[key].name;
+          } else if (element[key].description) {
+            element[key] = element[key].description;
+          }
+        }
+      }
+    });
   }
 
   editarFila(row: any) {

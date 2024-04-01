@@ -31,14 +31,9 @@ export class LoginComponent {
     // para verificar las credenciales. Por ahora, simplemente redirigiremos
     // a la página de inicio después de un inicio de sesión "exitoso".
     if (this.loginForm.valid) {
-      
-      console.log(this.loginForm.value);
       this.loginService.login(this.loginForm.value)
       .then((data) => {
-        console.log(data);
         localStorage.setItem('user', JSON.stringify(data));
-
-        console.log(localStorage.getItem('user'));
         this.router.navigate(['/exercise']);
           Swal.fire({
             title: 'Bienvenido!',
@@ -47,8 +42,8 @@ export class LoginComponent {
             confirmButtonText: 'Aceptar'
           })
         })
-        .catch(() => {
-          //console.log(error);
+        .catch((error) => {
+
           Swal.fire({
             title: 'Error!',
             text: 'Usuario o contraseña incorrectos',
@@ -56,10 +51,7 @@ export class LoginComponent {
             confirmButtonText: 'Aceptar'
           })
         });
-      
-      
-      this.router.navigate(['/home']);
-
+      //this.router.navigate(['/home']);
 
     }
   }

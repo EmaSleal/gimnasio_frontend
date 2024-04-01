@@ -15,9 +15,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,8 +30,16 @@ import { BrowserModule } from '@angular/platform-browser';
   styleUrls: ['./formulario-input.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule,MatFormFieldModule,MatRadioModule,MatDatepickerModule,MatGridListModule,MatSelectModule,BrowserModule,
-    ReactiveFormsModule],
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatGridListModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatInputModule, MatButtonModule
+  ],
 })
 export class FormularioInputComponent implements OnInit, OnChanges {
   @Input() fields!: any[];
@@ -45,12 +55,14 @@ export class FormularioInputComponent implements OnInit, OnChanges {
   camposPorEstado: any[] = [];
 
   ngOnInit() {
+    
+    console.log(this.fields)
     this.initializeForm();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     // Solo reinitialize el formulario si cambia la lista de campos principales (fields)
-
+    console.log(this.fields)
     this.initializeForm();
   }
 
@@ -92,18 +104,16 @@ export class FormularioInputComponent implements OnInit, OnChanges {
 
     //reviso si form es undefined, sino le agrego los nuevos campos
     if (this.form === undefined) {
-      console.log('valor formulario ',this.form);
-      
+      console.log('valor formulario ', this.form);
+
       this.form = new FormGroup(formControls);
       //agrego los nombres de los campos al array
       Object.keys(this.form.controls).forEach((key) => {
         this.initialFormNames.push(key);
       });
-      
-      
     } else {
       this.newformControls = new FormGroup(formControls);
-      
+
       //elimino los campos de form que no estan en el array
       this.initialFormNames.forEach((key) => {
         if (this.newformControls.controls[key] === undefined) {
@@ -111,7 +121,6 @@ export class FormularioInputComponent implements OnInit, OnChanges {
         }
       });
 
-      
       Object.keys(this.newformControls.controls).forEach((key) => {
         this.form.addControl(key, this.newformControls.controls[key]);
       });

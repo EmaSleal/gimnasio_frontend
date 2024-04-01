@@ -1,54 +1,72 @@
 <form [formGroup]="form">
-  <div *ngFor="let field of fields">
-    <ng-container *ngIf="field.type === 'text' || field.type === 'number'">
+  @for (field of fields; track $index) {
+    @if (field.type === 'text' || field.type === 'number') {
+      <ng-container >
       <mat-form-field class="full-width" appearance="outline" color="primary">
         <mat-label mat-raised-label>{{ field.label }}</mat-label>
-        <input
-          *ngIf="field.required"
+        @if (field.required) {
+          <input
           matInput
           [type]="field.type"
           [formControlName]="field.name"
           [placeholder]="field.placeholder"
           [required]="field.required"
         />
-        <input
-          *ngIf="!field.required"
+        } @else {
+          <input
           matInput
           [type]="field.type"
           [formControlName]="field.name"
           formtarget="field.name"
           [placeholder]="field.placeholder"
-        />
+          />
+        }
+        
       </mat-form-field>
     </ng-container>
-    <ng-container *ngIf="field.type === 'select'">
+    }
+    
+    @if (field.type === 'select') {
+      <ng-container>
       <mat-form-field class="full-width" appearance="fill">
         <mat-label>{{ field.label }}</mat-label>
 
         <mat-select [formControlName]="field.name" [required]="field.required">
           <mat-option [value]="undefined">Seleccionar</mat-option>
-          <mat-option *ngFor="let option of field.options" [value]="option">
-            {{ option }}
-          </mat-option>
+          @for (option of field.options; track $index) {
+            
+              <mat-option [value]="option.id">
+                {{ option.name }}
+              </mat-option>
+            
+          }
+          
         </mat-select>
       </mat-form-field>
     </ng-container>
-
-    <ng-container *ngIf="field.type === 'radio-button'" class="radio-container">
+    }
+    
+    @if (field.type === 'radio-button') {
+      <ng-container class="radio-container">
       <mat-label>{{ field.label }}</mat-label>
       <mat-radio-group class="radio-group" [formControlName]="field.name">
-        <mat-radio-button
+        @for (option of field.options; track $index) {
+           <mat-radio-button
           class="radio-button"
-          *ngFor="let option of field.options"
           [value]="option"
         >
           {{ option }}
         </mat-radio-button>
+        }
+       
       </mat-radio-group>
     </ng-container>
+    }
+    
 
     <!-- input date-->
-    <ng-container *ngIf="field.type === 'date'">
+    @if (field.type === 'date') {
+      <ng-container>
       <mat-form-field class="full-width" appearance="outline" color="primary">
         <mat-label>{{ field.label }}</mat-label>
         <input
@@ -62,8 +80,10 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </ng-container>
-
-    <ng-container *ngIf="field.type === 'checkbox'">
+    }
+    
+    @if (field.type === 'checkbox') {
+       <ng-container >
       <mat-grid-list cols="2" rowHeight="4:1">
         <mat-grid-tile>
           <mat-checkbox
@@ -74,8 +94,8 @@
           >
         </mat-grid-tile>
         <mat-grid-tile>
-          <mat-form-field
-            *ngIf="additionalFields[field.label]"
+          @if (additionalFields[field.label]) {
+            <mat-form-field
             class="full-width"
             appearance="outline"
             color="primary"
@@ -88,10 +108,14 @@
               [formControlName]="field.label.toLowerCase() + '-input'"
             />
           </mat-form-field>
+          }
+          
         </mat-grid-tile>
       </mat-grid-list>
     </ng-container>
-  </div>
+    }
+
+  }
   <div class="button-container">
     <button
       class="boton__registrar"
