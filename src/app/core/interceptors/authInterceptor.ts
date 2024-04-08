@@ -18,7 +18,7 @@ export const AuthInterceptorFn : HttpInterceptorFn = (request: HttpRequest<unkno
           Authorization: `Bearer ${jwt.authenticationResponse.token}`
         }
       });
-      console.log(request);
+      //console.log(request);
     }
 
     return next(request);

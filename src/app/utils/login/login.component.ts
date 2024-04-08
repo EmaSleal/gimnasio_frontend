@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   styleUrls: ['./login.component.scss'],
   imports: [FormsModule,MatFormFieldModule, CardComponent, ReactiveFormsModule,MatInputModule, MatButtonModule]
-})
+}) 
 export class LoginComponent {
   loginForm: FormGroup;
 
@@ -32,27 +32,6 @@ export class LoginComponent {
     // a la página de inicio después de un inicio de sesión "exitoso".
     if (this.loginForm.valid) {
       this.loginService.login(this.loginForm.value)
-      .then((data) => {
-        localStorage.setItem('user', JSON.stringify(data));
-        this.router.navigate(['/exercise']);
-          Swal.fire({
-            title: 'Bienvenido!',
-            text: 'Inicio de sesión exitoso',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          })
-        })
-        .catch((error) => {
-
-          Swal.fire({
-            title: 'Error!',
-            text: 'Usuario o contraseña incorrectos',
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
-          })
-        });
-      //this.router.navigate(['/home']);
-
     }
   }
 

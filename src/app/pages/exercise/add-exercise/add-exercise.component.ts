@@ -6,6 +6,7 @@ import { FormularioInputComponent } from '../../../utils/formulario-input/formul
 import { CardComponent } from '../../../utils/card/card.component';
 import { MuscularGroupService } from '../../../service/muscular-group/muscular-group.service';
 import Swal from 'sweetalert2';
+import { CargaMuscular } from '../../../core/models/carga-muscular';
 
 @Component({
   selector: 'app-add-exercise',
@@ -60,7 +61,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
 
   fields: any[] = [
     {
-      id: 'nombre',
+      id: 'name',
       name: 'name',
       label: 'Nombre',
       defaultValue: '',
@@ -70,7 +71,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
     },
     {
       id: 'muscularGroup',
-      name: 'descripcion',
+      name: 'muscularGroup',
       label: 'Grupo Muscular',
       defaultValue: '',
       required: true,
@@ -80,16 +81,14 @@ export class AddExerciseComponent implements OnInit, OnChanges{
     },
     {
       id: 'muscularLoad',
-      name: 'estado',
-      label: 'Estado',
+      name: 'muscularLoad',
+      label: 'Carga Muscular',
       defaultValue: undefined,
       required: true,
       type: 'radio-button',
-      options: ['liquido', 'solido', 'polvo'],
+      options: [CargaMuscular.LOW, CargaMuscular.MEDIUM, CargaMuscular.HIGH],
     },
   ];
-
-
 
   getCamposPorEstado(estado: any): any[] {
     const camposPorEstado: any[] = [];
@@ -137,10 +136,10 @@ export class AddExerciseComponent implements OnInit, OnChanges{
       }
     });
 
-
+    console.log(exercisesArray);
     
-    exercisesArray.forEach((exercise) => {
-      this.exerciseService.saveExercise(exercise)
+
+      this.exerciseService.saveExercise(data)
       .then((data) => {
         Swal.fire({
           title: 'Ejercicio guardado!',
@@ -157,7 +156,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
           confirmButtonText: 'Aceptar'
         });
       });
-    });
+
     
 
     //console.log(exercisesArray);

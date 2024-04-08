@@ -29,13 +29,15 @@ export class LoginService {
         .pipe(
           tap((res) => {
             this.cookieService.set('user', JSON.stringify(res));
-            
             resolve(res);
+            this.router.navigate(['/exercise']);
           })
+          
         )
         .subscribe(
           (res) => {
             resolve(res);
+            
           },
           (err) => {
             reject(err);
