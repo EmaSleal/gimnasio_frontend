@@ -6,7 +6,7 @@ import { FormularioInputComponent } from '../../../utils/formulario-input/formul
 import { CardComponent } from '../../../utils/card/card.component';
 import { MuscularGroupService } from '../../../service/muscular-group/muscular-group.service';
 import Swal from 'sweetalert2';
-import { CargaMuscular } from '../../../core/models/carga-muscular';
+import { CargaMuscular } from '../../../core/models/muscular-load.enum';
 
 @Component({
   selector: 'app-add-exercise',
@@ -90,28 +90,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
     },
   ];
 
-  getCamposPorEstado(estado: any): any[] {
-    const camposPorEstado: any[] = [];
 
-    this.estadoOpciones[estado].forEach((exercise) => {
-      camposPorEstado.push({
-        name: exercise.toLowerCase().replace(/\s+/g, '-'), // Convertir el nombre en lowercase y reemplazar espacios con guiones
-        label: exercise,
-        defaultValue: undefined,
-        required: true,
-        placeholder: `Ingrese el ${exercise.toLowerCase()}`,
-        type: 'checkbox',
-      });
-    });
-
-    return camposPorEstado;
-  }
-
-  estadoOpciones: { [key: string]: string[] } = {
-    liquido: ['250ml', '300ml', '500ml','500ml con tapa','500ml con dispensador', '700ml', '1L', '1/2gl', '1gl', '5gl'],
-    solido: ['1kg'],
-    polvo: ['1kg', '2.5kg', '5kg', '10kg', '25kg'],
-  };
 
   formSubmit(data: any) {
     // Limpia los campos que su valor sea 'undefined' o 'null'
@@ -120,24 +99,6 @@ export class AddExerciseComponent implements OnInit, OnChanges{
         delete data[key];
       }
     });
-
-    //con cada valor que contenga en el nombre 'input' hago un objeto Exercise y lo agrego a un array
-    let exercisesArray: Exercise[] = [];
-    Object.keys(data).forEach((key) => {
-      if (key.includes('input')) {
-        let exercise: Exercise = {} as Exercise;
-        exercise.name = data.nombre;
-        exercise.muscularLoad = data.muscularLoad;
-        exercise.muscularGroup = data.muscularGroup;
-       
-
-        exercisesArray.push(exercise);
-        delete data[key];
-      }
-    });
-
-    console.log(exercisesArray);
-    
 
       this.exerciseService.saveExercise(data)
       .then((data) => {
