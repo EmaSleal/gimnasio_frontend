@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Exercise } from '../../../core/models/exercise.interface';
-import { ExerciseService } from '../../../service/exercise/exercise.service';
 import { TableComponent } from '../../../utils/table/table.component';
 import { CardComponent } from '../../../utils/card/card.component';
+import { ExerciseService } from '../../../core/service/exercise/exercise.service';
 
 @Component({
   selector: 'app-list-exercise',

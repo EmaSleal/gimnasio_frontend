@@ -1,23 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../../service/user/user.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
+import { UserService } from '../../../core/service/user/user.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [FormsModule,MatFormFieldModule, CardComponent, ReactiveFormsModule,MatInputModule, MatButtonModule],
+  imports: [FormsModule,MatFormFieldModule, CardComponent, ReactiveFormsModule,MatInputModule, MatButtonModule, MatSelectModule, MatCheckboxModule, MatButtonModule],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.scss'
 })
-export class AddUserComponent {
+export class AddUserComponent implements OnInit{
   userForm: FormGroup = new FormGroup({});
 
   constructor(private formBuilder: FormBuilder, private userService: UserService) {
+    
+  }
+  ngOnInit(): void {
     this.userForm = this.formBuilder.group({
       userName: ['', Validators.required],
       password: ['', [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/)]],

@@ -1,1 +1,17 @@
-<p>user works!</p>
+@if (user != undefined) {
+    <div class="user-details-container">
+    <div class="profile-image-container">
+      <!-- Aquí se colocará la imagen -->
+    </div>
+    <div class="user-info">
+      <app-card title="User Information" >
+        
+          <div>ID: {{ user.id }}</div>
+          <div>Username: {{ user.userName }}</div>
+          <div>Email: {{ user.email }}</div>
+          <div>Role: {{ user.role }}</div>
+
+    </app-card>
+    </div>
+  </div>
+}

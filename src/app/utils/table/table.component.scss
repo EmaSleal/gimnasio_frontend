@@ -1,11 +1,15 @@
 /* table.component.scss */
 
-th:hover {
-    background-color: #f0f0f0; /* Cambia este color según tus preferencias */
+.hoverable:hover{
+    background-color: #dedede; /* Cambia este color según tus preferencias */
     cursor: pointer;
   }
   
   .table-container {
     overflow-x: auto;
     width: 100%;
+  }
+
+  .filter-input{
+    padding: 1rem 0;
   }

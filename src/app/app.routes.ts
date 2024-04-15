@@ -8,5 +8,6 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'home', component: HomeComponent },
 
-    { path: 'exercise', loadChildren: () => import('./pages/exercise/exercise.routes').then(m => m.routes)}
+    { path: 'exercise', loadChildren: () => import('./pages/exercise/exercise.routes').then(m => m.routes)},
+    { path: 'user', loadChildren: () => import('./pages/user/user.routes').then(m => m.routes)}
   ];

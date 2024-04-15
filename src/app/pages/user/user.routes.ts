@@ -10,11 +10,11 @@ export const routes: Routes = [
     path: '',
     component: UserLayoutComponent,
     children: [
-      { path: 'add', component: AddUserComponent },
+      { path: '', component: AddUserComponent },
 
       { path: 'edit', component: EditUserComponent },
 
-      { path: '', component: ListUserComponent },
+      { path: 'list', component: ListUserComponent },
 
       { path: ':id', component: UserComponent },
     ],

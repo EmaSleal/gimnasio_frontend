@@ -67,14 +67,12 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     this.tableDataSource.paginator = this.paginator;
     this.tableDataSource.sort = this.sort;
 
-    // busco si en cada fila de dataSource hay un campo que es un objeto y si es así, busco si el objeto tiene un campo name o description
-
     this.dataSource.forEach((element) => {
       for (let key in element) {
         if (typeof element[key] === 'object') {
-          if (element[key].name) {
+          if (element[key]?.name) {
             element[key] = element[key].name;
-          } else if (element[key].description) {
+          } else if (element[key]?.description) {
             element[key] = element[key].description;
           }
         }

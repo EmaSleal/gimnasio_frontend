@@ -1,12 +1,12 @@
 import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { ExerciseService } from '../../../service/exercise/exercise.service';
 import { Exercise } from '../../../core/models/exercise.interface';
 import { FormGroup } from '@angular/forms';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
 import { CardComponent } from '../../../utils/card/card.component';
-import { MuscularGroupService } from '../../../service/muscular-group/muscular-group.service';
 import Swal from 'sweetalert2';
 import { CargaMuscular } from '../../../core/models/muscular-load.enum';
+import { ExerciseService } from '../../../core/service/exercise/exercise.service';
+import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 
 @Component({
   selector: 'app-add-exercise',
@@ -99,7 +99,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
         delete data[key];
       }
     });
-
+    //console.log(data);
       this.exerciseService.saveExercise(data)
       .then((data) => {
         Swal.fire({

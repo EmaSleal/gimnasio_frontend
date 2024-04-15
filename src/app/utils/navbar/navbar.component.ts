@@ -3,11 +3,11 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@a
 
 import { INavbarData, fadeInOut } from './helper';
 import { navbarData } from './nav-data';
-import { NavbarService } from '../../service/navbar/navbar.service';
 import { SubnivelMenuComponent } from '../subnivel-menu/subnivel-menu.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { WindowService } from '../../service/window.service';
+import { NavbarService } from '../../core/service/navbar/navbar.service';
+import { WindowService } from '../../core/service/window.service';
 
 
 

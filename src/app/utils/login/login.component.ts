@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2'
-import { LoginService } from '../../service/login/login.service';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CardComponent } from '../card/card.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { LoginService } from '../../core/service/login/login.service';
 
 @Component({
   selector: 'app-login',
@@ -27,10 +28,13 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    // Aquí deberías hacer una llamada al servicio de autenticación
-    // para verificar las credenciales. Por ahora, simplemente redirigiremos
-    // a la página de inicio después de un inicio de sesión "exitoso".
-    if (this.loginForm.valid) {
+    const username = this.loginForm.get('userName')?.value;
+    //si el username es un correo electronico cambio el json de envio como email y password
+    if (username.includes('@')) {
+      const email = this.loginForm.get('userName')?.value;
+      const password = this.loginForm.get('password')?.value;
+      this.loginService.login({email, password}).then((res) => {});
+    }else{
       this.loginService.login(this.loginForm.value)
     }
   }

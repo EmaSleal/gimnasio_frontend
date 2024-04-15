@@ -1,1 +1,53 @@
-<p>edit-user works!</p>
+<app-card title="Edit User">
+  <form [formGroup]="userForm">
+    <div>
+      <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput type="text" id="userName" formControlName="userName" required>
+      </mat-form-field>
+    </div>
+    
+    <div>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput type="email" id="email" formControlName="email" required>
+      </mat-form-field>
+    </div>
+    
+    <div>
+      <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select id="role" formControlName="role" required>
+          <mat-option value="ADMIN">Admin</mat-option>
+          <mat-option value="TRAINER">Trainer</mat-option>
+          <mat-option value="CLIENT">Client</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- enable field-->
+    <div>
+      <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
+    </div>
+    
+    <!-- accountNonExpired field-->
+    <div>
+      <mat-checkbox formControlName="accountNonExpired">Account Non Expired</mat-checkbox>
+    </div>
+    
+    <!-- credentialsNonExpired field-->
+    <div>
+      <mat-checkbox formControlName="credentialsNonExpired">Credentials Non Expired</mat-checkbox>
+    </div>
+    
+    <!-- accountNonLocked field-->
+    <div>
+      <mat-checkbox formControlName="accountNonLocked">Account Non Locked</mat-checkbox>
+    </div>
+    
+    <div>
+      <button mat-raised-button color="primary" (click)="submitForm()">Save</button>
+      <button mat-button (click)="cerrarModal()">Cancel</button>
+    </div>
+  </form>
+</app-card>

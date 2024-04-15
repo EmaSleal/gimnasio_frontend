@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import baseUrl from '../helper';
 import { tap } from 'rxjs';
-import { Exercise } from '../../core/models/exercise.interface';
+import { Exercise } from '../../models/exercise.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,10 @@ export class ExerciseService {
   public getExercises() {
     return this.http
       .get<any>(`${baseUrl}/exercise/all`)
-      .pipe(tap((res) => localStorage.setItem('user', JSON.stringify(res))));
+      .pipe(
+        tap((res) => {
+          return res;
+        })
+      );
   }
 }

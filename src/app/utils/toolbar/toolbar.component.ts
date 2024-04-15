@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { LoginService } from '../../service/login/login.service';
-import { NavbarService } from '../../service/navbar/navbar.service';
 import { MatButtonModule } from '@angular/material/button';
+import { LoginService } from '../../core/service/login/login.service';
+import { NavbarService } from '../../core/service/navbar/navbar.service';
 
 @Component({
   selector: 'app-toolbar',

@@ -1,1 +1,5 @@
-<p>list-user works!</p>
+<app-card title="Lista de Usuarios">
+    <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
+    (editItem)="editUser($event)"  (deleteItem)="eliminarUser($event)" (rowClick)="selectUser($event)"/>
+
+</app-card>

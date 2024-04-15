@@ -19,17 +19,17 @@ export const navbarData: INavbarData[] = [
         ]
     },
     {
-        routeLink: 'factura',
+        routeLink: 'user',
         icon: ' fal fa-sharp fa-solid fa-city',
-        label: 'Factura',
+        label: 'Usuario',
         items: [
             {
-                routeLink: 'factura/Agregar',
-                label: 'Agregar Factura',
+                routeLink: 'user/list',
+                label: 'Listar Usuarios',
             },
             {
-                routeLink: 'factura/Mostrar',
-                label: 'Mostrar Facturas'
+                routeLink: 'user',
+                label: 'Agregar Usuario'
             },
         ]
     }
