@@ -1,0 +1,5 @@
+<app-card title="Lista de Grupos Musculares">
+    <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
+    (editItem)="editMuscularGroup($event)"  (deleteItem)="eliminarMuscularGroup($event)" (rowClick)="selectMuscularGroup($event)"/>
+
+</app-card>

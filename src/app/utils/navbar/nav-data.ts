@@ -32,6 +32,21 @@ export const navbarData: INavbarData[] = [
                 label: 'Agregar Usuario'
             },
         ]
+    },
+    {
+        routeLink: 'muscular-group',
+        icon: ' fal fa-sharp fa-solid fa-city',
+        label: 'Grupo Muscular',
+        items: [
+            {
+                routeLink: 'muscular-group/list',
+                label: 'Listar Grupos Musculares',
+            },
+            {
+                routeLink: 'muscular-group',
+                label: 'Agregar Grupo Muscular'
+            },
+        ]
     }
 
 ];

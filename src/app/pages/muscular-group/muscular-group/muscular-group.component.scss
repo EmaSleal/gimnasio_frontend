@@ -1,0 +1,17 @@
+.muscular-group-details-container {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem 1rem;
+  }
+  
+  .profile-image-container {
+    width: 150px;
+    height: 150px;
+    background-color: lightgray;
+    border-radius: 10px;
+    margin-right: 20px;
+  }
+  
+  .muscular-group-info {
+    flex-grow: 1;
+  }

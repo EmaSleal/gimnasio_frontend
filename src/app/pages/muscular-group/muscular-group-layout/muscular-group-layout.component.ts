@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
-import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
-import { AddUserComponent } from '../add-user/add-user.component';
-import { ListUserComponent } from '../list-user/list-user.component';
-import {  ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { Location } from '@angular/common';
-@Component({
-  selector: 'app-user-layout',
-  standalone: true,
-  imports: [ MatTabsModule, AddUserComponent, ListUserComponent,RouterOutlet],
-  templateUrl: './user-layout.component.html',
-  styleUrl: './user-layout.component.scss'
-})
-export class UserLayoutComponent {
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { AddMuscularGroupComponent } from '../add-muscular-group/add-muscular-group.component';
+import { ListMuscularGroupComponent } from '../list-muscular-group/list-muscular-group.component';
 
+
+@Component({
+  selector: 'app-muscular-group-layout',
+  standalone: true,
+  imports: [ MatTabsModule, AddMuscularGroupComponent, ListMuscularGroupComponent,RouterOutlet],
+  templateUrl: './muscular-group-layout.component.html',
+  styleUrl: './muscular-group-layout.component.scss'
+})
+export class MuscularGroupLayoutComponent {
   constructor(private router: Router, private route: ActivatedRoute) { }
 
    index = 0;
@@ -22,10 +22,10 @@ export class UserLayoutComponent {
     
     // Seleccionar el tab correspondiente
     switch (currentUrl) {
-      case '/user/list':
+      case '/muscular-group/list':
         this.selectTab(0);
         break;
-      case '/user':
+      case '/muscular-group':
         this.selectTab(1);
         break;
       default:
@@ -46,11 +46,11 @@ export class UserLayoutComponent {
     switch (event.index) {
       case 0:
         //console.log('Listar usuarios');
-        this.router.navigateByUrl('/user/list');
+        this.router.navigateByUrl('/muscular-group/list');
         break;
       case 1:
         //console.log('Agregar usuario');
-        this.router.navigateByUrl('/user');
+        this.router.navigateByUrl('/muscular-group');
         break;
       default:
         break;

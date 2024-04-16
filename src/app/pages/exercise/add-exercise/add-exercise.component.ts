@@ -24,6 +24,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
     console.log(this.muscularGroups);
     this.fields.map((field) => {
       if (field.id === 'muscularGroup') {
+
         field.options = this.muscularGroups;
       }
     });
@@ -32,21 +33,14 @@ export class AddExerciseComponent implements OnInit, OnChanges{
   ngOnInit(): void {
     
     //llamo al metodo getMuscularGroups para obtener los grupos musculares
-    this.getMuscularGroups().then((data) => {
-      this.muscularGroups = data;
-      this.fields.map((field) => {
-        if (field.id === 'muscularGroup') {
-          field.options = this.muscularGroups;
-        }
-      });
+    this.muscularGroupService.getMuscularGroups().then((muscularGroups) => {
+      this.muscularGroups = muscularGroups;
+      console.log(this.muscularGroups);
     });
-
   }
 
   //realizo un metodo tipo promesa para obtener los grupos musculares
-  async getMuscularGroups(): Promise<any> {
-    return this.muscularGroupService.getMuscularGroups().toPromise();
-  }
+
 
   form: FormGroup = new FormGroup({});
 

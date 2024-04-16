@@ -17,6 +17,7 @@ export class ListExerciseComponent implements OnInit {
   ngOnInit(): void {
     this.exerciseService.getExercises().subscribe((exercises) => {
       this.dataSource = exercises;
+      console.log(this.dataSource);
     });
   }
 
@@ -24,7 +25,6 @@ export class ListExerciseComponent implements OnInit {
     "name",
     "muscularGroup",
     "muscularLoad",
-
     "routineDay",
     "createdAt",
     "updatedAt",

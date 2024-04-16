@@ -1,0 +1,15 @@
+@if (muscularGroup != undefined) {
+    <div class="muscular-group-details-container">
+        <div class="profile-image-container">
+            <!-- Aquí se colocará la imagen -->
+        </div>
+        <div class="muscular-group-info">
+            <app-card title="Muscular Group Information">
+
+                <div>ID: {{ muscularGroup.id }}</div>
+                <div>Username: {{ muscularGroup.name }}</div>
+                <app-table [dataSource]="muscularGroup.exercises" [displayedColumns]="displayedColumns" (rowClick)="selectExercise($event)"/>
+            </app-card>
+        </div>
+    </div>
+}
