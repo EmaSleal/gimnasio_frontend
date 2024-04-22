@@ -1,4 +1,4 @@
 <app-card title="Lista de Exercicios">
     <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
-    />
+    (editItem)="editWorkout($event)"  (deleteItem)="deleteWorkout($event)" (rowClick)="selectWorkout($event)"/>
 </app-card>

@@ -1,11 +1,11 @@
 import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { Exercise } from '../../../core/models/exercise.interface';
+import { Workout } from '../../../core/models/workout.interface';
 import { FormGroup } from '@angular/forms';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
 import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
 import { CargaMuscular } from '../../../core/models/muscular-load.enum';
-import { ExerciseService } from '../../../core/service/exercise/exercise.service';
+import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 
 @Component({
@@ -18,7 +18,7 @@ import { MuscularGroupService } from '../../../core/service/muscular-group/muscu
 export class AddExerciseComponent implements OnInit, OnChanges{
 
 
-  constructor(private exerciseService: ExerciseService, private muscularGroupService: MuscularGroupService) {}
+  constructor(private exerciseService: WorkoutService, private muscularGroupService: MuscularGroupService) {}
   ngOnChanges(): void {
     //busco en fields el campo con id muscularGroup y le asigno el valor de la respuesta de la peticion en el valor options
     console.log(this.muscularGroups);
@@ -35,7 +35,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
     //llamo al metodo getMuscularGroups para obtener los grupos musculares
     this.muscularGroupService.getMuscularGroups().then((muscularGroups) => {
       this.muscularGroups = muscularGroups;
-      console.log(this.muscularGroups);
+      //console.log(this.muscularGroups);
     });
   }
 
@@ -94,7 +94,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
       }
     });
     //console.log(data);
-      this.exerciseService.saveExercise(data)
+      this.exerciseService.saveWorkout(data)
       .then((data) => {
         Swal.fire({
           title: 'Ejercicio guardado!',

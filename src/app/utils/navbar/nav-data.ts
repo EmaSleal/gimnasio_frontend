@@ -9,13 +9,14 @@ export const navbarData: INavbarData[] = [
         label: 'Ejercicio',
         items: [
             {
-                routeLink: 'exercise/add',
-                label: 'Agregar Ejercicio',
+                routeLink: 'exercise/list',
+                label: 'Mostrar Ejercicio'
             },
             {
                 routeLink: 'exercise',
-                label: 'Mostrar Ejercicio'
+                label: 'Agregar Ejercicio',
             },
+            
         ]
     },
     {
@@ -47,6 +48,23 @@ export const navbarData: INavbarData[] = [
                 label: 'Agregar Grupo Muscular'
             },
         ]
+    },
+    {
+        // routeLink: 'workout-plan',
+        routeLink: 'workout-plan',
+        icon: ' fal fa-sharp fa-solid fa-city',
+        label: 'Rutina',
+        items: [
+            {
+                routeLink: 'workout-plan/list',
+                label: 'Listar Rutinas',
+            },
+            {
+                routeLink: 'workout-plan',
+                label: 'Agregar Rutina'
+            },
+        ]
+
     }
 
 ];

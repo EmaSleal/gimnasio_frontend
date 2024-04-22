@@ -24,7 +24,7 @@ export class LoginService {
 
   
   public login(user: any): Promise<any> {
-    console.log(user);
+    //console.log(user);
     return new Promise((resolve, reject) => {
       this.http
         .post(`${baseUrl}/Login`, user)

@@ -1,1 +1,10 @@
-<p>edit-exercise works!</p>
+<app-card title="Editar Ejercicio" class="col-md-12">
+    <app-formulario-input
+      [fields]="fields"
+      (formSubmitted)="formSubmit($event)"
+      
+      (formReset)="formReset($event)"
+      [enviarFormulario]="enviarFormularios"
+      [resetFormulario]="resetearformularios"
+    ></app-formulario-input>
+  </app-card>

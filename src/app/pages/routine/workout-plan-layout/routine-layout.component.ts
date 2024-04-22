@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { AddExerciseComponent } from '../add-exercise/add-exercise.component';
-import { ListExerciseComponent } from '../list-exercise/list-exercise.component';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { AddWorkoutPlanComponent } from '../add-workout-plan/add-workout-plan.component';
+import { ListRoutineComponent } from '../list-workout-plan/list-routine.component';
+import { MatTabsModule, MatTabChangeEvent } from '@angular/material/tabs';
+import { RouterOutlet, ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
-  selector: 'app-exercise-layout',
+  selector: 'app-routine-layout',
   standalone: true,
-  imports: [ MatTabsModule, AddExerciseComponent, ListExerciseComponent,RouterOutlet],
-  templateUrl: './exercise-layout.component.html',
-  styleUrl: './exercise-layout.component.scss'
+  imports: [ MatTabsModule, AddWorkoutPlanComponent, ListRoutineComponent,RouterOutlet],
+  templateUrl: './routine-layout.component.html',
+  styleUrl: './routine-layout.component.scss'
 })
-export class ExerciseLayoutComponent {
+export class RoutineLayoutComponent {
   constructor(private router: Router, private route: ActivatedRoute) { }
 
   index = 0;
@@ -21,10 +22,10 @@ export class ExerciseLayoutComponent {
    
    // Seleccionar el tab correspondiente
    switch (currentUrl) {
-     case '/exercise/list':
+     case '/workout-plan/list':
        this.selectTab(0);
        break;
-     case '/exercise':
+     case '/workout-plan':
        this.selectTab(1);
        break;
      default:
@@ -45,11 +46,11 @@ export class ExerciseLayoutComponent {
    switch (event.index) {
      case 0:
        //console.log('Listar usuarios');
-       this.router.navigateByUrl('/exercise/list');
+       this.router.navigateByUrl('/workout-plan/list');
        break;
      case 1:
        //console.log('Agregar usuario');
-       this.router.navigateByUrl('/exercise');
+       this.router.navigateByUrl('/workout-plan');
        break;
      default:
        break;

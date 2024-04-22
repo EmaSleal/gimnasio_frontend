@@ -1,29 +1,29 @@
 <form [formGroup]="form">
   @for (field of fields; track $index) {
     @if (field.type === 'text' || field.type === 'number') {
-      <ng-container >
-      <mat-form-field class="full-width" appearance="outline" color="primary">
-        <mat-label mat-raised-label>{{ field.label }}</mat-label>
-        @if (field.required) {
-          <input
-          matInput
-          [type]="field.type"
-          [formControlName]="field.name"
-          [placeholder]="field.placeholder"
-          [required]="field.required"
-        />
-        } @else {
-          <input
-          matInput
-          [type]="field.type"
-          [formControlName]="field.name"
-          formtarget="field.name"
-          [placeholder]="field.placeholder"
+      <ng-container [class]="getHiddenClass(field.hidden)">
+        <mat-form-field   class="full-width" appearance="outline" color="primary">
+          <mat-label mat-raised-label>{{ field.label }}</mat-label>
+          @if (field.required) {
+            <input
+            matInput
+            [type]="field.type"
+            [formControlName]="field.name"
+            [placeholder]="field.placeholder"
+            [required]="field.required"
           />
-        }
-        
-      </mat-form-field>
-    </ng-container>
+          } @else {
+            <input
+            matInput
+            [type]="field.type"
+            [formControlName]="field.name"
+            formtarget="field.name"
+            [placeholder]="field.placeholder"
+            />
+          }
+          
+        </mat-form-field>
+      </ng-container>
     }
     
     @if (field.type === 'select') {

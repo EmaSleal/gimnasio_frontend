@@ -12,11 +12,11 @@ export const routes: Routes = [
     path: '',
     component: ExerciseLayoutComponent,
     children: [
-      { path: 'add', component: AddExerciseComponent },
+      { path: '', component: AddExerciseComponent },
       //editar exercicio
       { path: 'edit', component: EditExerciseComponent },
       //listar exercicios
-      { path: '', component: ListExerciseComponent },
+      { path: 'list', component: ListExerciseComponent },
       //ejercicio por id
       { path: ':id', component: ExerciseComponent },
     ],

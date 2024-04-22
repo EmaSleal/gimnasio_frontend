@@ -3,13 +3,9 @@
 
 import { MuscularGroup } from "./muscular-group.interface";
 
-export interface Exercise {
+export interface Workout {
   id: number;
   name: string;
   muscularGroup: MuscularGroup;
   muscularLoad: string;
-  exerciseSpecified: [];
-  routineDay: [];
-  createdAt: Date;
-  updatedAt: Date;
 }

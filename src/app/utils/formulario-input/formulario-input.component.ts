@@ -56,13 +56,14 @@ export class FormularioInputComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     
-    console.log(this.fields)
+    //console.log(this.fields)
     this.initializeForm();
+    //console.log(this.fields)
   }
 
   ngOnChanges(changes: SimpleChanges) {
     // Solo reinitialize el formulario si cambia la lista de campos principales (fields)
-    console.log(this.fields)
+    //console.log(this.fields)
     this.initializeForm();
   }
 
@@ -70,8 +71,8 @@ export class FormularioInputComponent implements OnInit, OnChanges {
     const formControls: { [key: string]: FormControl } = {};
 
     this.fields.forEach((field) => {
-      const { name, defaultValue, required, validator, type } = field;
-
+      const { name, defaultValue, required, validator, type, hidden } = field;
+      console.log('field: ', field);
       if (type !== 'select') {
         // Utiliza el valor del modelo si existe, o el valor por defecto si no es un campo de tipo 'select'
         formControls[name] = new FormControl(
@@ -85,7 +86,7 @@ export class FormularioInputComponent implements OnInit, OnChanges {
       }
 
       if (required) {
-        console.log('required: ', required);
+        //console.log('required: ', required);
         formControls[name].setValidators([
           Validators.required,
           this.customValidator,
@@ -104,7 +105,7 @@ export class FormularioInputComponent implements OnInit, OnChanges {
 
     //reviso si form es undefined, sino le agrego los nuevos campos
     if (this.form === undefined) {
-      console.log('valor formulario ', this.form);
+      //console.log('valor formulario ', this.form);
 
       this.form = new FormGroup(formControls);
       //agrego los nombres de los campos al array
@@ -184,5 +185,10 @@ export class FormularioInputComponent implements OnInit, OnChanges {
         this.form.removeControl(option.toLowerCase() + 'input');
       }
     }
+  }
+
+  getHiddenClass(field: any) {
+    
+    return field ? 'hidden-field' : '';
   }
 }
