@@ -14,6 +14,9 @@ import { User } from '../../../core/models/user.interface';
 import { DayOfWeek } from '../../../core/models/day-of-week.enum';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 const today = new Date();
 const month = today.getMonth();
@@ -31,6 +34,9 @@ const year = today.getFullYear();
     CardComponent,
     MatSelectModule,
     MatDatepickerModule,
+    MatTabsModule,
+    MatCheckboxModule,
+    MatExpansionModule
   ],
   templateUrl: './add-workout-plan.component.html',
   styleUrl: './add-workout-plan.component.scss',
@@ -38,12 +44,17 @@ const year = today.getFullYear();
 })
 export class AddWorkoutPlanComponent implements OnInit {
 
+
   Formulario1: FormGroup = new FormGroup({});
   Formulario2: FormGroup = new FormGroup({});
   users: User[] = [];
   //list of days of week
   daysOfWeek: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
-  selectedDays: DayOfWeek[] = [];
+  dailyRoutines: any[] = [];
+  tabs: string[] = ['New'];
+  panels: string[] = ['New'];
+  selected = new FormControl(0);
+  step = 0;
 
   
   constructor(
@@ -68,6 +79,9 @@ export class AddWorkoutPlanComponent implements OnInit {
     }, (err) => {
       console.log(err);
     });
+
+    //add to dailyRoutines a new DailyRoutine
+    this.dailyRoutines.push({days: [], workoutSpecification: []});
   }
 
   submitForm() {
@@ -81,7 +95,49 @@ export class AddWorkoutPlanComponent implements OnInit {
     });
   }
 
-  getDay(day: DayOfWeek) {
-    
+
+
+  addTab(selectAfterAdding: boolean) {
+    this.tabs.push('New');
+    //add to dailyRoutines a new DailyRoutine
+    this.dailyRoutines.push({ days: [], workoutSpecification: []});
+    if (selectAfterAdding) {
+      this.selected.setValue(this.tabs.length - 1);
     }
+  }
+
+  removeTab(index: number) {
+    this.tabs.splice(index, 1);
+    this.selected.setValue(index);
+  }
+
+  getDay(day: DayOfWeek, index: number) {
+    //add to dailyRoutines the day of the week 
+    this.dailyRoutines[index].days.push(day);
+
+  }
+
+  addPanel(selectAfterAdding: boolean) {
+    this.panels.push('New');
+    if (selectAfterAdding) {
+      this.selected.setValue(this.panels.length - 1);
+    }
+  }
+
+  removePanel(index: number) {
+    this.panels.splice(index, 1);
+    this.selected.setValue(index);
+  }
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
+  }
 }

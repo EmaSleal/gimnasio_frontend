@@ -2,8 +2,8 @@
 
   
     <!-- select for users-->
-    <mat-vertical-stepper linear #stepper>
-      <mat-step [stepControl]="Formulario1">
+    <mat-vertical-stepper [linear]="false" #stepper>
+      <mat-step [stepControl]="Formulario1" editable>
         <form [formGroup]="Formulario1">
           <div>
             <mat-form-field>
@@ -33,24 +33,73 @@
               <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
           </div>
-      
-          <!-- checkbox for days
-          @for (item of daysOfWeek; track $index) {
-          <div>
-            <mat-checkbox formControlName="daysOfWeek" (change)="getDay(item)">{{item}}</mat-checkbox>
-          </div>
-          } -->
+    
       
           <div>
-            <button mat-raised-button color="primary" (click)="submitForm()">Add Muscular Group</button>
+            <button mat-button matStepperNext>Next</button>
           </div>
         </form>
       </mat-step>
+
+
       <mat-step [stepControl]="Formulario2">
+        <button mat-raised-button
+          class="example-add-tab-button"
+          (click)="addTab(true)">
+          Agregar Otra Rutina
+        </button>
+        <mat-tab-group [selectedIndex]="selected.value"
+               (selectedIndexChange)="selected.setValue($event)">
+          @for (tab of tabs; track tab; let index = $index) {
+            <mat-tab [label]="tab">
+              <!--list of checkboxes for days of the week-->
+              @for (item of daysOfWeek; track $index) {
+                <div>
+                  <mat-checkbox formControlName="daysOfWeek" (change)="getDay(item, index)">{{item}}</mat-checkbox>
+                </div>
+              }
+
+              <button mat-raised-button
+                      class="example-delete-tab-button"
+                      [disabled]="tabs.length === 1"
+                      (click)="removeTab(index)" color="secondary">
+                Delete Tab
+              </button>
+            </mat-tab>
+          }
+
+          <mat-accordion>
+            @for (panel of panels; track panel; let index = $index) {
+              <mat-expansion-panel [expanded]="step === index" (opened)="setStep(index)" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{panel}}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <button mat-raised-button
+                            class="example-delete-tab-button"
+                            [disabled]="panels.length === 1"
+                            (click)="removePanel(index)" color="secondary">
+                      Delete Panel
+                    </button>
+                    <button mat-raised-button
+                      class="example-add-tab-button"
+                      (click)="addPanel(true)">
+                      Agregar Otra Rutina
+                    </button>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        </mat-tab-group>
         <form [formGroup]="Formulario2">
           
         </form>
       </mat-step>
+
+
     </mat-vertical-stepper>
     
 </app-card>
