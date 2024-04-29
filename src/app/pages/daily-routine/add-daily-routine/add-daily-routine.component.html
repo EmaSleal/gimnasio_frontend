@@ -1,0 +1,110 @@
+<form [formGroup]="dailyRoutineForm">
+  <div class="button__container">
+    <button class="button" mat-raised-button color="primary" (click)="addWorkoutSpecification()" >
+      Add Workout Specification
+    </button>
+  </div>
+  
+  <!--space for ID disabled-->
+  <div>
+    <mat-form-field>
+      <mat-label for="id">ID:</mat-label>
+      <input matInput type="text" id="id" name="id" formControlName="id" />
+    </mat-form-field>
+  </div>
+  <div>
+    <label for="daysOfWeek">Días:</label>
+    <!--mat-checkbox for days of the week-->
+    <div class="checkbox__container">
+    @for (day of daysOfWeek; track $index) {
+      <div class="checkbox__item">
+        <mat-checkbox formControlName="daysOfWeek" [value]="day" class="checkbox__input" color="primary">
+          {{ day }}
+
+        </mat-checkbox>
+      </div>
+        
+      
+    
+    }
+    </div> 
+    @if (dailyRoutineForm.get('daysOfWeek')?.hasError('required'))
+    {
+    <span class="alert alert-danger">
+      Seleccione al menos un día.
+    </span>
+    }
+  </div>
+  <div formArrayName="workoutSpecification" class="workout-specification__container">
+    @for (form of workoutSpecifications.controls; track $index) {
+    <mat-expansion-panel [formGroupName]="$index" [expanded]="$index === 0" (opened)="setStep($index)" hideToggle
+      class="panel">
+      <mat-expansion-panel-header class="panel__header">
+        <mat-panel-title>
+          {{ form.get("description")?.value || "New Workout" }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-panel-description>
+        <div class="main-content-panel">
+          <div>
+            <mat-form-field class="full-width">
+              <mat-label>Reps Number</mat-label>
+              <input matInput formControlName="repsNumber" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>Sets Number</mat-label>
+              <input matInput formControlName="setsNumber" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>Recommended Weight</mat-label>
+              <input matInput formControlName="recommendedWeight" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>Trainer Rating</mat-label>
+              <input matInput formControlName="trainerRating" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>Workout</mat-label>
+              <mat-select formControlName="workout">
+                @for (workout of workouts; track $index) {
+                <mat-option [value]="workout.id">{{
+                  workout.name
+                  }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <button mat-raised-button class="example-delete-tab-button" [disabled]="cantidadEjercicios - 1 === 1"
+            (click)="removeWorkoutFormGroup($index)" color="secondary">
+            Delete Panel
+          </button>
+          <!-- <button
+                            mat-raised-button
+                            class="example-add-tab-button"
+                            (click)="addWorkoutSpecification($index)"
+                          >
+                            Agregar Otra Rutina
+                          </button> -->
+        </div>
+      </mat-panel-description>
+      
+    </mat-expansion-panel>
+    }
+  </div>
+
+
+
+
+</form>

@@ -1,0 +1,69 @@
+.workout-specification__container{
+    margin: 1rem 0;
+}
+
+.panel{
+    margin: 2rem 1rem; 
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #fff;
+    .panel__header{
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        background-color: #efefef;
+    }
+    
+    .main-content-panel{
+        
+        margin: 2rem auto;
+       
+    }
+    .panel-footer{
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        background-color: #f9f9f9;
+    }
+
+}
+
+.full-width{
+    width: 100%;
+}
+
+.button{
+    width: 50%;
+    margin: 1rem auto;
+}
+
+.button__container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkbox__container{
+    //divided into 2 columns
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .checkbox__item{
+        display: flex;
+        justify-content: space-between;
+        width:clamp(100%, 100%, 100%);
+
+        .checkbox__input{
+            
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    
+    
+}
+

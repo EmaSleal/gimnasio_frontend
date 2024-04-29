@@ -12,6 +12,6 @@ export const routes: Routes = [
     { path: 'user', loadChildren: () => import('./pages/user/user.routes').then(m => m.routes)},
     { path: 'muscular-group', loadChildren: () => import('./pages/muscular-group/muscular-group.routes').then(m => m.routes)},
     { path: 'workout-plan', loadChildren: () => import('./pages/routine/routine.routes').then(m => m.routes)},
-    // { path: 'workout', loadChildren: () => import('./pages/workout/workout.routes').then(m => m.routes)}
+    { path: 'daily-routine', loadChildren: () => import('./pages/daily-routine/daily-routine.routes').then(m => m.routes)}
   ];
 

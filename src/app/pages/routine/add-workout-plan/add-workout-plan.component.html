@@ -1,105 +1,194 @@
 <app-card title="Agregar Rutina">
-
-  
-    <!-- select for users-->
-    <mat-vertical-stepper [linear]="false" #stepper>
-      <mat-step [stepControl]="Formulario1" editable>
-        <form [formGroup]="Formulario1">
-          <div>
-            <mat-form-field>
-              <mat-label for="user">User:</mat-label>
-              <mat-select id="user" name="user" formControlName="user" required>
-                <mat-option [value]="undefined">Seleccionar</mat-option>
-                @for (item of users; track $index) {
-                <mat-option [value]="item.id" >{{item.userName}}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label for="description">description:</mat-label>
-              <input matInput type="text" id="description" name="description" formControlName="description" required>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label>Enter a date range</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate placeholder="Start date" formControlName="startDate">
-                <input matEndDate placeholder="End date" formControlName="endDate">
-              </mat-date-range-input>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
-    
-      
-          <div>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-
-
-      <mat-step [stepControl]="Formulario2">
-        <button mat-raised-button
-          class="example-add-tab-button"
-          (click)="addTab(true)">
-          Agregar Otra Rutina
-        </button>
-        <mat-tab-group [selectedIndex]="selected.value"
-               (selectedIndexChange)="selected.setValue($event)">
-          @for (tab of tabs; track tab; let index = $index) {
-            <mat-tab [label]="tab">
-              <!--list of checkboxes for days of the week-->
-              @for (item of daysOfWeek; track $index) {
-                <div>
-                  <mat-checkbox formControlName="daysOfWeek" (change)="getDay(item, index)">{{item}}</mat-checkbox>
-                </div>
+  <!-- select for users-->
+  <mat-vertical-stepper [linear]="false" #stepper>
+    <mat-step [stepControl]="Formulario1" editable>
+      <form [formGroup]="Formulario1">
+        <div>
+          <mat-form-field>
+            <mat-label for="user">User:</mat-label>
+            <mat-select id="user" name="user" formControlName="user" required>
+              <mat-option [value]="undefined">Seleccionar</mat-option>
+              @for (item of users; track $index) {
+              <mat-option [value]="item.id">{{ item.userName }}</mat-option>
               }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label for="description">description:</mat-label>
+            <input
+              matInput
+              type="text"
+              id="description"
+              name="description"
+              formControlName="description"
+              required
+            />
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="startDate"
+              />
+              <input
+                matEndDate
+                placeholder="End date"
+                formControlName="endDate"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
 
-              <button mat-raised-button
-                      class="example-delete-tab-button"
-                      [disabled]="tabs.length === 1"
-                      (click)="removeTab(index)" color="secondary">
-                Delete Tab
-              </button>
+        <div>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="dailyRoutineFormArray">
+      <button mat-raised-button (click)="addTab(true)">
+        Agregar Otra Rutina
+      </button>
+      <mat-tab-group
+        [selectedIndex]="selected.value"
+        (selectedIndexChange)="selected.setValue($event)"
+      >
+        <form [formGroup]="dailyRoutineFormArray">
+          <div formArrayName="dailyRoutines">
+            @for (dailyForm of dailyRoutines.controls; track $index) {
+            <mat-tab>
+              <div [formGroupName]="$index">
+                <!--space for ID disabled-->
+                <div>
+                  <mat-form-field>
+                    <mat-label for="id">ID:</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      id="id"
+                      name="id"
+                      formControlName="id"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <label for="daysOfWeek">Días:</label>
+                  <!--mat-checkbox for days of the week-->
+                  @for (day of daysOfWeek; track $index) {
+                  <mat-checkbox formControlName="daysOfWeek" [value]="day">
+                    {{ day }}
+                  </mat-checkbox>
+                  } @if (dailyRoutines.get('daysOfWeek')?.hasError('required'))
+                  {
+                  <span class="alert alert-danger">
+                    Seleccione al menos un día.
+                  </span>
+                  }
+                </div>
+                <div formArrayName="workoutSpecification">
+                  @for (form of workoutSpecifications.controls; track $index) {
+                  <mat-expansion-panel
+                    [formGroupName]="$index"
+                    [expanded]="step === $index"
+                    (opened)="setStep($index)"
+                    hideToggle
+                  >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{ form.get("description")?.value || "New Workout" }}
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-panel-description>
+                      <div>
+                        <div>
+                          <mat-form-field>
+                            <mat-label>Reps Number</mat-label>
+                            <input matInput formControlName="repsNumber" />
+                          </mat-form-field>
+                        </div>
+
+                        <div>
+                          <mat-form-field>
+                            <mat-label>Sets Number</mat-label>
+                            <input matInput formControlName="setsNumber" />
+                          </mat-form-field>
+                        </div>
+
+                        <div>
+                          <mat-form-field>
+                            <mat-label>Recommended Weight</mat-label>
+                            <input
+                              matInput
+                              formControlName="recommendedWeight"
+                            />
+                          </mat-form-field>
+                        </div>
+
+                        <div>
+                          <mat-form-field>
+                            <mat-label>Trainer Rating</mat-label>
+                            <input matInput formControlName="trainerRating" />
+                          </mat-form-field>
+                        </div>
+
+                        <div>
+                          <mat-form-field>
+                            <mat-label>Workout</mat-label>
+                            <mat-select formControlName="workout">
+                              @for (workout of workouts; track $index) {
+                              <mat-option [value]="workout.id">{{
+                                workout.name
+                              }}</mat-option>
+                              }
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <button
+                          mat-raised-button
+                          class="example-delete-tab-button"
+                          [disabled]="cantidadEjercicios - 1 === 1"
+                          (click)="removeWorkoutFormGroup($index)"
+                          color="secondary"
+                        >
+                          Delete Panel
+                        </button>
+                        <!-- <button
+                                  mat-raised-button
+                                  class="example-add-tab-button"
+                                  (click)="addWorkoutSpecification($index)"
+                                >
+                                  Agregar Otra Rutina
+                                </button> -->
+                      </div>
+                    </mat-panel-description>
+                  </mat-expansion-panel>
+                  }
+                </div>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="addWorkoutSpecification()"
+                >
+                  Add Workout Specification
+                </button>
+              </div>
             </mat-tab>
-          }
 
-          <mat-accordion>
-            @for (panel of panels; track panel; let index = $index) {
-              <mat-expansion-panel [expanded]="step === index" (opened)="setStep(index)" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    {{panel}}
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    <button mat-raised-button
-                            class="example-delete-tab-button"
-                            [disabled]="panels.length === 1"
-                            (click)="removePanel(index)" color="secondary">
-                      Delete Panel
-                    </button>
-                    <button mat-raised-button
-                      class="example-add-tab-button"
-                      (click)="addPanel(true)">
-                      Agregar Otra Rutina
-                    </button>
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                
-              </mat-expansion-panel>
             }
-          </mat-accordion>
-        </mat-tab-group>
-        <form [formGroup]="Formulario2">
-          
+          </div>
         </form>
-      </mat-step>
-
-
-    </mat-vertical-stepper>
-    
+      </mat-tab-group>
+    </mat-step>
+  </mat-vertical-stepper>
 </app-card>
