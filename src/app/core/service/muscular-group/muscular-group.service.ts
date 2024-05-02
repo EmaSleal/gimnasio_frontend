@@ -39,7 +39,7 @@ export class MuscularGroupService {
     });
   }
 
-  public deleteMuscularGroup(id: number): Promise<any> {
+  public deleteMuscularGroup(id: String): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.delete(`${baseUrl}/muscularGroup/delete/${id}`).subscribe(
         (res) => {

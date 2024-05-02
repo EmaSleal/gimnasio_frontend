@@ -15,6 +15,8 @@ import { UserService } from '../../../core/service/user/user.service';
 import { WorkoutPlanService } from '../../../core/service/workout-plan/workout-plan.service';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { Workout } from '../../../core/models/workout.interface';
+import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
+import { MuscularGroup } from '../../../core/models/muscular-group.interface';
 
 @Component({
   selector: 'app-add-daily-routine',
@@ -35,17 +37,21 @@ import { Workout } from '../../../core/models/workout.interface';
   styleUrl: './add-daily-routine.component.scss'
 })
 export class AddDailyRoutineComponent implements OnInit {
+
   constructor(
     private formBuilder: FormBuilder, 
     private workoutPlanService: WorkoutPlanService, 
     private userService: UserService, 
     private workoutService: WorkoutService, 
+    private muscularGroupService: MuscularGroupService
   ) {}
 
   daysOfWeek: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
   dailyRoutineForm: FormGroup = new FormGroup({});
   workouts: Workout[] = [];
+  muscularGroups: MuscularGroup[] = [];
   step: number = 0;
+  selectedMuscularGroup = '';
 
   ngOnInit(): void {
     this.dailyRoutineForm = this.formBuilder.group({
@@ -56,6 +62,10 @@ export class AddDailyRoutineComponent implements OnInit {
 
     this.workoutService.getWorkouts().subscribe((res) => {
       this.workouts = res;
+    });
+
+    this.muscularGroupService.getMuscularGroups().then((res) => {
+      this.muscularGroups = res;
     });
   }
 
@@ -88,5 +98,9 @@ export class AddDailyRoutineComponent implements OnInit {
 
   get cantidadEjercicios(): number {
     return this.workoutSpecifications.length;
+  }
+  getWorkoutsByMuscularGroup($event: any) {
+    this.selectedMuscularGroup = $event.value;
+    console.log($event.value);
   }
 }

@@ -47,6 +47,31 @@
       <mat-panel-description>
         <div class="main-content-panel">
           <div>
+            <mat-form-field>
+              <mat-label>Muscular Group</mat-label>
+              <mat-select [(value)]="selectedMuscularGroup" >
+              @for (muscularGroup of muscularGroups; track $index) {
+                <mat-option [value]="muscularGroup.id">{{
+                  muscularGroup.name
+                  }}
+                  </mat-option>
+              }
+            </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Workout</mat-label>
+              <mat-select formControlName="workout">
+                @for (workout of workouts; track $index) {
+                  @if (selectedMuscularGroup === workout.muscularGroup.id || selectedMuscularGroup === '') {
+                    <mat-option [value]="workout.id">
+                        {{workout.name}}
+                    </mat-option>
+                  }
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
             <mat-form-field class="full-width">
               <mat-label>Reps Number</mat-label>
               <input matInput formControlName="repsNumber" />
@@ -74,18 +99,7 @@
             </mat-form-field>
           </div>
 
-          <div>
-            <mat-form-field>
-              <mat-label>Workout</mat-label>
-              <mat-select formControlName="workout">
-                @for (workout of workouts; track $index) {
-                <mat-option [value]="workout.id">{{
-                  workout.name
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
+          
           <button mat-raised-button class="example-delete-tab-button" [disabled]="cantidadEjercicios - 1 === 1"
             (click)="removeWorkoutFormGroup($index)" color="secondary">
             Delete Panel

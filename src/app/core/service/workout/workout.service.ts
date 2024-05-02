@@ -42,7 +42,7 @@ export class WorkoutService {
       );
   }
 
-  deleteWorkout(id: number): Promise<any> {
+  deleteWorkout(id: String): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.delete(`${baseUrl}/workout/delete/${id}`).subscribe(
         (res) => {

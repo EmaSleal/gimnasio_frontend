@@ -4,7 +4,7 @@
 import { MuscularGroup } from "./muscular-group.interface";
 
 export interface Workout {
-  id: number;
+  id: string;
   name: string;
   muscularGroup: MuscularGroup;
   muscularLoad: string;

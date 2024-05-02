@@ -1,6 +1,6 @@
 
 export interface MuscularGroup {
-    id: number;
+    id: String;
     name: string;
     exercises: [];
     createdAt: Date;
