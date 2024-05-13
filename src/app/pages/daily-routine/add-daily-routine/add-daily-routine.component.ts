@@ -17,6 +17,8 @@ import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { Workout } from '../../../core/models/workout.interface';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 import { MuscularGroup } from '../../../core/models/muscular-group.interface';
+import { FormService } from '../../../core/service/form-service/form.service';
+import { MuscularLoad } from '../../../core/models/muscular-load.enum';
 
 @Component({
   selector: 'app-add-daily-routine',
@@ -43,15 +45,18 @@ export class AddDailyRoutineComponent implements OnInit {
     private workoutPlanService: WorkoutPlanService, 
     private userService: UserService, 
     private workoutService: WorkoutService, 
-    private muscularGroupService: MuscularGroupService
+    private muscularGroupService: MuscularGroupService, 
+    private formService: FormService
   ) {}
 
   daysOfWeek: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
   dailyRoutineForm: FormGroup = new FormGroup({});
   workouts: Workout[] = [];
   muscularGroups: MuscularGroup[] = [];
+  muscularLoads: MuscularLoad[] = [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH];
   step: number = 0;
   selectedMuscularGroup = '';
+  selectedMuscularLoad = '';
 
   ngOnInit(): void {
     this.dailyRoutineForm = this.formBuilder.group({
@@ -67,6 +72,8 @@ export class AddDailyRoutineComponent implements OnInit {
     this.muscularGroupService.getMuscularGroups().then((res) => {
       this.muscularGroups = res;
     });
+
+    this.formService.addForm(this.dailyRoutineForm);
   }
 
   get workoutSpecifications() {
@@ -83,8 +90,10 @@ export class AddDailyRoutineComponent implements OnInit {
         repsNumber: [0, Validators.required], // Validador síncrono
         setsNumber: [0, Validators.required], // Validador síncrono
         recommendedWeight: [0],
-        trainerRating: [0, Validators.min(1), Validators.max(5)], // Validadores síncronos
-        workout: [''] // Assuming Workout form group or control exists
+        trainerRating: [0, Validators.required], // Validadores síncronos
+        workout: [''], // Assuming Workout form group or control exists
+        isTimeBased: [false],
+        time: [0],
     });
 }
 

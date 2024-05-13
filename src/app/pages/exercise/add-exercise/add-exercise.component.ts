@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
 import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
-import { CargaMuscular } from '../../../core/models/muscular-load.enum';
+import { MuscularLoad } from '../../../core/models/muscular-load.enum';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 
@@ -80,7 +80,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
       defaultValue: undefined,
       required: true,
       type: 'radio-button',
-      options: [CargaMuscular.LOW, CargaMuscular.MEDIUM, CargaMuscular.HIGH],
+      options: [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH],
     },
   ];
 

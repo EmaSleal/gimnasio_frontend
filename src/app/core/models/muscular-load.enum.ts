@@ -1,4 +1,4 @@
-export enum CargaMuscular {
+export enum MuscularLoad {
 
     LOW = 'LOW',
     MEDIUM = 'MEDIUM',

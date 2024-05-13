@@ -1,10 +1,5 @@
 <form [formGroup]="dailyRoutineForm">
-  <div class="button__container">
-    <button class="button" mat-raised-button color="primary" (click)="addWorkoutSpecification()" >
-      Add Workout Specification
-    </button>
-  </div>
-  
+ 
   <!--space for ID disabled-->
   <div>
     <mat-form-field>
@@ -35,6 +30,12 @@
     </span>
     }
   </div>
+   <div class="button__container">
+    <button class="button" mat-raised-button color="primary" (click)="addWorkoutSpecification()" >
+      Add Workout Specification
+    </button>
+  </div>
+  
   <div formArrayName="workoutSpecification" class="workout-specification__container">
     @for (form of workoutSpecifications.controls; track $index) {
     <mat-expansion-panel [formGroupName]="$index" [expanded]="$index === 0" (opened)="setStep($index)" hideToggle
@@ -56,13 +57,25 @@
                   }}
                   </mat-option>
               }
-            </mat-select>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+               <mat-label>Carga Muscular</mat-label>
+              <mat-select [(value)]="selectedMuscularLoad" >
+               
+                @for (muscularLoad of muscularLoads; track $index) {
+                  <mat-option [value]="muscularLoad">{{
+                    muscularLoad
+                    }} 
+                    </mat-option>
+                }
+                </mat-select>
             </mat-form-field>
             <mat-form-field>
               <mat-label>Workout</mat-label>
               <mat-select formControlName="workout">
                 @for (workout of workouts; track $index) {
-                  @if (selectedMuscularGroup === workout.muscularGroup.id || selectedMuscularGroup === '') {
+                  @if ((selectedMuscularGroup === workout.muscularGroup.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === '' || selectedMuscularLoad === '') {
                     <mat-option [value]="workout.id">
                         {{workout.name}}
                     </mat-option>
@@ -71,31 +84,48 @@
               </mat-select>
             </mat-form-field>
           </div>
+          <!-- field for isTimeBased checkbox -->
           <div>
-            <mat-form-field class="full-width">
-              <mat-label>Reps Number</mat-label>
-              <input matInput formControlName="repsNumber" />
-            </mat-form-field>
+            <mat-checkbox formControlName="isTimeBased" color="primary">
+              Is Time Based
+            </mat-checkbox>
           </div>
+          <!-- if isTimeBased is false it should show reps number or time -->
+          @if (!form.get("isTimeBased")?.value) {
+            <div>
+              <mat-form-field class="full-width">
+                <mat-label>Reps Number</mat-label>
+                <input matInput formControlName="repsNumber" type="number" />
+              </mat-form-field>
+            </div>
+          } 
+          @else {
+            <div>
+              <mat-form-field class="full-width">
+                <mat-label>Time</mat-label>
+                <input matInput formControlName="time" type="number" />
+              </mat-form-field>
+            </div>
+          }
 
           <div>
             <mat-form-field>
               <mat-label>Sets Number</mat-label>
-              <input matInput formControlName="setsNumber" />
+              <input matInput formControlName="setsNumber" type="number" />
             </mat-form-field>
           </div>
 
           <div>
             <mat-form-field>
               <mat-label>Recommended Weight</mat-label>
-              <input matInput formControlName="recommendedWeight" />
+              <input matInput formControlName="recommendedWeight" type="number" />
             </mat-form-field>
           </div>
 
           <div>
             <mat-form-field>
               <mat-label>Trainer Rating</mat-label>
-              <input matInput formControlName="trainerRating" />
+              <input matInput formControlName="trainerRating" type="number" />
             </mat-form-field>
           </div>
 
