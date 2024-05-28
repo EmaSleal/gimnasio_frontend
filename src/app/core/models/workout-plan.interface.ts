@@ -10,8 +10,10 @@ export interface Routine {
   endDate: string;
   createdAt: string;
   updatedAt: null;
+  isTemplate: boolean;
   dailyRoutine: DailyRoutine[];
-  template: boolean;
+  
+
 }
 
 

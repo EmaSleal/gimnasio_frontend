@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -49,6 +49,7 @@ export class AddDailyRoutineComponent implements OnInit {
     private formService: FormService
   ) {}
 
+  @Input() formIndex: number = 0;
   daysOfWeek: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
   dailyRoutineForm: FormGroup = new FormGroup({});
   workouts: Workout[] = [];
@@ -60,8 +61,7 @@ export class AddDailyRoutineComponent implements OnInit {
 
   ngOnInit(): void {
     this.dailyRoutineForm = this.formBuilder.group({
-      id: [{value: null, disabled: true}],
-      daysOfWeek: [this.daysOfWeek, Validators.required],
+      daysOfWeek: ['', Validators.required],
       workoutSpecification: this.formBuilder.array([])
     });
 
@@ -72,30 +72,46 @@ export class AddDailyRoutineComponent implements OnInit {
     this.muscularGroupService.getMuscularGroups().then((res) => {
       this.muscularGroups = res;
     });
-
-    this.formService.addForm(this.dailyRoutineForm);
+    //console.log(this.formIndex);
+    const valueIndex = this.formService.getForm(this.formIndex);
+    if (valueIndex) {
+      this.dailyRoutineForm.patchValue({
+        daysOfWeek: valueIndex.daysOfWeek.value || []
+      });
+      //console.log(valueIndex);
+      // Si valueIndex tiene valores para workoutSpecification, llenarlos
+      if (valueIndex.workoutSpecification) {
+        valueIndex.workoutSpecification?.value?.forEach((spec: any) => {
+          this.workoutSpecifications.push(this.createWorkoutSpecificationForm(spec));
+        });
+        console.log(valueIndex.workoutSpecification);
+      }
+    } else {
+      this.formService.addForm(this.dailyRoutineForm);
+    }
   }
 
   get workoutSpecifications() {
     return this.dailyRoutineForm.get('workoutSpecification') as FormArray;
   }
+
   addWorkoutSpecification() {
     this.workoutSpecifications.push(this.createWorkoutSpecificationForm());
   }
 
-  createWorkoutSpecificationForm(): FormGroup {
+  createWorkoutSpecificationForm(data: any = {}): FormGroup {
     return this.formBuilder.group({
-        id: [''],
-        description: ['', Validators.required], // Validador síncrono
-        repsNumber: [0, Validators.required], // Validador síncrono
-        setsNumber: [0, Validators.required], // Validador síncrono
-        recommendedWeight: [0],
-        trainerRating: [0, Validators.required], // Validadores síncronos
-        workout: [''], // Assuming Workout form group or control exists
-        isTimeBased: [false],
-        time: [0],
+      id: [data.id || ''],
+      description: [data.description || '', Validators.required],
+      repsNumber: [data.repsNumber || 0, Validators.required],
+      setsNumber: [data.setsNumber || 0, Validators.required],
+      recommendedWeight: [data.recommendedWeight || 0],
+      trainerRating: [data.trainerRating || 0, Validators.required],
+      workout: [data.workout.id || '', Validators.required], // Assuming Workout form group or control exists
+      timeBased: [data.timeBased || false],
+      time: [data.time || 0],
     });
-}
+  }
 
   setStep(index: number) {
     this.step = index;
@@ -110,6 +126,6 @@ export class AddDailyRoutineComponent implements OnInit {
   }
   getWorkoutsByMuscularGroup($event: any) {
     this.selectedMuscularGroup = $event.value;
-    console.log($event.value);
+    //console.log($event.value);
   }
 }

@@ -1,19 +1,35 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
-  forms: FormGroup[] = [];
+  forms: any[] = [];
 
-  constructor() { }
+  constructor(private formbuilder: FormBuilder) { }
 
   addForm(form: FormGroup) {
-    this.forms.push(form);
+    const values = form.value;
+    this.forms.push(values);
   }
 
   getForms() {
+    //if daysOfWeek is empty or workoutSpecification is empty, remove it
     return this.forms;
   }
+
+  clearForms() {
+    this.forms = [];
+  }
+
+  removeForm(index: number) {
+    this.forms.splice(index, 1);
+  }
+
+  getForm(index: number) {
+    return this.forms[index];
+  }
+
+  
 }

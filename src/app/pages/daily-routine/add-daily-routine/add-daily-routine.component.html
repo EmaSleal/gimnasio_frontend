@@ -1,27 +1,25 @@
 <form [formGroup]="dailyRoutineForm">
  
   <!--space for ID disabled-->
-  <div>
+  <!-- <div>
     <mat-form-field>
       <mat-label for="id">ID:</mat-label>
       <input matInput type="text" id="id" name="id" formControlName="id" />
     </mat-form-field>
-  </div>
+  </div> -->
   <div>
     <label for="daysOfWeek">Días:</label>
     <!--mat-checkbox for days of the week-->
-    <div class="checkbox__container">
-    @for (day of daysOfWeek; track $index) {
-      <div class="checkbox__item">
-        <mat-checkbox formControlName="daysOfWeek" [value]="day" class="checkbox__input" color="primary">
-          {{ day }}
+    <div>
+      <mat-form-field>
+        <mat-label>Muscular Group</mat-label>
+      <mat-select multiple formControlName="daysOfWeek">
+        @for (day of daysOfWeek; track $index) {
+            <mat-option [value]="day">{{ day }}</mat-option>
+        }
+      </mat-select>
 
-        </mat-checkbox>
-      </div>
-        
-      
-    
-    }
+  </mat-form-field>
     </div> 
     @if (dailyRoutineForm.get('daysOfWeek')?.hasError('required'))
     {
@@ -51,8 +49,9 @@
             <mat-form-field>
               <mat-label>Muscular Group</mat-label>
               <mat-select [(value)]="selectedMuscularGroup" >
+                <mat-option [value]="undefined">Seleccionar</mat-option>
               @for (muscularGroup of muscularGroups; track $index) {
-                <mat-option [value]="muscularGroup.id">{{
+                <mat-option [value]="muscularGroup.id" >{{
                   muscularGroup.name
                   }}
                   </mat-option>
@@ -62,7 +61,7 @@
             <mat-form-field>
                <mat-label>Carga Muscular</mat-label>
               <mat-select [(value)]="selectedMuscularLoad" >
-               
+                <mat-option [value]="undefined">Seleccionar</mat-option>
                 @for (muscularLoad of muscularLoads; track $index) {
                   <mat-option [value]="muscularLoad">{{
                     muscularLoad
@@ -73,9 +72,9 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Workout</mat-label>
-              <mat-select formControlName="workout">
+              <mat-select formControlName="workout" >
                 @for (workout of workouts; track $index) {
-                  @if ((selectedMuscularGroup === workout.muscularGroup.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === '' || selectedMuscularLoad === '') {
+                  @if ((selectedMuscularGroup === workout.muscularGroup.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === undefined || selectedMuscularLoad === undefined || selectedMuscularLoad === '' || selectedMuscularGroup === '') {
                     <mat-option [value]="workout.id">
                         {{workout.name}}
                     </mat-option>
@@ -86,12 +85,12 @@
           </div>
           <!-- field for isTimeBased checkbox -->
           <div>
-            <mat-checkbox formControlName="isTimeBased" color="primary">
+            <mat-checkbox formControlName="timeBased" color="primary">
               Is Time Based
             </mat-checkbox>
           </div>
           <!-- if isTimeBased is false it should show reps number or time -->
-          @if (!form.get("isTimeBased")?.value) {
+          @if (!form.get("timeBased")?.value) {
             <div>
               <mat-form-field class="full-width">
                 <mat-label>Reps Number</mat-label>
