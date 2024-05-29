@@ -119,12 +119,13 @@ export class AddWorkoutPlanComponent implements OnInit {
     if (this.forms.length === 0) {
       this.formService.addForm(this.createDailyRoutineForm());
       this.forms = this.formService.getForms();
+      console.log(this.forms);
     }
   }
 
   createDailyRoutineForm(): FormGroup {
     return this.formBuilder.group({
-      daysOfWeek: ['', Validators.required],
+      daysOfWeek: [DayOfWeek.MONDAY, Validators.required],
       workoutSpecification: this.formBuilder.array([])
     });
   }
@@ -257,5 +258,19 @@ export class AddWorkoutPlanComponent implements OnInit {
     this.rerender = false;
     setTimeout(() => this.rerender = true, 0);
   }
+
+  getNameTab(day: any): string {
+    //if day is not in daysOfWeek use day.value instead
+    this.daysOfWeek.forEach((dayOfWeek) => {
+      if (dayOfWeek === day) {
+        return dayOfWeek;
+      }else if (dayOfWeek === day?.value) {
+        return dayOfWeek;
+      }
+      return DayOfWeek.MONDAY;
+    });
+    return DayOfWeek.MONDAY;
+  }
+  
 }
 

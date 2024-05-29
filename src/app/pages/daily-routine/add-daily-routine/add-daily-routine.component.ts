@@ -95,6 +95,12 @@ export class AddDailyRoutineComponent implements OnInit {
     return this.dailyRoutineForm.get('workoutSpecification') as FormArray;
   }
 
+  workoutName(formValue: String): string {
+    const workoutId = formValue;
+    const workout = this.workouts.find(w => w.id === workoutId);
+    return workout ? workout.name : '';
+  }
+
   addWorkoutSpecification() {
     this.workoutSpecifications.push(this.createWorkoutSpecificationForm());
   }

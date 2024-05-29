@@ -38,10 +38,11 @@
     @for (form of workoutSpecifications.controls; track $index) {
     <mat-expansion-panel [formGroupName]="$index" [expanded]="$index === 0" (opened)="setStep($index)" hideToggle
       class="panel">
-      <mat-expansion-panel-header class="panel__header">
+      <mat-expansion-panel-header click class="panel__header">
         <mat-panel-title>
-          {{ form.get("description")?.value || "New Workout" }}
-        </mat-panel-title>
+          <!-- from workouts use form.get('workout')?.value to filter the workout.id and get the workout.name for the label -->
+            {{ workoutName(form.get('workout')?.value) }}
+          </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-panel-description>
         <div class="main-content-panel">
@@ -68,11 +69,12 @@
                     }} 
                     </mat-option>
                 }
+                
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
               <mat-label>Workout</mat-label>
-              <mat-select formControlName="workout" >
+              <mat-select formControlName="workout">
                 @for (workout of workouts; track $index) {
                   @if ((selectedMuscularGroup === workout.muscularGroup.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === undefined || selectedMuscularLoad === undefined || selectedMuscularLoad === '' || selectedMuscularGroup === '') {
                     <mat-option [value]="workout.id">

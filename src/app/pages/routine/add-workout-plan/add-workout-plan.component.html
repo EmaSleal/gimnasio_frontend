@@ -73,7 +73,7 @@
           <div formArrayName="dailyRoutines">
             @if (rerender) {
               @for (tab of forms; track $index) {
-              <mat-tab [label]="tab.daysOfWeek.value">
+              <mat-tab [label]="getNameTab(tab.daysOfWeek)">
                 <app-add-daily-routine [formIndex]="$index"></app-add-daily-routine>
               </mat-tab>
               }
