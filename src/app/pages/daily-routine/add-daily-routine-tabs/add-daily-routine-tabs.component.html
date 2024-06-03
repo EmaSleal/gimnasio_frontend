@@ -1,0 +1,15 @@
+<section>
+    <button mat-raised-button color="primary" (click)="addRoutine()">Añadir Rutina</button>
+    <mat-tab-group>
+        
+        @for (routine of routines; track $index) {
+        <mat-tab [label]="'Routine ' + ($index + 1)">
+            <app-add-daily-routine [formIndex]="$index"></app-add-daily-routine>
+        </mat-tab>
+  
+        }
+    </mat-tab-group>
+  <button mat-raised-button color="primary" (click)="submitAllForms()">Submit All</button>
+</section>
+
+  

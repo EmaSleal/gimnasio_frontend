@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,10 +18,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { Workout } from '../../../core/models/workout.interface';
-import { FormService } from '../../../core/service/form-service/form.service';
 import { AddDailyRoutineComponent } from '../../daily-routine/add-daily-routine/add-daily-routine.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
+import { Subscription } from 'rxjs';
+import { AddDailyRoutineTabsComponent } from '../../daily-routine/add-daily-routine-tabs/add-daily-routine-tabs.component';
+import { DailyRoutine } from '../../../core/models/daily-routine.interface';
+import { WorkoutPlan } from '../../../core/models/workout-plan.interface';
 
 const today = new Date();
 const month = today.getMonth();
@@ -44,8 +47,8 @@ const year = today.getFullYear();
     MatExpansionModule,
     AddDailyRoutineComponent,
     MatSlideToggleModule,
-    MatRadioModule
-    
+    MatRadioModule,
+    AddDailyRoutineTabsComponent
   ],
   templateUrl: './add-workout-plan.component.html',
   styleUrl: './add-workout-plan.component.scss',
@@ -53,32 +56,30 @@ const year = today.getFullYear();
 })
 export class AddWorkoutPlanComponent implements OnInit {
 
-
-
   Formulario1: FormGroup = new FormGroup({});
   dailyRoutineFormArray: FormGroup = new FormGroup({});
   users: User[] = [];
   //list of days of week
-  daysOfWeek: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
+  days: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
   color: ThemePalette = 'accent';
-  tabs: string[] = ['Rutina 1'];
   isTemplate: boolean = false;
   selected = new FormControl(0);
   step = 0;
   workoutListForm: FormGroup = new FormGroup({});
   workouts: Workout[] = [];
-  forms: any[] = [];
   templates: any[] = [];
-  rerender = true;
+  submit: boolean = false;
+  templateValueDailyRoutines: DailyRoutine[] = [];
+  IsTemplateValueChanged: boolean = false;
+  currentUser: any;
   
   constructor(
     private formBuilder: FormBuilder, 
     private workoutPlanService: WorkoutPlanService, 
     private userService: UserService, 
     private workoutService: WorkoutService, 
-    private formService: FormService
+    private cdr: ChangeDetectorRef
   ) {}
-
 
   ngOnInit(): void {
     this.Formulario1 = this.formBuilder.group({
@@ -89,7 +90,7 @@ export class AddWorkoutPlanComponent implements OnInit {
       endDate: new FormControl(new Date(year, month, today.getDate())),
       isTemplate: [false, Validators.required],
     });
-
+    //TODO: eliminar propiedad dailyRoutineFormArray
     this.dailyRoutineFormArray = 
       this.formBuilder.group({
         dailyRoutines: this.formBuilder.array([
@@ -103,9 +104,6 @@ export class AddWorkoutPlanComponent implements OnInit {
       console.log(err);
     });
 
-    //add to dailyRoutines a new DailyRoutine
-    //this.dailyRoutines.push({days: [], workoutSpecification: []});
-
     this.workoutListForm = this.formBuilder.group({
       workouts: this.formBuilder.array([]),
     });
@@ -115,67 +113,61 @@ export class AddWorkoutPlanComponent implements OnInit {
       this.workouts = res;
     });
 
-    this.forms = this.formService.getForms();
-    if (this.forms.length === 0) {
-      this.formService.addForm(this.createDailyRoutineForm());
-      this.forms = this.formService.getForms();
-      console.log(this.forms);
-    }
+    this.userService.getUserByCookie().then((res) => {
+      this.currentUser = res;
+    }, (err) => {
+      console.log(err);
+    });
+    
   }
 
   createDailyRoutineForm(): FormGroup {
     return this.formBuilder.group({
-      daysOfWeek: [DayOfWeek.MONDAY, Validators.required],
+      days: [[], Validators.required],
       workoutSpecification: this.formBuilder.array([])
     });
   }
 
   onSubmit() {
-
-    console.log(this.forms.map(form => form));
-    // if (this.Formulario1.invalid) {
-    //   return;
-    // }
-    // this.workoutPlanService.saveWorkoutPlan(this.Formulario1.value).then(() => {
-    //   Swal.fire('Workout Plan created', 'The workout plan has been created successfully', 'success');
-    // }, (err) => {
-    //   Swal.fire('Error', 'An error occurred while creating the workout plan', 'error');
-    // });
-  }
-
-  addTab(selectAfterAdding: boolean) {
-    this.tabs.push('Rutina ' + (this.tabs.length + 1));
-    if (selectAfterAdding) {
-      this.selected.setValue(this.tabs.length - 1);
+    if(this.submit){
+      this.submit = false;
+    }else{
+      this.submit = true;
     }
   }
 
-  removeTab(index: number) {
-    this.tabs.splice(index, 1);
-    this.selected.setValue(index);
-    this.formService.removeForm(index);
-  }
+  formSubmit(data: any) {
+    data.map((form: any) => {
 
-  public getDay(day: DayOfWeek, index: number) {
-    //add to dailyRoutines the day of the week 
-    this.dailyRoutineFormArray.get('days')?.setValue(day);
-
-
-  }
-
-
-
-  createWorkoutSpecificationForm(): FormGroup {
-    return this.formBuilder.group({
-        id: [''],
-        description: ['', Validators.required], // Validador síncrono
-        repsNumber: [0, Validators.required], // Validador síncrono
-        setsNumber: [0, Validators.required], // Validador síncrono
-        recommendedWeight: [0],
-        trainerRating: [0, Validators.min(1), Validators.max(5)], // Validadores síncronos
-        workout: [''] // Assuming Workout form group or control exists
+      form.workoutSpecification.map((form2: any) =>{
+        // console.log(form2);
+        form2.workout = {id: form2.workout};
+        //eliminamos el id del workoutSpecification
+        delete form2.id;
+      });
     });
-}
+    // console.log(this.currentUser)
+    let workoutPlan : WorkoutPlan = {
+      idUser: this.Formulario1.value.user,
+      idTrainer: this.currentUser.id,
+      description: this.Formulario1.value.description,
+      status: '',
+      startDate: this.Formulario1.value.startDate,
+      endDate: this.Formulario1.value.endDate,
+      createdAt: '',
+      updatedAt: null,
+      isTemplate: this.Formulario1.value.isTemplate,
+      dailyRoutine: data
+    };
+    // console.log(workoutPlan);
+
+
+    this.workoutPlanService.saveWorkoutPlan(workoutPlan).then(() => {
+      Swal.fire('Workout Plan created', 'The workout plan has been created successfully', 'success');
+    }, (err) => {
+      Swal.fire('Error', 'An error occurred while creating the workout plan', 'error');
+    });
+  }
 
   setStep(index: number) {
     this.step = index;
@@ -187,33 +179,6 @@ export class AddWorkoutPlanComponent implements OnInit {
 
   prevStep() {
     this.step--;
-  }
-
-  get workoutFormArray() {
-    return this.workoutListForm.get('workouts') as FormArray;
-  }
-
-  addWorkoutFormGroup(selectAfterAdding: boolean) {
-    const workoutFormGroup = this.formBuilder.group({
-      description: [],
-      repsNumber: [],
-      setsNumber: [],
-      recommendedWeight: [],
-      trainerRating: [],
-      workout: []
-    });
-    if (selectAfterAdding) {
-          this.selected.setValue(this.workoutFormArray.length - 1);
-    }
-    this.workoutFormArray.push(workoutFormGroup);
-  }
-
-  removeWorkoutFormGroup(index: number) {
-    this.workoutFormArray.removeAt(index);
-  }
-
-  get cantidadEjercicios(): number {
-    return this.workoutFormArray.length;
   }
 
   toggleIsTemplate() {
@@ -231,46 +196,14 @@ export class AddWorkoutPlanComponent implements OnInit {
 
   onTemplateChange($event: any) {
     const dailyRoutines = $event.value.dailyRoutine;
-    this.formService.clearForms();
-    console.log(dailyRoutines);
-    console.log(this.formService.getForms())
-    dailyRoutines.forEach((dailyRoutine: any) => {
-      // console.log(dailyRoutine);
-      this.formService.addForm(this.formBuilder.group({
-        id: [{value: null, disabled: true}],
-        daysOfWeek: [{value: dailyRoutine.days, validators: Validators.required}],
-        workoutSpecification: [{value: dailyRoutine.workoutSpecification}]
-      }));
-    });
-    const formsValues=this.formService.getForms();
-    //console.log(formsValues);
-    //put the formsValues into new form array and then put it in the array forms
-    this.dailyRoutineFormArray = this.formBuilder.group({
-      dailyRoutines: this.formBuilder.array(formsValues)
-    });
-    this.forms = this.formService.getForms();
-    //console.log(this.forms);
-    this.tabs = this.forms.map((form, index) => `Rutina ${index + 1}`);
-    this.triggerRerender();
+    // console.log(dailyRoutines);
+    this.templateValueDailyRoutines = dailyRoutines;
+
   }
 
-  triggerRerender() {
-    this.rerender = false;
-    setTimeout(() => this.rerender = true, 0);
-  }
-
-  getNameTab(day: any): string {
-    //if day is not in daysOfWeek use day.value instead
-    this.daysOfWeek.forEach((dayOfWeek) => {
-      if (dayOfWeek === day) {
-        return dayOfWeek;
-      }else if (dayOfWeek === day?.value) {
-        return dayOfWeek;
-      }
-      return DayOfWeek.MONDAY;
-    });
-    return DayOfWeek.MONDAY;
-  }
   
+  checkFormChanged(isChanged: boolean) {
+    // console.log(isChanged);
+    isChanged ? this.IsTemplateValueChanged = true : this.IsTemplateValueChanged = false;
+  }
 }
-

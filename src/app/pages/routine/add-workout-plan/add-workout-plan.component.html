@@ -6,39 +6,40 @@
         <!-- mat switch to isTemplate -->
 
         <div>
-          <mat-slide-toggle formControlName="isTemplate" [color]="color" [checked]="false" [disabled]="false" (change)="toggleIsTemplate()" matStepperNext>
+          <mat-slide-toggle formControlName="isTemplate" [color]="color" [checked]="false" [disabled]="false"
+            (change)="toggleIsTemplate()" matStepperNext>
             Is Template
           </mat-slide-toggle>
         </div>
         @if(!isTemplate) {
-          <div>
-            <mat-form-field>
-              <mat-label for="user">User:</mat-label>
-              <mat-select id="user" name="user" formControlName="user" required>
-                <mat-option [value]="undefined">Seleccionar</mat-option>
-                @for (item of users; track $index) {
-                <mat-option [value]="item.id">{{ item.userName }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label for="description">description:</mat-label>
-              <input matInput type="text" id="description" name="description" formControlName="description" required />
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label>Enter a date range</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate placeholder="Start date" formControlName="startDate" />
-                <input matEndDate placeholder="End date" formControlName="endDate" />
-              </mat-date-range-input>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
+        <div>
+          <mat-form-field>
+            <mat-label for="user">User:</mat-label>
+            <mat-select id="user" name="user" formControlName="user" required>
+              <mat-option [value]="undefined">Seleccionar</mat-option>
+              @for (item of users; track $index) {
+              <mat-option [value]="item.id">{{ item.userName }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label for="description">description:</mat-label>
+            <input matInput type="text" id="description" name="description" formControlName="description" required />
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Start date" formControlName="startDate" />
+              <input matEndDate placeholder="End date" formControlName="endDate" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
         }
         <div>
           <button mat-button matStepperNext>Next</button>
@@ -48,40 +49,26 @@
 
     <mat-step [stepControl]="dailyRoutineFormArray">
       <div>
-          <!-- adding botton to take the templates -->
-          <button mat-raised-button (click)="getTemplates()">
-            Cargar Plantillas
-          </button>
-        </div>
-      <button mat-raised-button (click)="addTab(true)">
-        Agregar Otra Rutina
-      </button>
+        <!-- adding botton to take the templates -->
+        <button mat-raised-button (click)="getTemplates()">
+          Cargar Plantillas
+        </button>
+      </div>
+
       @if (templates.length > 0) {
-        <mat-form-field>
-          <mat-label for="user">plantillas</mat-label>
-          <mat-select id="user" name="user" required (selectionChange)="onTemplateChange($event)">
-            <mat-option [value]="undefined">Seleccionar</mat-option>
-            @for (item of templates; track $index) {
-            <mat-option [value]="item">{{ item.description }}</mat-option>
-            } 
-          </mat-select>
-        </mat-form-field>
-      } 
-      <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
-        
-        <form [formGroup]="dailyRoutineFormArray">
-          <div formArrayName="dailyRoutines">
-            @if (rerender) {
-              @for (tab of forms; track $index) {
-              <mat-tab [label]="getNameTab(tab.daysOfWeek)">
-                <app-add-daily-routine [formIndex]="$index"></app-add-daily-routine>
-              </mat-tab>
-              }
-            }
-            
-          </div>
-        </form>
-      </mat-tab-group>
+      <mat-form-field>
+        <mat-label for="user">plantillas</mat-label>
+        <mat-select id="user" name="user" required (selectionChange)="onTemplateChange($event)">
+          <mat-option [value]="undefined">Seleccionar</mat-option>
+          @for (item of templates; track $index) {
+          <mat-option [value]="item">{{ item.description }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      }
+      <app-add-daily-routine-tabs [IsChanged]="IsTemplateValueChanged" [IsSubmitted]="submit"
+        (formSubmitted)="formSubmit($event)" (IsFormChanged)="checkFormChanged($event)"
+        [TemplateValues]="templateValueDailyRoutines" />
       <div>
         <button mat-raised-button (click)="onSubmit()">
           Submit

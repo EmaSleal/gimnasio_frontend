@@ -119,5 +119,24 @@ export class UserService {
     });
       
   }
+
+  public getUserByCookie(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Promise.resolve(this.cookieService.get('user')).then((res) => {
+        if(res !== null && res !== ''){
+        //console.log(res);
+        let user = JSON.parse(res);
+        this.http.get(`${baseUrl}/user/id/${user.id}`).subscribe(
+          (res) => {
+            resolve(res);
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }
+      });
+    });
+  }
   
 }

@@ -8,20 +8,20 @@
     </mat-form-field>
   </div> -->
   <div>
-    <label for="daysOfWeek">Días:</label>
+    <label for="days">Días:</label>
     <!--mat-checkbox for days of the week-->
     <div>
       <mat-form-field>
         <mat-label>Muscular Group</mat-label>
-      <mat-select multiple formControlName="daysOfWeek">
-        @for (day of daysOfWeek; track $index) {
+      <mat-select multiple formControlName="days">
+        @for (day of days; track $index) {
             <mat-option [value]="day">{{ day }}</mat-option>
         }
       </mat-select>
 
   </mat-form-field>
     </div> 
-    @if (dailyRoutineForm.get('daysOfWeek')?.hasError('required'))
+    @if (dailyRoutineForm.get('days')?.hasError('required'))
     {
     <span class="alert alert-danger">
       Seleccione al menos un día.
