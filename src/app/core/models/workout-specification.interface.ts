@@ -9,6 +9,6 @@ export interface WorkoutSpecification {
   recommendedWeight: number;
   trainerRating: number;
   workout: Workout;
-  isTimeBased: boolean;
+  timeBased: boolean;
   time: number;
 }

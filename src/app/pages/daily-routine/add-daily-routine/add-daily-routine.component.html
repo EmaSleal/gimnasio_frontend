@@ -85,13 +85,13 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <!-- field for isTimeBased checkbox -->
+          <!-- field for timeBased checkbox -->
           <div>
             <mat-checkbox formControlName="timeBased" color="primary">
               Is Time Based
             </mat-checkbox>
           </div>
-          <!-- if isTimeBased is false it should show reps number or time -->
+          <!-- if timeBased is false it should show reps number or time -->
           @if (!form.get("timeBased")?.value) {
             <div>
               <mat-form-field class="full-width">

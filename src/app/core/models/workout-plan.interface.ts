@@ -1,7 +1,7 @@
 import { DailyRoutine } from "./daily-routine.interface";
 
 export interface WorkoutPlan {
-
+  id?: number;
   idUser: number;
   idTrainer: number;
   description: string;

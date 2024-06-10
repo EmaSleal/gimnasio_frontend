@@ -47,7 +47,7 @@ export class ListExerciseComponent implements OnInit {
     // Suscríbete a eventos del modal si es necesario
     dialogRef.afterClosed().subscribe((result) => {
       // Lógica después de cerrar el modal (si es necesario)
-      console.log('Modal cerrado con resultado:', result);
+      //console.log('Modal cerrado con resultado:', result);
     });
   }
 

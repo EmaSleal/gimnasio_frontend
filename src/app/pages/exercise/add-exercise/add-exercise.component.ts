@@ -21,7 +21,7 @@ export class AddExerciseComponent implements OnInit, OnChanges{
   constructor(private exerciseService: WorkoutService, private muscularGroupService: MuscularGroupService) {}
   ngOnChanges(): void {
     //busco en fields el campo con id muscularGroup y le asigno el valor de la respuesta de la peticion en el valor options
-    console.log(this.muscularGroups);
+    //console.log(this.muscularGroups);
     this.fields.map((field) => {
       if (field.id === 'muscularGroup') {
 
@@ -120,6 +120,6 @@ export class AddExerciseComponent implements OnInit, OnChanges{
 
   formReset(data: any) {
     // Handle form reset
-    console.log(data);
+    //console.log(data);
   }
 }

@@ -1,7 +1,7 @@
 <app-card title="Agregar Rutina">
   <!-- select for users-->
   <mat-vertical-stepper [linear]="false" #stepper>
-    <mat-step [stepControl]="Formulario1" editable>
+    <mat-step [stepControl]="Formulario1" editable label="Datos Generales">
       <form [formGroup]="Formulario1">
         <!-- mat switch to isTemplate -->
 
@@ -46,8 +46,7 @@
         </div>
       </form>
     </mat-step>
-
-    <mat-step [stepControl]="dailyRoutineFormArray">
+    <mat-step [stepControl]="dailyRoutineFormArray" label="Rutinas">
       <div>
         <!-- adding botton to take the templates -->
         <button mat-raised-button (click)="getTemplates()">

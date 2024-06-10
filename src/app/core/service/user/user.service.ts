@@ -9,26 +9,31 @@ import { User } from '../../models/user.interface';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient, private router: Router,private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   public addUser(user: any): Promise<any> {
     //add to user the property createdBy
-    let userCreator= {} as User;
+    let userCreator = {} as User;
     return new Promise((resolve, reject) => {
       Promise.resolve(this.cookieService.get('user')).then((res) => {
-        if(res !== null && res !== ''){
-        //console.log(res);
-        userCreator = JSON.parse(res);
-        user.createdBy = userCreator.id;
-      this.http.post(`${baseUrl}/user/save`, user).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
+        if (res !== null && res !== '') {
+          //console.log(res);
+          userCreator = JSON.parse(res);
+          user.createdBy = userCreator.id;
+          this.http.post(`${baseUrl}/user/save`, user).subscribe(
+            (res) => {
+              resolve(res);
+            },
+            (err) => {
+              reject(err);
+            }
+          );
         }
-      );
-    }});
+      });
     });
   }
 
@@ -97,46 +102,44 @@ export class UserService {
     });
   }
   public getUsersCreatedBy(): Promise<any> {
-    let user= {} as User;
-    
+    let user = {} as User;
+
     //console.log(user);
     return new Promise((resolve, reject) => {
       Promise.resolve(this.cookieService.get('user')).then((res) => {
-      if(res !== null && res !== ''){
-      //console.log(res);
-      user = JSON.parse(res);
+        if (res !== null && res !== '') {
+          //console.log(res);
+          user = JSON.parse(res);
 
-      this.http.get(`${baseUrl}/user/createdBy/${user.id}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
+          this.http.get(`${baseUrl}/user/createdBy/${user.id}`).subscribe(
+            (res) => {
+              resolve(res);
+            },
+            (err) => {
+              reject(err);
+            }
+          );
         }
-      );
-    }
+      });
     });
-    });
-      
   }
 
   public getUserByCookie(): Promise<any> {
     return new Promise((resolve, reject) => {
       Promise.resolve(this.cookieService.get('user')).then((res) => {
-        if(res !== null && res !== ''){
-        //console.log(res);
-        let user = JSON.parse(res);
-        this.http.get(`${baseUrl}/user/id/${user.id}`).subscribe(
-          (res) => {
-            resolve(res);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-      }
+        if (res !== null && res !== '') {
+          //console.log(res);
+          let user = JSON.parse(res);
+          this.http.get(`${baseUrl}/user/id/${user.id}`).subscribe(
+            (res) => {
+              resolve(res);
+            },
+            (err) => {
+              reject(err);
+            }
+          );
+        }
       });
     });
   }
-  
 }

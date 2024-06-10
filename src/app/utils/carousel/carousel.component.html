@@ -1,1 +1,35 @@
-<mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
+
+<p-carousel
+    [value]="filteredRoutines[0].workoutSpecification"
+    [numVisible]="1"
+    [numScroll]="1"
+    [circular]="true"
+    orientation="vertical"
+    [style]="{'max-width':'400px', 'margin-top':'2em'}"
+    >
+    <ng-template pTemplate="header">
+        <h5>Vertical</h5>
+    </ng-template>
+    <ng-template let-workoutSpec pTemplate="workoutSpec">
+        <div>
+            <p>Sets: {{ workoutSpec.setsNumber }}</p>
+            <p *ngIf="workoutSpec.timeBased">
+                Tiempo: {{ secsToMinutes(workoutSpec.time) }}
+                <ng-container *ngIf="workoutSpec.time < 60">
+                    segundos
+                </ng-container>
+                <ng-container *ngIf="workoutSpec.time == 60">
+                    minuto
+                </ng-container>
+                <ng-container *ngIf="workoutSpec.time > 60">
+                    minutos
+                </ng-container>
+            </p>
+            <p *ngIf="!workoutSpec.timeBased">Reps: {{ workoutSpec.repsNumber }}</p>
+            <p>Peso: {{ workoutSpec.recommendedWeight }}</p>
+            <p>Ejercicio {{ workoutSpec.workout.name }}</p>
+            <p>Musculo {{ workoutSpec.workout.muscularGroup.name }}</p>
+        </div>
+    </ng-template>
+        
+</p-carousel>
