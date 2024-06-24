@@ -6,30 +6,52 @@
     [circular]="true"
     orientation="vertical"
     [style]="{'max-width':'400px', 'margin-top':'2em'}"
+    verticalViewPortHeight="450px"
     >
-    <ng-template pTemplate="header">
-        <h5>Vertical</h5>
-    </ng-template>
-    <ng-template let-workoutSpec pTemplate="workoutSpec">
-        <div>
-            <p>Sets: {{ workoutSpec.setsNumber }}</p>
-            <p *ngIf="workoutSpec.timeBased">
-                Tiempo: {{ secsToMinutes(workoutSpec.time) }}
-                <ng-container *ngIf="workoutSpec.time < 60">
-                    segundos
-                </ng-container>
-                <ng-container *ngIf="workoutSpec.time == 60">
-                    minuto
-                </ng-container>
-                <ng-container *ngIf="workoutSpec.time > 60">
-                    minutos
-                </ng-container>
-            </p>
-            <p *ngIf="!workoutSpec.timeBased">Reps: {{ workoutSpec.repsNumber }}</p>
-            <p>Peso: {{ workoutSpec.recommendedWeight }}</p>
-            <p>Ejercicio {{ workoutSpec.workout.name }}</p>
-            <p>Musculo {{ workoutSpec.workout.muscularGroup.name }}</p>
-        </div>
+    <ng-template style="height: 60rem;" let-workspec pTemplate="workspec">
+        <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
+            <div class="surface-50 flex justify-content-center border-round p-3">
+              <div class="relative mx-auto">
+                <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
+                  [alt]="workspec.workout.name" />
+                <p-tag [value]="workspec.workout.muscularLoad" [severity]="ChangeClass(workspec.workout.muscularLoad)"
+                  class="absolute" [style.left.px]="4" [style.top.px]="4" />
+              </div>
+            </div>
+            <div class="pt-4">
+              <div class="flex flex-row justify-content-between align-items-start gap-2">
+                <div>
+                  <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup.name}}</span>
+                  <div class="text-lg font-medium text-900 mt-1">{{ workspec.workout.name }}</div>
+                </div>
+                <div class="surface-100 p-1" style="border-radius: 30px">
+                  <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
+                    style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                    <span class="text-900 font-medium text-sm">{{ workspec.trainerRating }}</span>
+                    <i class="pi pi-star-fill text-yellow-500"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-column gap-4 mt-4">
+                <span class="text-xl font-semibold text-900">{{ 'SETS' + workspec.setsNumber }}</span>
+                @if(workspec.timeBased) {
+                <p>
+                  Tiempo:
+                  {{ secsToMinutes(workspec.time) }} @if(workspec.time<60) { segundos } @else if (workspec.time==60) {
+                    minuto } @else{ minutos } </p>
+                    } @else{
+                    <p>Reps: {{ workspec.repsNumber }}</p>
+                    }
+                    <div class="flex gap-2">
+                      <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap"
+                        label="VER" [disabled]="workspec.workout.muscularGroup.name  === 'OUTOFSTOCK'" />
+                      <p-button icon="pi pi-heart" [outlined]="true" />
+                    </div>
+              </div>
+            </div>
+          </div>
     </ng-template>
         
 </p-carousel>
+
+

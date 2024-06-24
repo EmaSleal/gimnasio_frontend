@@ -1,10 +1,27 @@
-<app-card title="Editar Ejercicio" class="col-md-12">
-    <app-formulario-input
-      [fields]="fields"
-      (formSubmitted)="formSubmit($event)"
-      
-      (formReset)="formReset($event)"
-      [enviarFormulario]="enviarFormularios"
-      [resetFormulario]="resetearformularios"
-    ></app-formulario-input>
-  </app-card>
+
+  <div class="card w-full" >
+    <h1 class="m-2">Editar Ejercicio</h1>
+    <mat-dialog-content class="m-4 modal-body">
+      <!-- (ngSubmit)="onSubmit()"> -->
+
+      <div class="mb-4">
+        <p-floatLabel>
+          <input id="name" type="text" pInputText [(ngModel)]="workout.name" />
+          <label for="name">Nombre</label>
+        </p-floatLabel>
+      </div>
+      <div class="mb-4">
+        <p-listbox [options]="muscularGroups" [(ngModel)]="workout.muscularGroup.id" optionValue="id" optionLabel="name"
+          [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
+      </div>
+      <div class="mb-4">
+        <p-listbox [options]="muscularLoads" [(ngModel)]="workout.muscularLoad" 
+          [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
+      </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions class="m-4">
+      <p-button severity="contrast" [loading]="loading" label="Submit" icon="pi pi-check" (onClick)="formSubmit(workout)" />
+
+    </mat-dialog-actions>
+  </div>

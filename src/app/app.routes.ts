@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './utils/login/login.component';
 import { HomeComponent } from './pages/user-home/home/home.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     //si el path es vacio redirige a login
@@ -8,11 +9,12 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'home', component: HomeComponent },
 
-    { path: 'exercise', loadChildren: () => import('./pages/exercise/exercise.routes').then(m => m.routes)},
-    { path: 'user', loadChildren: () => import('./pages/user/user.routes').then(m => m.routes)},
-    { path: 'muscular-group', loadChildren: () => import('./pages/muscular-group/muscular-group.routes').then(m => m.routes)},
-    { path: 'workout-plan', loadChildren: () => import('./pages/routine/routine.routes').then(m => m.routes)},
-    { path: 'daily-routine', loadChildren: () => import('./pages/daily-routine/daily-routine.routes').then(m => m.routes)},
-    { path: 'home-user', loadChildren: () => import('./pages/user-home/routine.routes').then(m => m.routes)}
+    { path: 'exercise', loadChildren: () => import('./pages/exercise/exercise.routes').then(m => m.routes), canActivate: [authGuard]},
+    { path: 'user', loadChildren: () => import('./pages/user/user.routes').then(m => m.routes), canActivate: [authGuard]},
+    { path: 'muscular-group', loadChildren: () => import('./pages/muscular-group/muscular-group.routes').then(m => m.routes), canActivate: [authGuard]},
+    { path: 'workout-plan', loadChildren: () => import('./pages/routine/routine.routes').then(m => m.routes), canActivate: [authGuard]},
+    { path: 'daily-routine', loadChildren: () => import('./pages/daily-routine/daily-routine.routes').then(m => m.routes), canActivate: [authGuard]},
+    { path: 'user-home', loadChildren: () => import('./pages/user-home/routine.routes').then(m => m.routes), canActivate: [authGuard]}
   ];
 
+ 

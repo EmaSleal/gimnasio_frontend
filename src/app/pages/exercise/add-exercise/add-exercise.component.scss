@@ -1,0 +1,8 @@
+
+/* con un minimo de pantalla de 768px modal-body va a tener un ancho de 75%*/
+@media (min-width: 768px) {
+    .modal-body {
+      width: 75%;
+      margin: 0 auto !important;
+    }
+  }

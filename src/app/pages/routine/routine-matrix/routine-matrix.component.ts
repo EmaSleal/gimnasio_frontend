@@ -43,6 +43,7 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['daySelected'] || changes['routines']) {
       this.updateFilteredRoutines();
+
     }
   }
 
@@ -109,7 +110,7 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
     } else if (muscularLoad === 'HIGH') {
       return 'danger';
     }
-    return undefined;
+    return 'contrast';
   }
 
   //method to get the current day in letters

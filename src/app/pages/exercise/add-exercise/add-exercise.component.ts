@@ -1,17 +1,22 @@
 import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Workout } from '../../../core/models/workout.interface';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
 import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
 import { MuscularLoad } from '../../../core/models/muscular-load.enum';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { ListboxModule } from 'primeng/listbox';
 
 @Component({
   selector: 'app-add-exercise',
   standalone: true,
-  imports: [CardComponent, FormularioInputComponent],
+  imports: [CardComponent, FloatLabelModule, FormsModule, ListboxModule , InputTextModule,ReactiveFormsModule, ButtonModule, MatDialogModule],
   templateUrl: './add-exercise.component.html',
   styleUrl: './add-exercise.component.scss'
 })
@@ -52,7 +57,11 @@ export class AddExerciseComponent implements OnInit, OnChanges{
 
   muscularGroups: any[] = [];
   camposPorEstado: any[] = []; // Mantener una lista de campos adicionales según el estado
-
+  loading: boolean = false;
+  muscularLoads = [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH]
+  workout: Workout = {
+    muscularGroup: {}
+  };
   fields: any[] = [
     {
       id: 'name',

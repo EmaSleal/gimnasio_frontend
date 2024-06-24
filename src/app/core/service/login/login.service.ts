@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 @Injectable({
   providedIn: 'root',
 })
-export class LoginService {
+export class LoginService { 
 
   constructor(private http: HttpClient, private router: Router, private cookieService: CookieService) {}
 

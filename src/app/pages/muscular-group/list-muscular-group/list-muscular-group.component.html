@@ -1,5 +1,56 @@
-<app-card title="Lista de Grupos Musculares">
-    <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
-    (editItem)="editMuscularGroup($event)"  (deleteItem)="eliminarMuscularGroup($event)" (rowClick)="selectMuscularGroup($event)"/>
+<div class="card w-3/4">
+    <!-- button to add another muscle -->
+    <div class="flex justify-content-end">
+        <p-button severity="contrast" class="m-4" label="Agregar Grupo Muscular" icon="pi pi-plus"
+            (onClick)="addMuscularGroup()" />
+    </div>
+    <p-scrollPanel [style]="{width: '100%', height: '45rem'}">
+    <p-dataView #dv [value]="dataSource" layout="list">
+        <ng-template pTemplate="list" let-muscularGroups>
+            @if(muscularGroups.length>0){
+            <div class="grid grid-nogutter">
+                @for(muscle of muscularGroups; track muscle.id) {
+                <div class="p-2">
+                    <div class="p-4 border-1 surface-border surface-card border-round flex flex-column"
+                        [ngClass]="{ 'border-top-1 surface-border': !muscle.id }">
+                        <div class="md:w-10rem relative">
+                            <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
+                                [alt]="muscle.name" />
+                            <!-- <p-tag [value]="muscle.muscularLoad" [severity]="ChangeClass(muscle.muscularLoad)" class="absolute"
+                  [style.left.px]="4" [style.top.px]="4" /> -->
+                        </div>
+                        <div
+                            class="flex flex-column md:flex-col justify-content-between md:align-items-center flex-1 gap-4">
+                            <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                <div>
+                                    <!-- <span class="font-medium text-secondary text-sm">{{ muscle.muscularGroup.name }}</span> -->
+                                    <div class="text-lg font-medium text-900 mt-2">{{ muscle.name }}</div>
+                                </div>
 
-</app-card>
+                            </div>
+                            <div class="flex flex-column md:align-items-end gap-5">
+
+
+                                <div class="flex flex-row-reverse md:flex-row gap-2">
+                                    <p-button icon="pi pi-pencil" [outlined]="true"
+                                        (onClick)="editMuscularGroup(muscle)" />
+                                    <p-button icon="pi pi-eye" class="flex-auto md:flex-initial white-space-nowrap"
+                                        label="VER" [disabled]="muscle.muscularGroup === 'OUTOFSTOCK'" />
+                                    <p-button icon="pi pi-trash" class="flex-auto md:flex-initial white-space-nowrap"
+                                        label="Eliminar" severity="danger"
+                                        [disabled]="muscle.muscularGroup === 'OUTOFSTOCK'"
+                                        (onClick)="deleteMuscularGroup(muscle)" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                }
+            </div>
+            }
+        </ng-template>
+    </p-dataView>
+    </p-scrollPanel>
+</div>

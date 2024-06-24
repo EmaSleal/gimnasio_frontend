@@ -14,6 +14,7 @@ export class MuscularGroupService {
     return new Promise((resolve, reject) => {
       this.http.get(`${baseUrl}/muscularGroup/all`).subscribe(
         (res) => {
+
           resolve(res);
         },
         (err) => {

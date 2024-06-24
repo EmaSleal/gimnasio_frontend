@@ -13,4 +13,5 @@ export interface User {
     credentialsNonExpired: boolean;
     accountNonLocked: boolean;
     password: string;
+    timeSession: number;
     }

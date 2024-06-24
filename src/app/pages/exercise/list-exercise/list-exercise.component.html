@@ -1,4 +1,59 @@
-<app-card title="Lista de Exercicios">
-    <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
-    (editItem)="editWorkout($event)"  (deleteItem)="deleteWorkout($event)" (rowClick)="selectWorkout($event)"/>
-</app-card>
+<div class="card w-3/4">
+  <!-- button to add another exercise -->
+  <div class="flex justify-content-end">
+    <p-button severity="contrast" class="m-4" label="Agregar Ejercicio" icon="pi pi-plus" (onClick)="addWorkout()" />
+  </div>
+  <p-scrollPanel [style]="{width: '100%', height: '45rem'}">
+  <p-dataView #dv [value]="dataSource" layout="list">
+    <ng-template pTemplate="list" let-exercises>
+      @if(exercises.length>0){
+      <div class="grid grid-nogutter">
+        @for(exercise of exercises; track exercise.id) {
+        <div class="col-12">
+          <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3"
+            [ngClass]="{ 'border-top-1 surface-border': !exercise.id }">
+            <div class="md:w-10rem relative">
+              <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
+                [alt]="exercise.name" />
+              <p-tag [value]="exercise.muscularLoad" [severity]="ChangeClass(exercise.muscularLoad)" class="absolute"
+                [style.left.px]="4" [style.top.px]="4" />
+            </div>
+            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+              <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                <div>
+                  <span class="font-medium text-secondary text-sm">{{ exercise.muscularGroup.name }}</span>
+                  <div class="text-lg font-medium text-900 mt-2">{{ exercise.name }}</div>
+                </div>
+                <div class="surface-100 p-1" style="border-radius: 30px">
+                  <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
+                    style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                    <!-- <span class="text-900 font-medium text-sm">{{ workspec.trainerRating }}</span> -->
+                    <i class="pi pi-star-fill text-yellow-500"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-column md:align-items-end gap-5">
+
+
+                <div class="flex flex-row-reverse md:flex-row gap-2">
+                  <p-button icon="pi pi-pencil" [outlined]="true" (onClick)="editWorkout(exercise)" />
+                  <p-button icon="pi pi-eye" class="flex-auto md:flex-initial white-space-nowrap" label="VER"
+                    [disabled]="exercise.muscularGroup === 'OUTOFSTOCK'" />
+                  <p-button icon="pi pi-trash" class="flex-auto md:flex-initial white-space-nowrap" label="Eliminar"
+                    severity="danger" [disabled]="exercise.muscularGroup === 'OUTOFSTOCK'"
+                    (onClick)="deleteWorkout(exercise)" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        }
+      </div>
+      }
+    </ng-template>
+  </p-dataView>
+  </p-scrollPanel>
+</div>
+

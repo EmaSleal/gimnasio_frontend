@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import baseUrl from '../helper';
 import { CookieService } from 'ngx-cookie-service';
 import { User } from '../../models/user.interface';
+import { Role } from '../../models/role.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -140,6 +141,16 @@ export class UserService {
           );
         }
       });
+    });
+  }
+
+  public getUSerRoleByCookie(): Promise<Boolean> {
+    return Promise.resolve(this.cookieService.get('user')).then((res) => {
+      if (res !== null && res !== '') {
+        console.log(res);
+        return true;
+      }
+      return false;
     });
   }
 }

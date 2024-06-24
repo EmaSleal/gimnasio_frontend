@@ -70,7 +70,7 @@ export class AddDailyRoutineComponent implements OnInit {
   workoutName(formValue: string): string {
     const workoutId = formValue;
     const workout = this.workouts.find(w => w.id === workoutId);
-    return workout ? workout.name : '';
+    return workout ? workout.name || '' : '';
   }
 
   addWorkoutSpecification() {

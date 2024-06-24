@@ -1,19 +1,24 @@
 import { Component, Inject, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { CardComponent } from '../../../utils/card/card.component';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MuscularLoad } from '../../../core/models/muscular-load.enum';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MuscularGroup } from '../../../core/models/muscular-group.interface';
 import { Workout } from '../../../core/models/workout.interface';
-
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { ListboxModule } from 'primeng/listbox';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-edit-exercise',
   standalone: true,
-  imports: [CardComponent, FormularioInputComponent],
+  imports: [MatDialogModule,CardComponent, FormularioInputComponent, FloatLabelModule, FormsModule, ListboxModule , InputTextModule,ReactiveFormsModule, ButtonModule],
   templateUrl: './edit-exercise.component.html',
   styleUrl: './edit-exercise.component.scss'
 })
@@ -21,7 +26,9 @@ export class EditExerciseComponent implements OnInit, OnChanges{
 
 
   constructor(private exerciseService: WorkoutService, private muscularGroupService: MuscularGroupService, public dialogRef: MatDialogRef<EditExerciseComponent>, @Inject(MAT_DIALOG_DATA) public data: { workout: Workout }) {}
-
+  workout: Workout = {
+    muscularGroup: {}
+  };
   
   ngOnChanges(): void {
     //busco en fields el campo con id muscularGroup y le asigno el valor de la respuesta de la peticion en el valor options
@@ -35,14 +42,15 @@ export class EditExerciseComponent implements OnInit, OnChanges{
     
   }
   ngOnInit(): void {
-    const id = this.data.workout.id.toString();
-    const workout = this.exerciseService.getWorkout(id).then((data) => {
+    const workout = this.data.workout
+    this.workout = workout;
+    console.log(workout);
        this.fields = [
       {
         id: 'id',
         name: 'id',
         label: 'Id',
-        defaultValue: data.id,
+        defaultValue: workout.id,
         required: true,
         placeholder: 'Ingrese el nombre del ejercicio',
         type: 'text',
@@ -52,7 +60,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
         id: 'name',
         name: 'name',
         label: 'Nombre',
-        defaultValue: data.name,
+        defaultValue: workout.name,
         required: true,
         placeholder: 'Ingrese el nombre del ejercicio',
         type: 'text',
@@ -62,7 +70,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
         id: 'muscularGroup',
         name: 'muscularGroup',
         label: 'Grupo Muscular',
-        defaultValue: data.muscularGroup.id,
+        defaultValue: workout?.muscularGroup?.id,
         required: true,
         placeholder: 'Ingrese el grupo muscular',
         type: 'select',
@@ -73,7 +81,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
         id: 'muscularLoad',
         name: 'muscularLoad',
         label: 'Carga Muscular',
-        defaultValue: data.muscularLoad,
+        defaultValue: workout.muscularLoad,
         required: true,
         type: 'radio-button',
         options: [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH],
@@ -82,7 +90,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
     ];
     //console.log('workout: ',workout);
    
-    });
+    
     //llamo al metodo getMuscularGroups para obtener los grupos musculares
     this.muscularGroupService.getMuscularGroups().then((muscularGroups) => {
       this.muscularGroups = muscularGroups;
@@ -105,10 +113,11 @@ export class EditExerciseComponent implements OnInit, OnChanges{
   camposPorEstado: any[] = []; // Mantener una lista de campos adicionales según el estado
 
   fields: any[] = [];
-
-
+  loading: boolean = false;
+  muscularLoads = [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH]
 
   formSubmit(data: any) {
+    this.loading = true;
     // Limpia los campos que su valor sea 'undefined' o 'null'
     Object.keys(data).forEach((key) => {
       if (data[key] === undefined || data[key] === null) {
@@ -118,6 +127,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
     //console.log(data);
       this.exerciseService.saveWorkout(data)
       .then((data) => {
+        this.loading = false
         Swal.fire({
           title: 'Ejercicio guardado!',
           text: 'Ejercicio guardado con éxito',
@@ -126,6 +136,7 @@ export class EditExerciseComponent implements OnInit, OnChanges{
         });
       })
       .catch((error) => {
+        this.loading = false
         Swal.fire({
           title: 'Error!',
           text: 'Error al guardar el ejercicio',

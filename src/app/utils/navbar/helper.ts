@@ -1,11 +1,12 @@
 import {animate,style,transition,trigger,keyframes } from '@angular/animations';
 
 export interface INavbarData{
-    routeLink: string;
+    routeLink?: string;
     icon?: string;
     label: string;
     expanded?: boolean;
     items?: INavbarData[];
+
 }
 
 export const fadeInOut = trigger('fadeInOut', [

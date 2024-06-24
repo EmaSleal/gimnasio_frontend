@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 import { TableComponent } from '../../../utils/table/table.component';
 import { CardComponent } from '../../../utils/card/card.component';
@@ -8,22 +8,35 @@ import { EditExerciseComponent } from '../edit-exercise/edit-exercise.component'
 import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { DataViewModule } from 'primeng/dataview';
+import { TagModule } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
+import { AddExerciseComponent } from '../add-exercise/add-exercise.component';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
   selector: 'app-list-exercise',
   standalone: true,
-  imports: [TableComponent,CardComponent, MatDialogModule],
+  imports: [TableComponent,CardComponent, MatDialogModule,DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule],
   templateUrl: './list-exercise.component.html',
   styleUrl: './list-exercise.component.scss'
 })
 export class ListExerciseComponent implements OnInit {
   constructor(private exerciseService: WorkoutService, private dialog: MatDialog, private router: Router) { }
 
+  screenWidth: number | null = 0;
+
   ngOnInit(): void {
     this.exerciseService.getWorkouts().subscribe((exercises) => {
       this.dataSource = exercises;
       //console.log(this.dataSource);
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.screenWidth = window.innerWidth; 
   }
 
   displayedColumns: string[] = [
@@ -34,13 +47,32 @@ export class ListExerciseComponent implements OnInit {
   ];
   dataSource: Workout[] = [];
 
-  editWorkout(workout: Workout) {
-
+  addWorkout(){
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true; // El modal no se puede cerrar haciendo clic fuera de él
+    //dialogConfig.disableClose = true; // El modal no se puede cerrar haciendo clic fuera de él
+    dialogConfig.autoFocus = true;
+    //le agrego al modal el 50% de la pantalla si la pantalla es suerior 768px
+
+    // Abre el modal
+    const dialogRef = this.dialog.open(AddExerciseComponent, dialogConfig);
+
+    // Suscríbete a eventos del modal si es necesario
+    dialogRef.afterClosed().subscribe((result) => {
+      // Lógica después de cerrar el modal (si es necesario)
+      //console.log('Modal cerrado con resultado:', result);
+    });
+  }
+
+  editWorkout(workout: Workout) {
+    console.log(workout);
+    const dialogConfig = new MatDialogConfig();
+    //dialogConfig.disableClose = true; // El modal no se puede cerrar haciendo clic fuera de él
     dialogConfig.autoFocus = true;
     dialogConfig.data = { workout }; // Puedes pasar datos al componente del modal si es necesario
-
+    //le agrego al modal el 50% de la pantalla si la pantalla es suerior 768px
+    if (window.innerWidth > 768) {
+      dialogConfig.width = '38%';
+    } 
     // Abre el modal
     const dialogRef = this.dialog.open(EditExerciseComponent, dialogConfig);
 
@@ -62,7 +94,7 @@ export class ListExerciseComponent implements OnInit {
       confirmButtonText: 'Sí, eliminar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.exerciseService.deleteWorkout(workout.id).then(() => {
+        this.exerciseService.deleteWorkout(workout.id || "").then(() => {
           this.dataSource = this.dataSource.filter((u) => u.id !== workout.id);
           Swal.fire('¡Eliminado!', 'El ejercicio ha sido eliminado.', 'success');
         });
@@ -73,6 +105,17 @@ export class ListExerciseComponent implements OnInit {
   selectWorkout(workout: any) {
     //envio a la ruta de 'workout' con la data del usuario seleccionado
     this.router.navigate(['exercise', workout.id], { state: { workout } });
+    }
+
+    ChangeClass(muscularLoad: string) {
+      if (muscularLoad === 'LOW') {
+        return 'success';
+      } else if (muscularLoad === 'MEDIUM') {
+        return 'warning';
+      } else if (muscularLoad === 'HIGH') {
+        return 'danger';
+      }
+      return undefined;
     }
 }
 

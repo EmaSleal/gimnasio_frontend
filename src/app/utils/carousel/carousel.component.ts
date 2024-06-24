@@ -12,11 +12,12 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TagModule } from 'primeng/tag';
 @Component({
   selector: 'app-carousel',
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatTabsModule, MatSelectModule, MatExpansionModule, 
-
+    TagModule,
     ButtonModule, 
     CarouselModule, 
     FormsModule,],
@@ -29,7 +30,7 @@ export class CarouselComponent implements OnChanges{
 
   constructor(private dialog: MatDialog) {}
   ngOnChanges(changes: SimpleChanges): void {
-    //console.log(this.filteredRoutines);
+    // console.log(this.filteredRoutines);
 
   }
 
@@ -42,6 +43,17 @@ export class CarouselComponent implements OnChanges{
       width: '250px',
       data: workoutSpec
     });
+  }
+
+  ChangeClass(muscularLoad: string) {
+    if (muscularLoad === 'LOW') {
+      return 'success';
+    } else if (muscularLoad === 'MEDIUM') {
+      return 'warning';
+    } else if (muscularLoad === 'HIGH') {
+      return 'danger';
+    }
+    return undefined;
   }
 
   previous() {

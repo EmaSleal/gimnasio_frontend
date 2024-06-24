@@ -76,7 +76,7 @@
               <mat-label>Workout</mat-label>
               <mat-select formControlName="workout">
                 @for (workout of workouts; track $index) {
-                  @if ((selectedMuscularGroup === workout.muscularGroup.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === undefined || selectedMuscularLoad === undefined || selectedMuscularLoad === '' || selectedMuscularGroup === '') {
+                  @if ((selectedMuscularGroup === workout?.muscularGroup?.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === undefined || selectedMuscularLoad === undefined || selectedMuscularLoad === '' || selectedMuscularGroup === '') {
                     <mat-option [value]="workout.id">
                         {{workout.name}}
                     </mat-option>

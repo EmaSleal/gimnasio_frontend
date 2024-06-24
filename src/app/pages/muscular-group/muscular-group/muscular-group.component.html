@@ -8,7 +8,7 @@
 
                 <div>ID: {{ muscularGroup.id }}</div>
                 <div>Username: {{ muscularGroup.name }}</div>
-                <app-table [dataSource]="muscularGroup.exercises" [displayedColumns]="displayedColumns" (rowClick)="selectExercise($event)"/>
+                <app-table [dataSource]="muscularGroup?.exercises || []" [displayedColumns]="displayedColumns" (rowClick)="selectExercise($event)"/>
             </app-card>
         </div>
     </div>

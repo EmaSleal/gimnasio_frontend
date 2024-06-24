@@ -72,7 +72,7 @@ export class SubnivelMenuComponent {
   }
 
   getActiveClass(item: INavbarData): string {
-    return item.expanded && this.router.url.includes(item.routeLink)
+    return item.expanded && this.router.url
       ? 'active-sublevel'
       : '';
   }

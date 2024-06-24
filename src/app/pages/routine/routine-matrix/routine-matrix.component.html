@@ -3,116 +3,100 @@
 
 
 @if (widthType == 'extra-large' || widthType == 'large') {
-<!-- <div class="routine-matrix">
-  @for (daily of routines[0].dailyRoutine; track daily.id) {
 
-  <div class="daily-row">
-    <app-card [title]="daily.days.toString()" class="workout-specs">
-      <mat-accordion>
-        @for (workoutSpec of daily.workoutSpecification; track workoutSpec.id) {
-        <mat-expansion-panel class="panel" hideToggle [ngClass]="workoutSpec.workout.muscularLoad">
-          <mat-expansion-panel-header class="panel__header">
-            <mat-panel-title class="panel__title">
-              {{ workoutSpec.description }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <div>
-            <p>Sets: {{ workoutSpec.setsNumber }}</p>
-            @if(workoutSpec.timeBased) {
-            <p>
-              Tiempo:
-              {{ secsToMinutes(workoutSpec.time) }} @if(workoutSpec.time<60) { segundos } @else if
-                (workoutSpec.time==60) { minuto } @else{ minutos } </p>
-                } @else{
-                <p>Reps: {{ workoutSpec.repsNumber }}</p>
-                }
-                <p>Peso: {{ workoutSpec.recommendedWeight }}</p>
-                <p>Ejercicio {{ workoutSpec.workout.name }}</p>
-                <p>Musculo {{ workoutSpec.workout.muscularGroup }}</p>
-          </div>
-        </mat-expansion-panel>
-
-        }
-      </mat-accordion>
-    </app-card>
-  </div>
-  }
-</div> -->
 <div class="card">
-  <p-dataView #dv [value]="routines[0].dailyRoutine" layout="list">
+  <p-dataView #dv [value]="filteredRoutines()" layout="list">
     <ng-template pTemplate="header">
+      <mat-form-field>
+        <mat-label>Seleccionar día</mat-label>
+        <mat-select [(value)]="daySelected" required (selectionChange)="updateFilteredRoutines()">
+          <mat-option [value]="undefined">Seleccionar</mat-option>
+          @for (day of days; track day) {
+          <mat-option [value]="day">{{ day }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
       <div class="flex justify-content-end">
         <p-dataViewLayoutOptions layout="list" />
 
       </div>
     </ng-template>
+
     <ng-template pTemplate="list" let-daily>
+      @if(daily.length>0){
       <div class="grid grid-nogutter">
-        @for(workspec of daily.workoutSpecification; track workspec.id) {
+        @for(workspec of daily[0].workoutSpecification; track workspec.id) {
         <div class="col-12">
           <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3"
             [ngClass]="{ 'border-top-1 surface-border': !workspec.id }">
             <div class="md:w-10rem relative">
               <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
                 [alt]="workspec.workout.name" />
-              <p-tag [value]="workspec.workout.muscularLoad" [severity]="ChangeClass(workspec.workout.muscularLoad)"
+              <p-tag [value]="workspec.workout.muscularLoad ?? ''" [severity]="ChangeClass(workspec.workout.muscularLoad ?? '') || ''"
                 class="absolute" [style.left.px]="4" [style.top.px]="4" />
-              <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                  <div>
-                    <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup }}</span>
-                    <div class="text-lg font-medium text-900 mt-2">{{ workspec.workout.name }}</div>
-                  </div>
-                  <div class="surface-100 p-1" style="border-radius: 30px">
-                    <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
-                      style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
-                      <span class="text-900 font-medium text-sm">{{ workspec.trainerRating }}</span>
-                      <i class="pi pi-star-fill text-yellow-500"></i>
-                    </div>
-                  </div>
+            </div> 
+            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+              <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                <div>
+                  <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup.name }}</span>
+                  <div class="text-lg font-medium text-900 mt-2">{{ workspec.workout.name }}</div>
                 </div>
-                <div class="flex flex-column md:align-items-end gap-5">
-                  <span class="text-xl font-semibold text-900">{{ 'SETS' + workspec.workout }}</span>
-                  @if(workspec.timeBased) {
-                  <p>
-                    Tiempo:
-                    {{ secsToMinutes(workspec.time) }} @if(workspec.time<60) { segundos } @else if (workspec.time==60) {
-                      minuto } @else{ minutos } </p>
-                      } @else{
-                      <p>Reps: {{ workspec.repsNumber }}</p>
-                      }
-
-                      <div class="flex flex-row-reverse md:flex-row gap-2">
-                        <p-button icon="pi pi-heart" [outlined]="true" />
-                        <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap"
-                          label="Buy Now" [disabled]="workspec.workout.muscularGroup === 'OUTOFSTOCK'" />
-                      </div>
+                <div class="surface-100 p-1" style="border-radius: 30px">
+                  <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
+                    style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                    <span class="text-900 font-medium text-sm">{{ workspec.trainerRating }}</span>
+                    <i class="pi pi-star-fill text-yellow-500"></i>
+                  </div>
                 </div>
               </div>
+              <div class="flex flex-column md:align-items-end gap-5">
+                <span class="text-xl font-semibold text-900">{{ 'SETS ' + workspec.setsNumber }}</span>
+                @if(workspec.timeBased) {
+                <p>
+                  Tiempo:
+                  {{ secsToMinutes(workspec.time) }} @if(workspec.time<60) { segundos } @else if (workspec.time==60) { 1
+                    minuto } @else{ minutos } </p>
+                    } @else{
+                    <p>Reps: {{ workspec.repsNumber.toString() }}</p>
+                    }
+
+                    <div class="flex flex-row-reverse md:flex-row gap-2">
+                      <p-button icon="pi pi-heart" [outlined]="true" />
+                      <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap"
+                        label="VER" [disabled]="workspec.workout.muscularGroup === 'OUTOFSTOCK'" />
+                    </div>
+              </div> 
             </div>
+
           </div>
         </div>
         }
       </div>
+      } @else{
+      <div class="flex justify-content-center align-items-center h-100">
+        <p>No hay rutinas para este día</p>
+      </div>
+      }
     </ng-template>
     <ng-template pTemplate="grid" let-daily>
+      @if(daily.length>0){
       <div class="grid grid-nogutter">
+        @for (workspec of daily[0].workoutSpecification; track workspec.id) {
         <div class="col-12 sm:col-6 md:col-4 xl:col-6 p-2">
-          @for (workspec of daily.workoutSpecification; track workspec.id) {
+
           <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
             <div class="surface-50 flex justify-content-center border-round p-3">
               <div class="relative mx-auto">
-                <img class="border-round w-full" src="../../../../assets/banner.png" [alt]="workspec.workout.name"
-                  style="max-width: 300px;" />
-                <p-tag [value]="workspec.workout.muscularLoad"
-                  [severity]="ChangeClass(workspec.workout.muscularLoad)"></p-tag>
+                <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
+                  [alt]="workspec.workout.name" />
+                <p-tag [value]="workspec.workout.muscularLoad ?? ''" [severity]="ChangeClass(workspec.workout.muscularLoad ?? '') || ''"
+                  class="absolute" [style.left.px]="4" [style.top.px]="4" />
               </div>
             </div>
             <div class="pt-4">
               <div class="flex flex-row justify-content-between align-items-start gap-2">
                 <div>
-                  <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup}}</span>
+                  <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup.name}}</span>
                   <div class="text-lg font-medium text-900 mt-1">{{ workspec.workout.name }}</div>
                 </div>
                 <div class="surface-100 p-1" style="border-radius: 30px">
@@ -124,7 +108,7 @@
                 </div>
               </div>
               <div class="flex flex-column gap-4 mt-4">
-                <span class="text-xl font-semibold text-900">{{ 'SETS' + workspec.workout }}</span>
+                <span class="text-xl font-semibold text-900">{{ 'SETS' + workspec.setsNumber }}</span>
                 @if(workspec.timeBased) {
                 <p>
                   Tiempo:
@@ -135,15 +119,21 @@
                     }
                     <div class="flex gap-2">
                       <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap"
-                        label="Buy Now" [disabled]="workspec.workout.muscularGroup  === 'OUTOFSTOCK'" />
+                        label="VER" [disabled]="workspec.workout.muscularGroup.name  === 'OUTOFSTOCK'" />
                       <p-button icon="pi pi-heart" [outlined]="true" />
                     </div>
               </div>
             </div>
           </div>
-          }
+
         </div>
+        }
       </div>
+      } @else{
+      <div class="flex justify-content-center align-items-center h-100">
+        <p>No hay rutinas para este día</p>
+      </div>
+      }
     </ng-template>
   </p-dataView>
 </div>
@@ -151,22 +141,52 @@
 <mat-tab-group>
   @for (daily of routines[0].dailyRoutine; track daily.id) {
   <mat-tab [label]="daily.days.toString()">
-    @for (workoutSpec of daily.workoutSpecification; track workoutSpec.id) {
-    <app-card [title]="workoutSpec.description" class="workout-specs">
-      <div>
-        <p>Sets: {{ workoutSpec.setsNumber }}</p>
-        @if(workoutSpec.timeBased) {
-        <p>
-          Tiempo: {{ secsToMinutes(workoutSpec.time) }} @if(workoutSpec.time<60) { segundos } @else if
-            (workoutSpec.time==60) { minuto } @else{ minutos } </p>
-            } @else{
-            <p>Reps: {{ workoutSpec.repsNumber }}</p>
-            }
-            <p>Peso: {{ workoutSpec.recommendedWeight }}</p>
-            <p>Ejercicio {{ workoutSpec.workout.name }}</p>
-            <p>Musculo {{ workoutSpec.workout.muscularGroup.name }}</p>
+    @for (workspec of daily.workoutSpecification; track workspec.id) {
+    <div>
+
+      <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
+        <div class="surface-50 flex justify-content-center border-round p-3">
+          <div class="relative mx-auto">
+            <img class="block xl:block mx-auto border-round w-full" src="../../../../assets/banner.png"
+              [alt]="workspec.workout.name" />
+              <p-tag [value]="workspec.workout.muscularLoad ?? ''" [severity]="ChangeClass(workspec.workout.muscularLoad ?? '')"
+              class="absolute" [style.left.px]="4" [style.top.px]="4" />
+          </div>
+        </div> 
+        <div class="pt-4">
+          <div class="flex flex-row justify-content-between align-items-start gap-2">
+            <div>
+              <span class="font-medium text-secondary text-sm">{{ workspec.workout.muscularGroup.name}}</span>
+              <div class="text-lg font-medium text-900 mt-1">{{ workspec.workout.name }}</div>
+            </div>
+            <div class="surface-100 p-1" style="border-radius: 30px">
+              <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
+                style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                <span class="text-900 font-medium text-sm">{{ workspec.trainerRating }}</span>
+                <i class="pi pi-star-fill text-yellow-500"></i>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-column gap-4 mt-4">
+            <span class="text-xl font-semibold text-900">{{ 'SETS' + workspec.setsNumber }}</span>
+            @if(workspec.timeBased) {
+            <p>
+              Tiempo:
+              {{ secsToMinutes(workspec.time) }} @if(workspec.time<60) { segundos } @else if (workspec.time==60) {
+                minuto } @else{ minutos } </p>
+                } @else{
+                <p>Reps: {{ workspec.repsNumber }}</p>
+                }
+                <div class="flex gap-2">
+                  <p-button icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap"
+                    label="VER" [disabled]="workspec.workout.muscularGroup.name  === 'OUTOFSTOCK'" />
+                  <p-button icon="pi pi-heart" [outlined]="true" />
+                </div>
+          </div>
+        </div>
       </div>
-    </app-card>
+
+    </div>
     }
   </mat-tab>
 
