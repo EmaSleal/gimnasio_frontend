@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnChanges, OnInit } from '@angular/core';
 
 import { TableComponent } from '../../../utils/table/table.component';
 import { CardComponent } from '../../../utils/card/card.component';
@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { AddExerciseComponent } from '../add-exercise/add-exercise.component';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-list-exercise',
@@ -22,9 +23,9 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
   templateUrl: './list-exercise.component.html',
   styleUrl: './list-exercise.component.scss'
 })
-export class ListExerciseComponent implements OnInit {
-  constructor(private exerciseService: WorkoutService, private dialog: MatDialog, private router: Router) { }
-
+export class ListExerciseComponent implements OnInit, AfterViewInit {
+  constructor(private exerciseService: WorkoutService, private dialog: MatDialog, private router: Router, private cookieService: CookieService) { }
+  sidebarHeight: number = 0;
   screenWidth: number | null = 0;
 
   ngOnInit(): void {
@@ -34,9 +35,17 @@ export class ListExerciseComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    //Seguira llamando a la cookie hasta que el valor sea diferente de 0
+    this.cookieService.get('sidebarHeight') ? this.sidebarHeight = Number(this.cookieService.get('sidebarHeight')) : this.sidebarHeight = 0;
+    console.log(this.sidebarHeight);
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenWidth = window.innerWidth; 
+    this.cookieService.get('sidebarHeight') ? this.sidebarHeight = Number(this.cookieService.get('sidebarHeight')) : this.sidebarHeight = 0;
+    console.log(this.sidebarHeight);
   }
 
   displayedColumns: string[] = [
