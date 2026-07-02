@@ -1,0 +1,23 @@
+{
+  "name": "Gym Management App",
+  "short_name": "GymApp",
+  "theme_color": "#f97316",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "assets/icons/Astro_Solutions_LOGO_BLACK_OG.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/Astro_Solutions_LOGO_WHITE_OGpng.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
