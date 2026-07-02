@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
-import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 import Swal from 'sweetalert2';
 import { MuscularGroup } from '../../../core/models/muscular-group.interface';
@@ -18,16 +18,18 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 @Component({
   selector: 'app-list-muscular-group',
   standalone: true,
-  imports: [TableComponent,CardComponent, MatDialogModule,DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule],
+  imports: [TableComponent, CardComponent, DynamicDialogModule, DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule],
   templateUrl: './list-muscular-group.component.html',
   styleUrl: './list-muscular-group.component.scss'
 })
 export class ListMuscularGroupComponent {
-  constructor(private muscularGroupService: MuscularGroupService, private dialog: MatDialog, private router: Router) {}
+  constructor(private muscularGroupService: MuscularGroupService, private dialogService: DialogService, private router: Router) {}
 
   ngOnInit(): void {
-    this.muscularGroupService.getMuscularGroups().then((muscularGroups) => {
-      this.dataSource = muscularGroups;
+    this.muscularGroupService.getMuscularGroups().subscribe({
+      next: (muscularGroups) => {
+        this.dataSource = muscularGroups;
+      }
     });
   }
 
@@ -35,22 +37,17 @@ export class ListMuscularGroupComponent {
     'name',
     'acciones'
   ];
-  
+
   dataSource: MuscularGroup[] = [];
 
   editMuscularGroup(muscularGroup: MuscularGroup) {
+    const ref = this.dialogService.open(EditMuscularGroupComponent, {
+      data: { muscularGroup },
+      header: 'Edit Muscular Group',
+      width: '50%',
+    });
 
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true; // El modal no se puede cerrar haciendo clic fuera de él
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = { muscularGroup }; // Puedes pasar datos al componente del modal si es necesario
-
-    // Abre el modal
-    const dialogRef = this.dialog.open(EditMuscularGroupComponent, dialogConfig);
-
-    // Suscríbete a eventos del modal si es necesario
-    dialogRef.afterClosed().subscribe((result) => {
-      // Lógica después de cerrar el modal (si es necesario)
+    ref.onClose.subscribe((result) => {
       console.log('Modal cerrado con resultado:', result);
     });
   }
@@ -66,32 +63,24 @@ export class ListMuscularGroupComponent {
       confirmButtonText: 'Sí, eliminar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.muscularGroupService.deleteMuscularGroup(muscularGroup.id || '').then(() => {
-          this.dataSource = this.dataSource.filter((u) => u.id !== muscularGroup.id);
-          Swal.fire('¡Eliminado!', 'El usuario ha sido eliminado.', 'success');
+        this.muscularGroupService.deleteMuscularGroup(muscularGroup.id || '').subscribe({
+          next: () => {
+            this.dataSource = this.dataSource.filter((u) => u.id !== muscularGroup.id);
+            Swal.fire('¡Eliminado!', 'El usuario ha sido eliminado.', 'success');
+          }
         });
       }
     });
   }
 
   selectMuscularGroup(muscularGroup: any) {
-    //envio a la ruta de 'muscularGroup' con la data del usuario seleccionado
     this.router.navigate(['muscular-group', muscularGroup.id], { state: { muscularGroup } });
-    }
+  }
 
-    addMuscularGroup() {
-      const dialogConfig = new MatDialogConfig();
-      //dialogConfig.disableClose = true; // El modal no se puede cerrar haciendo clic fuera de él
-      dialogConfig.autoFocus = true;
-      //le agrego al modal el 50% de la pantalla si la pantalla es suerior 768px
-  
-      // Abre el modal
-      const dialogRef = this.dialog.open(AddMuscularGroupComponent, dialogConfig);
-  
-      // Suscríbete a eventos del modal si es necesario
-      dialogRef.afterClosed().subscribe((result) => {
-        // Lógica después de cerrar el modal (si es necesario)
-        //console.log('Modal cerrado con resultado:', result);
-      });
-    }
+  addMuscularGroup() {
+    this.dialogService.open(AddMuscularGroupComponent, {
+      header: 'Add Muscular Group',
+      width: '50%',
+    });
+  }
 }

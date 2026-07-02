@@ -1,11 +1,10 @@
-<h1 mat-dialog-title>{{ data.workout.name }}</h1>
-    <div mat-dialog-content>
-      <p>Description: {{ data.description }}</p>
-      <p>Sets: {{ data.setsNumber }}</p>
-      <p>Weight: {{ data.recommendedWeight }} lbs</p>
-      <p>Trainer Rating: {{ data.trainerRating }}</p>
-      <p>{{ data.timeBased ? 'Time: ' + data.time + ' seconds' : 'Reps: ' + data.repsNumber }}</p>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button mat-dialog-close>Close</button>
-    </div>
+<div>
+  <p>Description: {{ data.description }}</p>
+  <p>Sets: {{ data.setsNumber }}</p>
+  <p>Weight: {{ data.recommendedWeight }} lbs</p>
+  <p>Trainer Rating: {{ data.trainerRating }}</p>
+  <p>{{ data.timeBased ? 'Time: ' + data.time + ' seconds' : 'Reps: ' + data.repsNumber }}</p>
+</div>
+<div class="flex justify-content-end mt-3">
+  <p-button label="Close" (onClick)="ref.close()"></p-button>
+</div>

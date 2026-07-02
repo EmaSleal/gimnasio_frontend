@@ -1,24 +1,24 @@
 import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges, computed, signal } from '@angular/core';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { WorkoutPlan } from '../../../core/models/workout-plan.interface';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { WorkoutSpecification } from '../../../core/models/workout-specification.interface';
 import { WorkoutDialogComponent } from '../workout-dialog/workout-dialog.component';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { CardComponent } from '../../../utils/card/card.component';
 import { CommonModule } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
+import { TabViewModule } from 'primeng/tabview';
 import { DayOfWeek } from '../../../core/models/day-of-week.enum';
-import { MatSelectModule } from '@angular/material/select';
+import { DropdownModule } from 'primeng/dropdown';
 import { DailyRoutine } from '../../../core/models/daily-routine.interface';
 import { CarouselComponent } from '../../../utils/carousel/carousel.component';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-routine-matrix',
   standalone: true,
-  imports: [MatExpansionModule, MatDialogModule, CardComponent, CommonModule, MatTabsModule, MatSelectModule, CarouselComponent,DataViewModule, TagModule, ButtonModule],
+  imports: [DynamicDialogModule, CardComponent, CommonModule, TabViewModule, DropdownModule, CarouselComponent, DataViewModule, TagModule, ButtonModule, FormsModule],
   templateUrl: './routine-matrix.component.html',
   styleUrls: ['./routine-matrix.component.scss']
 })
@@ -30,12 +30,17 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
   @Input() routines: WorkoutPlan[] = [];
   days: DayOfWeek[] = [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
 
+  dayOptions: { label: string; value: DayOfWeek | undefined }[] = [
+    { label: 'Seleccionar', value: undefined },
+    ...([DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY]
+      .map(d => ({ label: d, value: d })))
+  ];
+
   filteredRoutines = signal<DailyRoutine[]>([]);
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialogService: DialogService) {}
 
   ngOnInit(): void {
-
     this.updateFilteredRoutines();
     this.getCurrentDay();
   }
@@ -43,7 +48,6 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['daySelected'] || changes['routines']) {
       this.updateFilteredRoutines();
-
     }
   }
 
@@ -66,17 +70,10 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
     }
   }
 
-  //evento para cambiar el dia seleccionado
-
-
-  
   updateFilteredRoutines() {
     this.filteredRoutines.set(
       this.routines[0]?.dailyRoutine.filter(daily => daily.days.includes(this.daySelected)) || []
     );
-  
-    //sort the routines by the order of the days
-    // this.filteredRoutines.update(routines => routines.sort((a, b) => a.days.indexOf(this.daySelected) - b.days.indexOf(this.daySelected)));
   }
 
   trackRoutine(index: number, item: any) {
@@ -92,9 +89,10 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
   }
 
   openDialog(workoutSpec: WorkoutSpecification) {
-    this.dialog.open(WorkoutDialogComponent, {
-      width: '250px',
-      data: workoutSpec
+    this.dialogService.open(WorkoutDialogComponent, {
+      data: workoutSpec,
+      header: workoutSpec.workout?.name || 'Workout',
+      width: '400px',
     });
   }
 
@@ -113,32 +111,16 @@ export class RoutineMatrixComponent implements OnChanges, OnInit {
     return 'contrast';
   }
 
-  //method to get the current day in letters
   getCurrentDay() {
     const today = new Date().getDay();
     switch (today) {
-      case 0:
-        this.daySelected = DayOfWeek.SUNDAY;
-        break;
-      case 1:
-        this.daySelected = DayOfWeek.MONDAY;
-        break;
-      case 2:
-        this.daySelected = DayOfWeek.TUESDAY;
-        break;
-      case 3:
-        this.daySelected = DayOfWeek.WEDNESDAY;
-        break;
-      case 4:
-        this.daySelected = DayOfWeek.THURSDAY;
-        break;
-      case 5:
-        this.daySelected = DayOfWeek.FRIDAY;
-        break;
-      case 6:
-        this.daySelected = DayOfWeek.SATURDAY;
-        break;
+      case 0: this.daySelected = DayOfWeek.SUNDAY; break;
+      case 1: this.daySelected = DayOfWeek.MONDAY; break;
+      case 2: this.daySelected = DayOfWeek.TUESDAY; break;
+      case 3: this.daySelected = DayOfWeek.WEDNESDAY; break;
+      case 4: this.daySelected = DayOfWeek.THURSDAY; break;
+      case 5: this.daySelected = DayOfWeek.FRIDAY; break;
+      case 6: this.daySelected = DayOfWeek.SATURDAY; break;
     }
   }
-
 }

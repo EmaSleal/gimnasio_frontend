@@ -1,53 +1,38 @@
 <app-card title="Edit User">
   <form [formGroup]="userForm">
-    <div>
-      <mat-form-field>
-        <mat-label>Username</mat-label>
-        <input matInput type="text" id="userName" formControlName="userName" required>
-      </mat-form-field>
+    <div class="mb-3">
+      <p-floatLabel>
+        <input pInputText id="username" type="text" formControlName="username" required />
+        <label for="username">Username</label>
+      </p-floatLabel>
     </div>
-    
-    <div>
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput type="email" id="email" formControlName="email" required>
-      </mat-form-field>
+
+    <div class="mb-3">
+      <p-floatLabel>
+        <input pInputText id="email" type="email" formControlName="email" required />
+        <label for="email">Email</label>
+      </p-floatLabel>
     </div>
-    
-    <div>
-      <mat-form-field>
-        <mat-label>Role</mat-label>
-        <mat-select id="role" formControlName="role" required>
-          <mat-option value="ADMIN">Admin</mat-option>
-          <mat-option value="TRAINER">Trainer</mat-option>
-          <mat-option value="CLIENT">Client</mat-option>
-        </mat-select>
-      </mat-form-field>
+
+    <div class="mb-3">
+      <p-dropdown
+        id="role"
+        formControlName="role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Role"
+        required
+      ></p-dropdown>
     </div>
-    
-    <!-- enable field-->
-    <div>
-      <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
+
+    <div class="mb-3">
+      <p-checkbox formControlName="enabled" [binary]="true" label="Enabled"></p-checkbox>
     </div>
-    
-    <!-- accountNonExpired field-->
-    <div>
-      <mat-checkbox formControlName="accountNonExpired">Account Non Expired</mat-checkbox>
-    </div>
-    
-    <!-- credentialsNonExpired field-->
-    <div>
-      <mat-checkbox formControlName="credentialsNonExpired">Credentials Non Expired</mat-checkbox>
-    </div>
-    
-    <!-- accountNonLocked field-->
-    <div>
-      <mat-checkbox formControlName="accountNonLocked">Account Non Locked</mat-checkbox>
-    </div>
-    
-    <div>
-      <button mat-raised-button color="primary" (click)="submitForm()">Save</button>
-      <button mat-button (click)="cerrarModal()">Cancel</button>
+
+    <div class="flex gap-2">
+      <p-button label="Save" severity="primary" (onClick)="submitForm()"></p-button>
+      <p-button label="Cancel" severity="secondary" (onClick)="cerrarModal()"></p-button>
     </div>
   </form>
 </app-card>

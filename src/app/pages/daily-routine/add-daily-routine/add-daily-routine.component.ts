@@ -1,14 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatTabsModule } from '@angular/material/tabs';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { AccordionModule } from 'primeng/accordion';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { CardComponent } from '../../../utils/card/card.component';
 import { DayOfWeek } from '../../../core/models/day-of-week.enum';
 import { UserService } from '../../../core/service/user/user.service';
@@ -18,12 +16,22 @@ import { Workout } from '../../../core/models/workout.interface';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 import { MuscularGroup } from '../../../core/models/muscular-group.interface';
 import { MuscularLoad } from '../../../core/models/muscular-load.enum';
-import { effect } from '@angular/core'; // Import effect
 
 @Component({
   selector: 'app-add-daily-routine',
   standalone: true,
-  imports: [MatButtonModule, MatStepperModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, CardComponent, MatSelectModule, MatDatepickerModule, MatTabsModule, MatCheckboxModule, MatExpansionModule],
+  imports: [
+    ButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FloatLabelModule,
+    InputTextModule,
+    CardComponent,
+    DropdownModule,
+    MultiSelectModule,
+    CheckboxModule,
+    AccordionModule,
+  ],
   templateUrl: './add-daily-routine.component.html',
   styleUrl: './add-daily-routine.component.scss'
 })
@@ -38,29 +46,58 @@ export class AddDailyRoutineComponent implements OnInit {
   selectedMuscularGroup = '';
   selectedMuscularLoad = '';
 
+  dayOptions: { label: string; value: DayOfWeek }[] = [];
+  muscularGroupOptions: { label: string; value: string }[] = [];
+  muscularLoadOptions: { label: string; value: string }[] = [];
+  workoutOptions: { label: string; value: string }[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private workoutPlanService: WorkoutPlanService,
     private userService: UserService,
     private workoutService: WorkoutService,
     private muscularGroupService: MuscularGroupService,
-
   ) {}
 
   ngOnInit(): void {
     this.dailyRoutineForm = this.formBuilder.group({
-      days: ['', Validators.required],
+      days: [[], Validators.required],
       workoutSpecification: this.formBuilder.array([])
     });
 
+    this.dayOptions = this.days.map(d => ({ label: d, value: d }));
+    this.muscularLoadOptions = this.muscularLoads.map(ml => ({ label: ml, value: ml }));
+
     this.workoutService.getWorkouts().subscribe((res) => {
       this.workouts = res;
+      this.updateWorkoutOptions();
     });
 
-    this.muscularGroupService.getMuscularGroups().then((res) => {
-      this.muscularGroups = res;
+    this.muscularGroupService.getMuscularGroups().subscribe({
+      next: (res) => {
+        this.muscularGroups = res;
+        this.muscularGroupOptions = res.map(mg => ({ label: mg.name || '', value: mg.id || '' }));
+      }
     });
-   
+  }
+
+  updateWorkoutOptions() {
+    this.workoutOptions = this.workouts
+      .filter(w =>
+        (!this.selectedMuscularGroup || w?.muscularGroup?.id === this.selectedMuscularGroup) &&
+        (!this.selectedMuscularLoad || w.muscularLoad === this.selectedMuscularLoad)
+      )
+      .map(w => ({ label: w.name || '', value: w.id || '' }));
+  }
+
+  onMuscularGroupChange(value: string) {
+    this.selectedMuscularGroup = value;
+    this.updateWorkoutOptions();
+  }
+
+  onMuscularLoadChange(value: string) {
+    this.selectedMuscularLoad = value;
+    this.updateWorkoutOptions();
   }
 
   get workoutSpecifications() {
@@ -102,8 +139,9 @@ export class AddDailyRoutineComponent implements OnInit {
   get cantidadEjercicios(): number {
     return this.workoutSpecifications.length;
   }
-  
+
   getWorkoutsByMuscularGroup($event: any) {
     this.selectedMuscularGroup = $event.value;
+    this.updateWorkoutOptions();
   }
 }

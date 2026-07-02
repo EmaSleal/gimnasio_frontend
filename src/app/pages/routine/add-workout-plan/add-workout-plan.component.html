@@ -1,78 +1,86 @@
 <app-card title="Agregar Rutina">
-  <!-- select for users-->
-  <mat-vertical-stepper [linear]="false" #stepper>
-    <mat-step [stepControl]="Formulario1" editable label="Datos Generales">
-      <form [formGroup]="Formulario1">
-        <!-- mat switch to isTemplate -->
+  <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
 
-        <div>
-          <mat-slide-toggle formControlName="isTemplate" [color]="color" [checked]="false" [disabled]="false"
-            (change)="toggleIsTemplate()" matStepperNext>
-            Is Template
-          </mat-slide-toggle>
-        </div>
-        @if(!isTemplate) {
-        <div>
-          <mat-form-field>
-            <mat-label for="user">User:</mat-label>
-            <mat-select id="user" name="user" formControlName="user" required>
-              <mat-option [value]="undefined">Seleccionar</mat-option>
-              @for (item of users; track $index) {
-              <mat-option [value]="item.id">{{ item.userName }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field>
-            <mat-label for="description">description:</mat-label>
-            <input matInput type="text" id="description" name="description" formControlName="description" required />
-          </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field>
-            <mat-label>Enter a date range</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input matStartDate placeholder="Start date" formControlName="startDate" />
-              <input matEndDate placeholder="End date" formControlName="endDate" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        }
-        <div>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="dailyRoutineFormArray" label="Rutinas">
-      <div>
-        <!-- adding botton to take the templates -->
-        <button mat-raised-button (click)="getTemplates()">
-          Cargar Plantillas
-        </button>
+  <!-- Step 0: General Data -->
+  @if (activeIndex === 0) {
+  <div class="mt-4">
+    <form [formGroup]="Formulario1">
+
+      <div class="mb-3">
+        <p-inputSwitch formControlName="isTemplate" (onChange)="toggleIsTemplate()"></p-inputSwitch>
+        <label class="ml-2">Is Template</label>
       </div>
 
-      @if (templates.length > 0) {
-      <mat-form-field>
-        <mat-label for="user">plantillas</mat-label>
-        <mat-select id="user" name="user" required (selectionChange)="onTemplateChange($event)">
-          <mat-option [value]="undefined">Seleccionar</mat-option>
-          @for (item of templates; track $index) {
-          <mat-option [value]="item">{{ item.description }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      @if(!isTemplate) {
+      <div class="mb-3">
+        <p-dropdown
+          id="user"
+          formControlName="user"
+          [options]="userOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar usuario"
+          required
+        ></p-dropdown>
+      </div>
+
+      <div class="mb-3">
+        <p-floatLabel>
+          <input pInputText id="description" type="text" formControlName="description" required class="w-full" />
+          <label for="description">Description</label>
+        </p-floatLabel>
+      </div>
+
+      <div class="mb-3">
+        <label class="block mb-1">Start Date</label>
+        <p-calendar formControlName="startDate" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Start date"></p-calendar>
+      </div>
+
+      <div class="mb-3">
+        <label class="block mb-1">End Date</label>
+        <p-calendar formControlName="endDate" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="End date"></p-calendar>
+      </div>
       }
-      <app-add-daily-routine-tabs [IsChanged]="IsTemplateValueChanged" [IsSubmitted]="submit"
-        (formSubmitted)="formSubmit($event)" (IsFormChanged)="checkFormChanged($event)"
-        [TemplateValues]="templateValueDailyRoutines" />
-      <div>
-        <button mat-raised-button (click)="onSubmit()">
-          Submit
-        </button>
+
+      <div class="mt-3">
+        <p-button label="Next" (onClick)="activeIndex = 1"></p-button>
       </div>
-    </mat-step>
-  </mat-vertical-stepper>
+    </form>
+  </div>
+  }
+
+  <!-- Step 1: Routines -->
+  @if (activeIndex === 1) {
+  <div class="mt-4">
+    <div class="mb-3">
+      <p-button label="Cargar Plantillas" (onClick)="getTemplates()"></p-button>
+    </div>
+
+    @if (templates.length > 0) {
+    <div class="mb-3">
+      <p-dropdown
+        id="template"
+        [options]="templateOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar plantilla"
+        (onChange)="onTemplateChange($event)"
+      ></p-dropdown>
+    </div>
+    }
+
+    <app-add-daily-routine-tabs
+      [IsChanged]="IsTemplateValueChanged"
+      [IsSubmitted]="submit"
+      (formSubmitted)="formSubmit($event)"
+      (IsFormChanged)="checkFormChanged($event)"
+      [TemplateValues]="templateValueDailyRoutines"
+    />
+
+    <div class="flex gap-2 mt-3">
+      <p-button label="Back" severity="secondary" (onClick)="activeIndex = 0"></p-button>
+      <p-button label="Submit" severity="primary" (onClick)="onSubmit()"></p-button>
+    </div>
+  </div>
+  }
 </app-card>

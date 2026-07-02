@@ -1,14 +1,19 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { WorkoutSpecification } from '../../../core/models/workout-specification.interface';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-workout-dialog',
   standalone: true,
-  imports: [MatDialogModule],
+  imports: [ButtonModule],
   templateUrl: './workout-dialog.component.html',
   styleUrl: './workout-dialog.component.scss'
 })
 export class WorkoutDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: WorkoutSpecification) {}
+  data: WorkoutSpecification;
+
+  constructor(public config: DynamicDialogConfig, public ref: DynamicDialogRef) {
+    this.data = this.config.data as WorkoutSpecification;
+  }
 }

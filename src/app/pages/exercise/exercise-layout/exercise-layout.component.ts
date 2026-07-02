@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { AddExerciseComponent } from '../add-exercise/add-exercise.component';
 import { ListExerciseComponent } from '../list-exercise/list-exercise.component';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-exercise-layout',
   standalone: true,
-  imports: [ MatTabsModule, AddExerciseComponent, ListExerciseComponent,RouterOutlet],
+  imports: [TabViewModule, AddExerciseComponent, ListExerciseComponent, RouterOutlet],
   templateUrl: './exercise-layout.component.html',
   styleUrl: './exercise-layout.component.scss'
 })
@@ -15,51 +15,36 @@ export class ExerciseLayoutComponent {
   constructor(private router: Router, private route: ActivatedRoute) { }
 
   index = 0;
- ngOnInit(): void {
-   // Obtener la ruta actual
-   const currentUrl = this.router.url;
-   
-   // Seleccionar el tab correspondiente
-   switch (currentUrl) {
-     case '/exercise/list':
-       this.selectTab(0);
-       break;
-     case '/exercise':
-       this.selectTab(1);
-       break;
-     default:
-       break;
-   }
- }
 
- // Función para seleccionar el tab dado su índice
- selectTab(index: number) {
-   // Emitir un evento de cambio de tab
-   this.index = index;
-   const event: MatTabChangeEvent = { index } as MatTabChangeEvent;
-   this.onTabChange(event);
- }
+  ngOnInit(): void {
+    const currentUrl = this.router.url;
+    switch (currentUrl) {
+      case '/exercise/list':
+        this.onTabChange({ index: 0 });
+        break;
+      case '/exercise':
+        this.onTabChange({ index: 1 });
+        break;
+      default:
+        break;
+    }
+  }
 
- // Manejar el cambio de tab
- onTabChange(event: MatTabChangeEvent) {
-   switch (event.index) {
-     case 0:
-       //console.log('Listar usuarios');
-       this.router.navigateByUrl('/exercise/list');
-       break;
-     case 1:
-       //console.log('Agregar usuario');
-       this.router.navigateByUrl('/exercise');
-       break;
-     default:
-       break;
-   }
- }
+  onTabChange(event: { index: number }) {
+    this.index = event.index;
+    switch (event.index) {
+      case 0:
+        this.router.navigateByUrl('/exercise/list');
+        break;
+      case 1:
+        this.router.navigateByUrl('/exercise');
+        break;
+      default:
+        break;
+    }
+  }
 
- isActive(route: string): boolean {
-   if(route === this.router.url){
-     return true;
-   }
-   return false;
- }
+  isActive(route: string): boolean {
+    return route === this.router.url;
+  }
 }

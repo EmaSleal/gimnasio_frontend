@@ -1,79 +1,73 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../core/service/user/user.service';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { User } from '../../../core/models/user.interface';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-
 
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [FormsModule,MatFormFieldModule, CardComponent, ReactiveFormsModule,MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, MatCheckboxModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CardComponent,
+    FloatLabelModule,
+    InputTextModule,
+    ButtonModule,
+    DropdownModule,
+    CheckboxModule,
+  ],
   templateUrl: './edit-user.component.html',
   styleUrl: './edit-user.component.scss'
 })
-export class EditUserComponent implements OnInit{
+export class EditUserComponent implements OnInit {
   userForm: FormGroup = new FormGroup({});
 
+  roleOptions = [
+    { label: 'Admin', value: 'ADMIN' },
+    { label: 'Trainer', value: 'TRAINER' },
+    { label: 'Client', value: 'CLIENT' },
+  ];
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService,public dialogRef: MatDialogRef<EditUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { user: User }) {
-      
-    
-  }
+  constructor(
+    private userService: UserService,
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig
+  ) {}
+
   ngOnInit(): void {
-    const user = this.data.user;
-    console.log(user);
+    const user: User = this.config.data.user;
     this.userForm = new FormGroup({
-      userName: new FormControl(user.userName, Validators.required),
+      username: new FormControl(user.username, Validators.required),
       email: new FormControl(user.email, [Validators.required, Validators.email]),
       role: new FormControl(user.role, Validators.required),
       enabled: new FormControl(user.enabled),
-      accountNonExpired: new FormControl(user.accountNonExpired),
-      credentialsNonExpired: new FormControl(user.credentialsNonExpired),
-      accountNonLocked: new FormControl(user.accountNonLocked),
     });
-    
-  }
-
-  passwordMatchValidator(formGroup: FormGroup) {
-    const password = formGroup.get('password')?.value;
-    const confirmPassword = formGroup.get('confirmPassword')?.value;
-    if (password !== confirmPassword) {
-      formGroup.get('confirmPassword')?.setErrors({ passwordMismatch: true });
-    } else {
-      formGroup.get('confirmPassword')?.setErrors(null);
-    }
-  }
-
-  get password() {
-    return this.userForm.get('password');
-  }
-
-  get confirmPassword() {
-    return this.userForm.get('confirmPassword');
   }
 
   submitForm() {
-    if (this.userForm.invalid) { // Verificación de nulidad para evitar el error
+    if (this.userForm.invalid) {
       return;
     }
-    // Lógica para enviar los datos del usuario al servicio de Angular
-    this.userService.updateUser(this.userForm.value).then(() => {
-      Swal.fire('Usuario creado', 'El usuario ha sido creado con éxito', 'success');
-    }, (err) => {
-      Swal.fire('Error', 'Ha ocurrido un error al crear el usuario', 'error');
+    this.userService.updateUser(this.config.data.user.id, this.userForm.value).subscribe({
+      next: () => {
+        Swal.fire('Usuario actualizado', 'El usuario ha sido actualizado con éxito', 'success');
+        this.ref.close(true);
+      },
+      error: () => {
+        Swal.fire('Error', 'Ha ocurrido un error al actualizar el usuario', 'error');
+      }
     });
   }
 
   cerrarModal() {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

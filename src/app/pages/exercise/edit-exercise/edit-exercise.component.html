@@ -1,9 +1,7 @@
 
   <div class="card w-full" >
     <h1 class="m-2">Editar Ejercicio</h1>
-    <mat-dialog-content class="m-4 modal-body">
-      <!-- (ngSubmit)="onSubmit()"> -->
-
+    <div class="m-4 modal-body">
       <div class="mb-4">
         <p-floatLabel>
           <input id="name" type="text" pInputText [(ngModel)]="workout.name" />
@@ -15,13 +13,12 @@
           [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
       </div>
       <div class="mb-4">
-        <p-listbox [options]="muscularLoads" [(ngModel)]="workout.muscularLoad" 
+        <p-listbox [options]="muscularLoads" [(ngModel)]="workout.muscularLoad"
           [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
       </div>
-
-    </mat-dialog-content>
-    <mat-dialog-actions class="m-4">
+    </div>
+    <div class="m-4">
       <p-button severity="contrast" [loading]="loading" label="Submit" icon="pi pi-check" (onClick)="formSubmit(workout)" />
-
-    </mat-dialog-actions>
+      <p-button severity="secondary" label="Cancel" icon="pi pi-times" class="ml-2" (onClick)="ref.close()" />
+    </div>
   </div>

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
+import { TabViewModule } from 'primeng/tabview';
+import { ButtonModule } from 'primeng/button';
 import { AddDailyRoutineComponent } from '../add-daily-routine/add-daily-routine.component';
-import { MatButtonModule } from '@angular/material/button';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { DailyRoutine } from '../../../core/models/daily-routine.interface';
 import { ChangeDetectorRef } from '@angular/core';
@@ -9,7 +9,7 @@ import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-add-daily-routine-tabs',
   standalone: true,
-  imports: [MatTabsModule, AddDailyRoutineComponent, MatButtonModule],
+  imports: [TabViewModule, AddDailyRoutineComponent, ButtonModule],
   templateUrl: './add-daily-routine-tabs.component.html',
   styleUrls: ['./add-daily-routine-tabs.component.scss']
 })
@@ -22,14 +22,14 @@ export class AddDailyRoutineTabsComponent implements OnInit, OnChanges {
   @Input() IsSubmitted: boolean = false;
   @Input() IsChanged: boolean = false;
   @ViewChildren(AddDailyRoutineComponent) routineComponents!: QueryList<AddDailyRoutineComponent>;
-  
+
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     if (this.TemplateValues.length > 0) {
       this.TemplateValues.forEach(template => this.addRoutine(template));
     } else {
-      this.addRoutine(); // Initialize with one empty form group if no TemplateValues
+      this.addRoutine();
     }
   }
 
@@ -42,7 +42,6 @@ export class AddDailyRoutineTabsComponent implements OnInit, OnChanges {
       this.populateFormsWithTemplateValues();
       this.formChanged();
     }
-    
   }
 
   addRoutine(template?: DailyRoutine) {
@@ -75,7 +74,6 @@ export class AddDailyRoutineTabsComponent implements OnInit, OnChanges {
   populateFormsWithTemplateValues() {
     this.TemplateValues.forEach((template, index) => {
       if (this.routineComponents.get(index)) {
-        // Update existing form
         this.routineComponents.get(index)!.dailyRoutineForm.patchValue(template);
         const workoutSpecificationFormArray = this.routineComponents.get(index)!.dailyRoutineForm.get('workoutSpecification') as FormArray;
         workoutSpecificationFormArray.clear();
@@ -83,30 +81,20 @@ export class AddDailyRoutineTabsComponent implements OnInit, OnChanges {
           workoutSpecificationFormArray.push(this.createWorkoutSpecificationForm(spec));
         });
       } else {
-        // Add new form if it does not exist
         this.addRoutine(template);
       }
     });
 
-    // Asegurarse de que la lista de rutinas esté sincronizada
     this.routines = this.routines.slice(0, this.TemplateValues.length);
 
-    // Forzar la detección de cambios después de un pequeño retraso
-    // setTimeout(() => {
-    //   this.cdr.detectChanges();
-    // }, 0);
-
-    // Si hay más componentes de rutina que valores en TemplateValues, opcionalmente eliminar formularios adicionales
     while (this.routines.length > this.TemplateValues.length) {
       this.routines.pop();
     }
-    
   }
 
   submitAllForms() {
     const allFormValues = this.routineComponents.map(component => component.dailyRoutineForm.value);
     console.log('All Forms Values:', allFormValues);
-    // Do something with allFormValues
   }
 
   formChanged() {

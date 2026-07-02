@@ -1,14 +1,24 @@
-<app-card title="Add User">
+<app-card title="Add Muscular Group">
+  <form [formGroup]="muscularGroupForm">
+    <div class="flex flex-column gap-3 p-3">
 
-    <form [formGroup]="muscularGroupForm">
-      <div>
-        <mat-form-field>
-          <mat-label for="name">Username:</mat-label>
-          <input matInput type="text" id="name" name="name" formControlName="name" required>
-        </mat-form-field>
-      </div>
-      <div>
-        <button mat-raised-button color="primary" (click)="submitForm()">Add Muscular Group</button>
-      </div>
-    </form>
-  </app-card>
+      <p-floatLabel>
+        <input
+          pInputText
+          id="name"
+          type="text"
+          formControlName="name"
+          class="w-full"
+        />
+        <label for="name">Name</label>
+      </p-floatLabel>
+
+      <p-button
+        label="Add Muscular Group"
+        severity="primary"
+        (click)="submitForm()"
+      />
+
+    </div>
+  </form>
+</app-card>

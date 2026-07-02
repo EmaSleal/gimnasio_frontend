@@ -1,16 +1,15 @@
 <div class="container">
-    <h1> Panel de Rutina </h1>
-    @if (isActive('/workout-plan/list') || isActive('/workout-plan')) {
-        <mat-tab-group [(selectedIndex)]="index" (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Rutinas" routerLink="/workout-plan/list">
-                <app-list-routine/>
-            </mat-tab>
-            <mat-tab label="Agregar Rutina" routerLink="/workout-plan">
-                <app-add-workout-plan/>
-            </mat-tab>
-        </mat-tab-group>        
-    }
-    @else {
-        <router-outlet ></router-outlet>
-    }
+  <h1>Panel de Rutina</h1>
+  @if (isActive('/workout-plan/list') || isActive('/workout-plan')) {
+    <p-tabView [(activeIndex)]="index" (onChange)="onTabChange($event)">
+      <p-tabPanel header="Rutinas">
+        <app-list-routine />
+      </p-tabPanel>
+      <p-tabPanel header="Agregar Rutina">
+        <app-add-workout-plan />
+      </p-tabPanel>
+    </p-tabView>
+  } @else {
+    <router-outlet></router-outlet>
+  }
 </div>

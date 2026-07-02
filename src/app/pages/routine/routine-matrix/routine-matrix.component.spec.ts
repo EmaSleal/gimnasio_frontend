@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { DialogService } from 'primeng/dynamicdialog';
 import { RoutineMatrixComponent } from './routine-matrix.component';
 
 describe('RoutineMatrixComponent', () => {
@@ -8,10 +9,10 @@ describe('RoutineMatrixComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoutineMatrixComponent]
-    })
-    .compileComponents();
-    
+      imports: [RoutineMatrixComponent],
+      providers: [provideNoopAnimations(), DialogService],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(RoutineMatrixComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

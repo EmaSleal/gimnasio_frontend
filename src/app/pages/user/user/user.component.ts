@@ -20,9 +20,11 @@ export class UserComponent implements OnInit{
     // Obtengo el id del usuario de la URL
     const id = this.route.snapshot.paramMap.get('id') as string;
     // Obtengo el usuario por id
-    this.userService.getUserById(id).then((user) => {
-      this.user = user;
-      console.log(this.user);
+    this.userService.getUserById(id).subscribe({
+      next: (user) => {
+        this.user = user;
+        console.log(this.user);
+      }
     });
     
   }

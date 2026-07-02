@@ -25,9 +25,11 @@ export class MuscularGroupComponent implements OnInit{
     // Obtengo el id del usuario de la URL
     const id = this.route.snapshot.paramMap.get('id') as string;
     // Obtengo el usuario por id
-    this.muscularGroupService.getMuscularGroup(id).then((muscularGroup) => {
-      this.muscularGroup = muscularGroup;
-      console.log(this.muscularGroup);
+    this.muscularGroupService.getMuscularGroup(id).subscribe({
+      next: (muscularGroup) => {
+        this.muscularGroup = muscularGroup;
+        console.log(this.muscularGroup);
+      }
     });
     
   }

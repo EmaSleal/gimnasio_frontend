@@ -1,62 +1,85 @@
 <app-card title="Add User">
-
   <form [formGroup]="userForm">
-    <div>
-      <mat-form-field>
-        <mat-label for="userName">Username:</mat-label>
-        <input matInput type="text" id="userName" name="userName" formControlName="userName" required>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label for="password">Password:</mat-label>
-        <input matInput type="password" formControlName="password" required>
-        <mat-error>
-          @if (password?.invalid && (password?.dirty || password?.touched)) {
-            @if (password?.errors?.['required']) {
-            La contraseña es requerida.
-            }
-            @if (password?.errors?.['pattern']) {
-            La contraseña debe tener al menos 8 caracteres, un número, una mayúscula y un caracter especial.
-            }
-          }
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label for="confirmPassword">Confirm Password:</mat-label>
-        <input matInput type="password" formControlName="confirmPassword" required>
-        <mat-error>
-          @if (confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)) {
-            @if (confirmPassword?.errors?.['required']) {
-            La confirmación de contraseña es requerida.
-            }
-            @if (userForm.errors && userForm?.errors?.['passwordMismatch']) {
-            Las contraseñas no coinciden.
-            }
-          }
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label for="email">Email:</mat-label>
-        <input matInput type="email" id="email" name="email" formControlName="email" required>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label for="role">Role:</mat-label>
-        <mat-select id="role" name="role" formControlName="role" required>
-          <mat-option value="ADMIN">Admin</mat-option>
-          <mat-option value="TRAINER">Trainer</mat-option>
-          <mat-option value="CLIENT">Client</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <button mat-raised-button color="primary" (click)="submitForm()">Add User</button>
+    <div class="flex flex-column gap-5 p-3">
+
+      <p-floatLabel>
+        <input
+          pInputText
+          id="username"
+          formControlName="username"
+          class="w-full"
+        />
+        <label for="username">Username</label>
+      </p-floatLabel>
+
+      <p-floatLabel>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          class="w-full"
+        />
+        <label for="email">Email</label>
+      </p-floatLabel>
+
+      <p-dropdown
+        id="role"
+        formControlName="role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar Rol"
+        class="w-full"
+      />
+
+      <p-floatLabel>
+  <p-password 
+    inputId="password" 
+    formControlName="password" 
+    styleClass="w-full" 
+    inputStyleClass="w-full"
+    [toggleMask]="true" 
+    [feedback]="false">
+  </p-password>
+  <label for="password">Password</label>
+</p-floatLabel>
+      @if (password?.invalid && (password?.dirty || password?.touched)) {
+        @if (password?.errors?.['required']) {
+          <small class="p-error block mt-1">La contraseña es requerida.</small>
+        }
+        @if (password?.errors?.['pattern']) {
+          <small class="p-error block mt-1">La contraseña debe tener al menos 8 caracteres, un número, una mayúscula y un carácter especial.</small>
+        }
+      }
+
+      <p-floatLabel>
+        <input
+          pInputText
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="w-full"
+        />
+        <label for="confirmPassword">Confirm Password</label>
+      </p-floatLabel>
+      @if (confirmPassword!!.invalid && (confirmPassword!!.dirty || confirmPassword!!.touched)) {
+        @if (confirmPassword!!.errors?.['required']) {
+          <small class="p-error">La confirmación de contraseña es requerida.</small>
+        }
+        @if (userForm.errors && userForm.errors?.['passwordMismatch']) {
+          <small class="p-error">Las contraseñas no coinciden.</small>
+        }
+      }
+
+      
+
+      <p-button
+        label="Add User"
+        severity="primary"
+        (click)="submitForm()"
+      />
+
     </div>
   </form>
 </app-card>

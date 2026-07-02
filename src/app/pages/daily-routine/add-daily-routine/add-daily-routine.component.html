@@ -1,155 +1,120 @@
 <form [formGroup]="dailyRoutineForm">
- 
-  <!--space for ID disabled-->
-  <!-- <div>
-    <mat-form-field>
-      <mat-label for="id">ID:</mat-label>
-      <input matInput type="text" id="id" name="id" formControlName="id" />
-    </mat-form-field>
-  </div> -->
-  <div>
+  <div class="mb-3">
     <label for="days">Días:</label>
-    <!--mat-checkbox for days of the week-->
     <div>
-      <mat-form-field>
-        <mat-label>Muscular Group</mat-label>
-      <mat-select multiple formControlName="days">
-        @for (day of days; track $index) {
-            <mat-option [value]="day">{{ day }}</mat-option>
-        }
-      </mat-select>
-
-  </mat-form-field>
-    </div> 
-    @if (dailyRoutineForm.get('days')?.hasError('required'))
-    {
-    <span class="alert alert-danger">
-      Seleccione al menos un día.
-    </span>
+      <p-multiSelect
+        id="days"
+        formControlName="days"
+        [options]="dayOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar días"
+      ></p-multiSelect>
+    </div>
+    @if (dailyRoutineForm.get('days')?.hasError('required')) {
+      <span class="alert alert-danger">
+        Seleccione al menos un día.
+      </span>
     }
   </div>
-   <div class="button__container">
-    <button class="button" mat-raised-button color="primary" (click)="addWorkoutSpecification()" >
-      Add Workout Specification
-    </button>
+
+  <div class="button__container mb-3">
+    <p-button label="Add Workout Specification" severity="primary" (onClick)="addWorkoutSpecification()"></p-button>
   </div>
-  
+
   <div formArrayName="workoutSpecification" class="workout-specification__container">
-    @for (form of workoutSpecifications.controls; track $index) {
-    <mat-expansion-panel [formGroupName]="$index" [expanded]="$index === 0" (opened)="setStep($index)" hideToggle
-      class="panel">
-      <mat-expansion-panel-header click class="panel__header">
-        <mat-panel-title>
-          <!-- from workouts use form.get('workout')?.value to filter the workout.id and get the workout.name for the label -->
-            {{ workoutName(form.get('workout')?.value) }}
-          </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-panel-description>
-        <div class="main-content-panel">
-          <div>
-            <mat-form-field>
-              <mat-label>Muscular Group</mat-label>
-              <mat-select [(value)]="selectedMuscularGroup" >
-                <mat-option [value]="undefined">Seleccionar</mat-option>
-              @for (muscularGroup of muscularGroups; track $index) {
-                <mat-option [value]="muscularGroup.id" >{{
-                  muscularGroup.name
-                  }}
-                  </mat-option>
-              }
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-               <mat-label>Carga Muscular</mat-label>
-              <mat-select [(value)]="selectedMuscularLoad" >
-                <mat-option [value]="undefined">Seleccionar</mat-option>
-                @for (muscularLoad of muscularLoads; track $index) {
-                  <mat-option [value]="muscularLoad">{{
-                    muscularLoad
-                    }} 
-                    </mat-option>
-                }
-                
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Workout</mat-label>
-              <mat-select formControlName="workout">
-                @for (workout of workouts; track $index) {
-                  @if ((selectedMuscularGroup === workout?.muscularGroup?.id && selectedMuscularLoad === workout.muscularLoad) || selectedMuscularGroup === undefined || selectedMuscularLoad === undefined || selectedMuscularLoad === '' || selectedMuscularGroup === '') {
-                    <mat-option [value]="workout.id">
-                        {{workout.name}}
-                    </mat-option>
-                  }
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <!-- field for timeBased checkbox -->
-          <div>
-            <mat-checkbox formControlName="timeBased" color="primary">
-              Is Time Based
-            </mat-checkbox>
-          </div>
-          <!-- if timeBased is false it should show reps number or time -->
-          @if (!form.get("timeBased")?.value) {
-            <div>
-              <mat-form-field class="full-width">
-                <mat-label>Reps Number</mat-label>
-                <input matInput formControlName="repsNumber" type="number" />
-              </mat-form-field>
+    <p-accordion>
+      @for (form of workoutSpecifications.controls; track $index) {
+        <p-accordionTab [header]="workoutName(form.get('workout')?.value) || ('Workout ' + ($index + 1))">
+          <div [formGroupName]="$index" class="main-content-panel">
+
+            <div class="mb-3">
+              <p-dropdown
+                id="muscularGroupFilter"
+                [options]="muscularGroupOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Muscular Group"
+                [(ngModel)]="selectedMuscularGroup"
+                [ngModelOptions]="{standalone: true}"
+                (onChange)="onMuscularGroupChange($event.value)"
+              ></p-dropdown>
             </div>
-          } 
-          @else {
-            <div>
-              <mat-form-field class="full-width">
-                <mat-label>Time</mat-label>
-                <input matInput formControlName="time" type="number" />
-              </mat-form-field>
+
+            <div class="mb-3">
+              <p-dropdown
+                id="muscularLoadFilter"
+                [options]="muscularLoadOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Carga Muscular"
+                [(ngModel)]="selectedMuscularLoad"
+                [ngModelOptions]="{standalone: true}"
+                (onChange)="onMuscularLoadChange($event.value)"
+              ></p-dropdown>
             </div>
-          }
 
-          <div>
-            <mat-form-field>
-              <mat-label>Sets Number</mat-label>
-              <input matInput formControlName="setsNumber" type="number" />
-            </mat-form-field>
+            <div class="mb-3">
+              <p-dropdown
+                formControlName="workout"
+                [options]="workoutOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Workout"
+              ></p-dropdown>
+            </div>
+
+            <div class="mb-3">
+              <p-checkbox formControlName="timeBased" [binary]="true" label="Is Time Based"></p-checkbox>
+            </div>
+
+            @if (!form.get('timeBased')?.value) {
+              <div class="mb-3">
+                <p-floatLabel>
+                  <input pInputText id="repsNumber" formControlName="repsNumber" type="number" class="full-width" />
+                  <label for="repsNumber">Reps Number</label>
+                </p-floatLabel>
+              </div>
+            } @else {
+              <div class="mb-3">
+                <p-floatLabel>
+                  <input pInputText id="time" formControlName="time" type="number" class="full-width" />
+                  <label for="time">Time</label>
+                </p-floatLabel>
+              </div>
+            }
+
+            <div class="mb-3">
+              <p-floatLabel>
+                <input pInputText id="setsNumber" formControlName="setsNumber" type="number" class="full-width" />
+                <label for="setsNumber">Sets Number</label>
+              </p-floatLabel>
+            </div>
+
+            <div class="mb-3">
+              <p-floatLabel>
+                <input pInputText id="recommendedWeight" formControlName="recommendedWeight" type="number" class="full-width" />
+                <label for="recommendedWeight">Recommended Weight</label>
+              </p-floatLabel>
+            </div>
+
+            <div class="mb-3">
+              <p-floatLabel>
+                <input pInputText id="trainerRating" formControlName="trainerRating" type="number" class="full-width" />
+                <label for="trainerRating">Trainer Rating</label>
+              </p-floatLabel>
+            </div>
+
+            <p-button
+              label="Delete Panel"
+              severity="secondary"
+              [disabled]="cantidadEjercicios - 1 === 1"
+              (onClick)="removeWorkoutFormGroup($index)"
+            ></p-button>
+
           </div>
-
-          <div>
-            <mat-form-field>
-              <mat-label>Recommended Weight</mat-label>
-              <input matInput formControlName="recommendedWeight" type="number" />
-            </mat-form-field>
-          </div>
-
-          <div>
-            <mat-form-field>
-              <mat-label>Trainer Rating</mat-label>
-              <input matInput formControlName="trainerRating" type="number" />
-            </mat-form-field>
-          </div>
-
-          
-          <button mat-raised-button class="example-delete-tab-button" [disabled]="cantidadEjercicios - 1 === 1"
-            (click)="removeWorkoutFormGroup($index)" color="secondary">
-            Delete Panel
-          </button>
-          <!-- <button
-                            mat-raised-button
-                            class="example-add-tab-button"
-                            (click)="addWorkoutSpecification($index)"
-                          >
-                            Agregar Otra Rutina
-                          </button> -->
-        </div>
-      </mat-panel-description>
-      
-    </mat-expansion-panel>
-    }
+        </p-accordionTab>
+      }
+    </p-accordion>
   </div>
-
-
-
-
 </form>

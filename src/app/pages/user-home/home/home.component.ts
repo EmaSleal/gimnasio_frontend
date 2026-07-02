@@ -17,9 +17,11 @@ export class HomeComponent implements OnInit{
   
 
   ngOnInit(): void {
-    this.workoutPlanService.getWorkoutPlanById().then((routines) => {
-      this.routines = routines;
-      //console.log(this.routines);
+    this.workoutPlanService.getWorkoutPlanById().subscribe({
+      next: (routines) => {
+        this.routines = routines;
+        //console.log(this.routines);
+      }
     });
     
   }

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AddMuscularGroupComponent } from './add-muscular-group.component';
 
@@ -8,10 +9,10 @@ describe('AddMuscularGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddMuscularGroupComponent]
+      imports: [AddMuscularGroupComponent, HttpClientTestingModule]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(AddMuscularGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

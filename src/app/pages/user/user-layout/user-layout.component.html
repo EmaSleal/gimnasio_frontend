@@ -1,16 +1,15 @@
 <div class="container">
-    <h1> Panel de Usuarios</h1>
-    @if (isActive('/user/list') || isActive('/user')) {
-        <mat-tab-group [(selectedIndex)]="index" (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Usuarios" routerLink="/user/list">
-                <app-list-user/>
-            </mat-tab>
-            <mat-tab label="Agregar Usuario" routerLink="/user">
-                <app-add-user/>
-            </mat-tab>
-        </mat-tab-group>        
-    }
-    @else {
-        <router-outlet ></router-outlet>
-    }
+  <h1>Panel de Usuarios</h1>
+  @if (isActive('/user/list') || isActive('/user')) {
+    <p-tabView [(activeIndex)]="index" (onChange)="onTabChange($event)">
+      <p-tabPanel header="Usuarios">
+        <app-list-user />
+      </p-tabPanel>
+      <p-tabPanel header="Agregar Usuario">
+        <app-add-user />
+      </p-tabPanel>
+    </p-tabView>
+  } @else {
+    <router-outlet></router-outlet>
+  }
 </div>
