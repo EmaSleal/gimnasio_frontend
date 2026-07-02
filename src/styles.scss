@@ -1,4 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+/* Design tokens — must be first */
+@import './styles/tokens';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* PrimeNG theme base */
+/* (angular.json loads lara-light-blue/theme.css, primeng/resources/primeng.min.css, primeicons/primeicons.css before this file) */
+
+/* ── PrimeNG theme bridge — point PrimeNG vars to gym tokens ── */
+:root {
+  --primary-color:         var(--color-accent);
+  --primary-color-text:    #ffffff;
+  --primary-hover-color:   var(--color-accent-hover);
+
+  --surface-0:    var(--color-bg-primary);
+  --surface-50:   var(--color-bg-subtle);
+  --surface-100:  var(--color-bg-surface);
+  --surface-ground: var(--color-bg-subtle);
+  --surface-section: var(--color-bg-primary);
+  --surface-card:  var(--color-bg-primary);
+  --surface-overlay: var(--color-bg-primary);
+  --surface-border: var(--color-border-default);
+
+  --text-color:           var(--color-text-primary);
+  --text-color-secondary: var(--color-text-secondary);
+  --focus-ring: 0 0 0 2px var(--color-accent-subtle);
+}
+
+/* ── Base styles ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-subtle);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
