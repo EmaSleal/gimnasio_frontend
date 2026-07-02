@@ -7,9 +7,6 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { NavbarComponent } from './utils/navbar/navbar.component';
-import { FooterComponent } from './utils/footer/footer.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -31,16 +28,14 @@ import {
   trigger,
 } from '@angular/animations';
 import { DockModule } from 'primeng/dock';
-import { LoginService } from './core/service/login/login.service';
+import { AuthService } from './core/service/auth/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import { UpdateNotificationComponent } from './utils/update-notification/update-notification.component';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
-    NavbarComponent,
-    FooterComponent,
-    MatSidenavModule,
     SidebarModule,
     ButtonModule,
     ToolbarModule,
@@ -51,6 +46,7 @@ import { CookieService } from 'ngx-cookie-service';
     AvatarModule,
     StyleClassModule,
     DockModule,
+    UpdateNotificationComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -107,7 +103,7 @@ export class AppComponent implements OnInit {
     },
   ]);
   constructor(
-    private loginservice: LoginService,
+    private authService: AuthService,
     private primengConfig: PrimeNGConfig,
     private windowService: WindowService,
     private cookieService: CookieService
@@ -234,6 +230,6 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    this.loginservice.logout();
+    this.authService.logout();
   }
 }
