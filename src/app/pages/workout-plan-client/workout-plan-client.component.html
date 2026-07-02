@@ -1,0 +1,28 @@
+<div class="workout-plan-page">
+  <app-hero-banner
+    title="Mi Plan de Entrenamiento"
+    subtitle="Tus ejercicios personalizados">
+  </app-hero-banner>
+
+  <ng-container *ngIf="workouts.length > 0; else emptyState">
+    <app-filter-bar
+      [filters]="filters"
+      [activeFilter]="activeFilter"
+      (filterChange)="onFilterChange($event)">
+    </app-filter-bar>
+
+    <app-exercise-row
+      *ngFor="let group of activeGroups"
+      [title]="group"
+      [workouts]="getWorkoutsForGroup(group)">
+    </app-exercise-row>
+  </ng-container>
+
+  <ng-template #emptyState>
+    <app-empty-state
+      icon="pi pi-calendar"
+      title="Sin plan asignado"
+      message="Todavía no tenés un plan de entrenamiento asignado. Contactá a tu trainer.">
+    </app-empty-state>
+  </ng-template>
+</div>

@@ -1,0 +1,17 @@
+.workout-plan-page {
+  padding: var(--space-lg, 1.5rem);
+  max-width: 960px;
+  margin: 0 auto;
+
+  app-filter-bar {
+    margin-bottom: var(--space-md, 1rem);
+  }
+
+  app-exercise-row {
+    margin-bottom: var(--space-lg, 1.5rem);
+  }
+
+  app-empty-state {
+    margin-top: var(--space-xl, 2rem);
+  }
+}
