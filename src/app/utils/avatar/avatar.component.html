@@ -1,0 +1,7 @@
+<img
+  *ngIf="showImage"
+  [src]="imageUrl"
+  [alt]="name"
+  (error)="onImageError()"
+/>
+<div *ngIf="!showImage" class="avatar-initials">{{ initials }}</div>

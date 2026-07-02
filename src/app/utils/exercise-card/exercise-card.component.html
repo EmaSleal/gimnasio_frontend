@@ -1,0 +1,8 @@
+<p-card>
+  <ng-template pTemplate="header">
+    <span *ngIf="badge" class="exercise-badge">{{ badge }}</span>
+  </ng-template>
+  <p class="exercise-name">{{ workout.name }}</p>
+  <p class="muscle-group">{{ workout.muscularGroup?.name }}</p>
+  <p-progressBar *ngIf="showProgress" [value]="progress" [showValue]="false"></p-progressBar>
+</p-card>

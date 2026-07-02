@@ -1,0 +1,8 @@
+<div class="filter-bar">
+  <button
+    *ngFor="let f of filters"
+    [class.active]="f === activeFilter"
+    (click)="filterChange.emit(f)">
+    {{ f }}
+  </button>
+</div>

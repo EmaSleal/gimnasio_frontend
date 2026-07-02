@@ -1,0 +1,9 @@
+<section class="exercise-row">
+  <h2 class="row-title">{{ title }}</h2>
+  <div class="row-scroll">
+    <app-exercise-card
+      *ngFor="let workout of workouts"
+      [workout]="workout">
+    </app-exercise-card>
+  </div>
+</section>

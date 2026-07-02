@@ -1,0 +1,27 @@
+.exercise-row {
+  .row-title {
+    color: var(--color-text-primary);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    margin: 0 0 var(--space-3);
+  }
+
+  .row-scroll {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: var(--space-2);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    app-exercise-card {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      width: 220px;
+    }
+  }
+}

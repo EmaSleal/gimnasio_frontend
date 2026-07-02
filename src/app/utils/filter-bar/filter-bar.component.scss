@@ -1,0 +1,28 @@
+.filter-bar {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+
+  button {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    transition: var(--transition-fast);
+    font-family: var(--font-primary);
+    background: var(--color-bg-surface);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border-default);
+
+    &.active {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border: none;
+    }
+
+    &:hover:not(.active) {
+      border-color: var(--color-border-hover);
+    }
+  }
+}
