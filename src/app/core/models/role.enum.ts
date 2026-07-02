@@ -1,8 +1,5 @@
-//interface Role
-//ADMIN, TRAINER, CLIENT
-
-export interface Role {
-    ADMIN: string;
-    TRAINER: string;
-    CLIENT: string;
+export enum Role {
+  ADMIN = 'ADMIN',
+  TRAINER = 'TRAINER',
+  CLIENT = 'CLIENT'
 }
