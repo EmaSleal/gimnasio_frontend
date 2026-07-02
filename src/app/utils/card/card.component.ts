@@ -1,26 +1,41 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {  BreakpointObserver } from '@angular/cdk/layout';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-
+import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { CardModule } from 'primeng/card';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-card',
   standalone: true,
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
-  imports: [MatCardModule, MatIconModule, MatMenuModule, MatButtonModule]
+  imports: [CardModule, MenuModule, ButtonModule]
 })
 export class CardComponent implements OnInit {
 
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor() {}
 
   ngOnInit(): void {
+    this.checkBreakpoint();
   }
 
   @Input() title: string | undefined;
 
+  isMobile: boolean = false;
+
+  menuItems: MenuItem[] = [
+    { label: 'Expand' },
+    { label: 'Remove' },
+  ];
+
+  checkBreakpoint(): void {
+    if (typeof window !== 'undefined') {
+      this.isMobile = window.matchMedia('(max-width: 768px)').matches;
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkBreakpoint();
+  }
 }

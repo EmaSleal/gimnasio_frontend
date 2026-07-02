@@ -1,66 +1,46 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-table-seleccionado',
   templateUrl: './table-seleccionado.component.html',
   styleUrls: ['./table-seleccionado.component.scss'],
   standalone: true,
-  imports: [MatPaginator, MatSort,MatFormFieldModule,MatIconModule,MatCheckboxModule,MatTableModule],
+  imports: [TableModule, InputTextModule, ButtonModule],
 })
-export class TableSeleccionadoComponent implements OnInit, AfterViewInit, OnChanges {
+export class TableSeleccionadoComponent implements OnInit, OnChanges {
 
   @Input() displayedColumns!: string[];
   @Input() dataSource!: any[];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
   @Output() getRows: EventEmitter<any> = new EventEmitter<any>();
 
+  @ViewChild('dt') dt!: Table;
 
-  tableDataSource!: MatTableDataSource<any>;
-  selectedRows: Set<any> = new Set<any>();
+  selectedRows: any[] = [];
 
-  constructor() {
-    this.tableDataSource = new MatTableDataSource(this.dataSource);
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.tableDataSource.filter = filterValue.trim().toLowerCase();
-    if (this.tableDataSource.paginator) {
-      this.tableDataSource.paginator.firstPage();
+    const value = (event.target as HTMLInputElement).value;
+    if (this.dt) {
+      this.dt.filterGlobal(value.trim().toLowerCase(), 'contains');
     }
-  }
-
-  ngAfterViewInit() {
-    this.tableDataSource.paginator = this.paginator;
-    this.tableDataSource.sort = this.sort;
   }
 
   ngOnChanges() {
-    this.tableDataSource = new MatTableDataSource(this.dataSource);
+    this.selectedRows = [];
   }
 
-  toggleSelection(row: any) {
-    if (this.selectedRows.has(row)) {
-      this.selectedRows.delete(row);
-    } else {
-      this.selectedRows.add(row);
-      this.getSelectedRows();
-    }
+  onRowSelect(event: any) {
+    this.getRows.emit(this.selectedRows);
   }
 
-  getSelectedRows() {
-    this.getRows.emit(Array.from(this.selectedRows));
+  onRowUnselect(event: any) {
+    this.getRows.emit(this.selectedRows);
   }
-
-
 }

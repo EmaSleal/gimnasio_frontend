@@ -1,21 +1,17 @@
-
-
-<mat-card class="card">
-    <mat-card-header>
-        <mat-card-title>
-            <h1>{{title}}</h1>
-            
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                <mat-icon>more_vert</mat-icon>
-                
-            </button>
-            <mat-menu #menu="matMenu" xPosition="before">
-                <button mat-menu-item>Expand</button>
-                <button mat-menu-item>Remove</button>
-            </mat-menu>
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="card-content">
-        <ng-content></ng-content>
-    </mat-card-content>
- </mat-card>
+<p-card styleClass="card">
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center justify-content-between px-3 pt-3">
+      <h1 class="m-0">{{title}}</h1>
+      <p-button
+        icon="pi pi-ellipsis-v"
+        [rounded]="true"
+        [text]="true"
+        (click)="menu.toggle($event)"
+      />
+      <p-menu #menu [popup]="true" [model]="menuItems" />
+    </div>
+  </ng-template>
+  <div class="card-content">
+    <ng-content></ng-content>
+  </div>
+</p-card>

@@ -6,15 +6,15 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatListModule } from '@angular/material/list';
+import { InputTextModule } from 'primeng/inputtext';
+import { ListboxModule } from 'primeng/listbox';
 
 @Component({
   selector: 'app-autocomplete',
   standalone: true,
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.scss'],
-  imports: [MatFormFieldModule,MatListModule],
+  imports: [InputTextModule, ListboxModule],
 })
 export class AutocompleteComponent implements OnChanges {
   @Input() suggestions: any[] = [];
@@ -29,13 +29,16 @@ export class AutocompleteComponent implements OnChanges {
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
-    console.log(filterValue);
-  
-    this.listDataSource = this.suggestions.filter((suggestion) =>
-      (suggestion.nombre && suggestion.nombre.toLowerCase().includes(filterValue.toLowerCase())) ||
-      (suggestion.presentacion && suggestion.presentacion.toLowerCase().includes(filterValue.toLowerCase())) 
-    );
 
+    this.listDataSource = this.suggestions.filter(
+      (suggestion) =>
+        (suggestion.nombre &&
+          suggestion.nombre.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (suggestion.presentacion &&
+          suggestion.presentacion
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()))
+    );
   }
 
   onSelect(suggestion: any): void {

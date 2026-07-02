@@ -264,7 +264,6 @@ import { NgModule } from '@angular/core';
     DividerModule,
     DeferModule,
     DockModule,
-    DragDropModule,
     DropdownModule,
     DynamicDialogModule,
     EditorModule,

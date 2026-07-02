@@ -1,6 +1,6 @@
 
 <p-carousel
-    [value]="filteredRoutines[0].workoutSpecification"
+    [value]="filteredRoutines[0]?.workoutSpecification || []"
     [numVisible]="1"
     [numScroll]="1"
     [circular]="true"

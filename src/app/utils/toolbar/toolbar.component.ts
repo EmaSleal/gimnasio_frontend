@@ -1,25 +1,24 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { LoginService } from '../../core/service/login/login.service';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../core/service/auth/auth.service';
 import { NavbarService } from '../../core/service/navbar/navbar.service';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule],
+  imports: [ToolbarModule, ButtonModule],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent {
-  constructor(private navbarService:NavbarService, private loginservice: LoginService) { }
+  constructor(private navbarService: NavbarService, private authService: AuthService) { }
 
-
-  public showNavBar(){
+  public showNavBar() {
     return this.navbarService.toggleNavbar();
   }
+
   logout() {
-    this.loginservice.logout();
+    this.authService.logout();
   }
 }

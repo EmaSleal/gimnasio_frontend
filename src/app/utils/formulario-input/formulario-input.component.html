@@ -1,137 +1,111 @@
 <form [formGroup]="form">
   @for (field of fields; track $index) {
     @if (field.type === 'text' || field.type === 'number') {
-      <ng-container [class]="getHiddenClass(field.hidden)">
-        <mat-form-field   class="full-width" appearance="outline" color="primary">
-          <mat-label mat-raised-label>{{ field.label }}</mat-label>
-          @if (field.required) {
-            <input
-            matInput
+      <div [class]="getHiddenClass(field.hidden)" class="mb-3">
+        <p-floatLabel class="full-width">
+          <input
+            pInputText
+            [id]="field.name"
             [type]="field.type"
             [formControlName]="field.name"
             [placeholder]="field.placeholder"
             [required]="field.required"
-          />
-          } @else {
-            <input
-            matInput
-            [type]="field.type"
-            [formControlName]="field.name"
-            formtarget="field.name"
-            [placeholder]="field.placeholder"
-            />
-          }
-          
-        </mat-form-field>
-      </ng-container>
-    }
-    
-    @if (field.type === 'select') {
-      <ng-container>
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>{{ field.label }}</mat-label>
-
-        <mat-select [formControlName]="field.name" [required]="field.required">
-          <mat-option [value]="undefined">Seleccionar</mat-option>
-          @for (option of field.options; track $index) {
-            
-              <mat-option [value]="option">
-                {{ option.name }}
-              </mat-option>
-            
-          }
-          
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-    }
-    
-    @if (field.type === 'radio-button') {
-      <ng-container class="radio-container">
-      <mat-label>{{ field.label }}</mat-label>
-      <mat-radio-group class="radio-group" [formControlName]="field.name">
-        @for (option of field.options; track $index) {
-           <mat-radio-button
-          class="radio-button"
-          [value]="option"
-        >
-          {{ option }}
-        </mat-radio-button>
-        }
-       
-      </mat-radio-group>
-    </ng-container>
-    }
-    
-
-    <!-- input date-->
-    @if (field.type === 'date') {
-      <ng-container>
-      <mat-form-field class="full-width" appearance="outline" color="primary">
-        <mat-label>{{ field.label }}</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          [formControlName]="field.name"
-          [placeholder]="field.placeholder"
-          [required]="field.required"
-        />
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </ng-container>
-    }
-    
-    @if (field.type === 'checkbox') {
-       <ng-container >
-      <mat-grid-list cols="2" rowHeight="4:1">
-        <mat-grid-tile>
-          <mat-checkbox
-            [formControlName]="field.name"
-            (change)="toggleAdditionalField(field.label)"
-            [(ngModel)]="additionalFields[field.label]"
-            >{{ field.label }}</mat-checkbox
-          >
-        </mat-grid-tile>
-        <mat-grid-tile>
-          @if (additionalFields[field.label]) {
-            <mat-form-field
             class="full-width"
-            appearance="outline"
-            color="primary"
-          >
-            <input
-              matInput
-              [placeholder]="
-                'Ingrese el precio de ' + field.label.toLowerCase()
-              "
-              [formControlName]="field.label.toLowerCase() + '-input'"
-            />
-          </mat-form-field>
-          }
-          
-        </mat-grid-tile>
-      </mat-grid-list>
-    </ng-container>
+          />
+          <label [for]="field.name">{{ field.label }}</label>
+        </p-floatLabel>
+      </div>
     }
 
+    @if (field.type === 'select') {
+      <div class="mb-3">
+        <p-dropdown
+          [id]="field.name"
+          [formControlName]="field.name"
+          [options]="field.options"
+          optionLabel="name"
+          optionValue="id"
+          [placeholder]="'Seleccionar ' + field.label"
+          [required]="field.required"
+          class="full-width"
+        ></p-dropdown>
+      </div>
+    }
+
+    @if (field.type === 'radio-button') {
+      <div class="mb-3 radio-container">
+        <label class="block mb-2">{{ field.label }}</label>
+        <div class="radio-group flex gap-3">
+          @for (option of field.options; track $index) {
+            <div class="flex align-items-center gap-2">
+              <p-radioButton
+                [inputId]="field.name + '_' + $index"
+                [value]="option"
+                [formControlName]="field.name"
+              ></p-radioButton>
+              <label [for]="field.name + '_' + $index">{{ option }}</label>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (field.type === 'date') {
+      <div class="mb-3">
+        <p-floatLabel class="full-width">
+          <p-calendar
+            [inputId]="field.name"
+            [formControlName]="field.name"
+            [placeholder]="field.placeholder"
+            [required]="field.required"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            class="full-width"
+          ></p-calendar>
+          <label [for]="field.name">{{ field.label }}</label>
+        </p-floatLabel>
+      </div>
+    }
+
+    @if (field.type === 'checkbox') {
+      <div class="mb-3">
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <p-checkbox
+              [formControlName]="field.name"
+              [binary]="true"
+              [label]="field.label"
+              (onChange)="toggleAdditionalField(field.label)"
+            ></p-checkbox>
+          </div>
+          <div>
+            @if (additionalFields[field.label]) {
+              <p-floatLabel class="full-width">
+                <input
+                  pInputText
+                  [placeholder]="'Ingrese el precio de ' + field.label.toLowerCase()"
+                  [formControlName]="field.label.toLowerCase() + '-input'"
+                  class="full-width"
+                />
+                <label>{{ field.label }} price</label>
+              </p-floatLabel>
+            }
+          </div>
+        </div>
+      </div>
+    }
   }
-  <div class="button-container">
-    <button
-      class="boton__registrar"
-      mat-raised-button
-      color="primary"
-      (click)="onSubmit()"
-    >
-      Registrar
-    </button>
-    <button
-      class="boton__limpiar"
-      mat-raised-button
-      color="accent"
-      (click)="onReset()"
-    >
-      Limpiar
-    </button>
+
+  <div class="button-container flex gap-2 mt-3">
+    <p-button
+      label="Registrar"
+      severity="primary"
+      (onClick)="onSubmit()"
+    ></p-button>
+    <p-button
+      label="Limpiar"
+      severity="secondary"
+      (onClick)="onReset()"
+    ></p-button>
   </div>
 </form>

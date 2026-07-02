@@ -1,16 +1,18 @@
 <div>
-  <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
+  <input
+    pInputText
+    placeholder="Filter"
+    (keyup)="applyFilter($event)"
+    class="w-full"
+  />
 
-  <mat-list role="list" class="list-items">
-      <mat-list-item  role="listitem" class="autocomplete-items" *ngFor="let suggestion of listDataSource" (click)="onSelect(suggestion)">
-        <span>
-          {{ suggestion.nombre }} {{suggestion.presentacion}} <!-- Ajusta esto según la estructura de tus objetos -->
-        </span>
-        
-      </mat-list-item>
-    </mat-list>
-  </div>
-  
+  <p-listbox
+    [options]="listDataSource"
+    (onChange)="onSelect($event.value)"
+    styleClass="list-items w-full"
+  >
+    <ng-template pTemplate="item" let-suggestion>
+      <span>{{ suggestion.nombre }} {{ suggestion.presentacion }}</span>
+    </ng-template>
+  </p-listbox>
+</div>

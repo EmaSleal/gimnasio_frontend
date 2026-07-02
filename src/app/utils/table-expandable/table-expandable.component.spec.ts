@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TableExpandableComponent } from './table-expandable.component';
 
 describe('TableExpandableComponent', () => {
@@ -8,9 +8,9 @@ describe('TableExpandableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TableExpandableComponent ]
-    })
-    .compileComponents();
+      imports: [TableExpandableComponent],
+      providers: [provideNoopAnimations()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableExpandableComponent);
     component = fixture.componentInstance;

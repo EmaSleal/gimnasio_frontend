@@ -1,6 +1,5 @@
 // table.component.ts
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -9,13 +8,10 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-table',
@@ -23,61 +19,45 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./table.component.scss'],
   standalone: true,
   imports: [
-    MatPaginator,
-    MatSort,
-    MatFormFieldModule,
-    MatIconModule,
-    MatTableModule,
-    MatInputModule,
-    MatButtonModule,
+    TableModule,
+    InputTextModule,
+    ButtonModule,
   ],
 })
-export class TableComponent implements OnInit, AfterViewInit, OnChanges {
+export class TableComponent implements OnInit, OnChanges {
   @Input() displayedColumns!: string[];
   @Input() dataSource!: any[];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
   @Output() editItem: EventEmitter<any> = new EventEmitter<any>();
   @Output() deleteItem: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowClick: EventEmitter<any> = new EventEmitter<any>(); // Nuevo evento
+  @Output() rowClick: EventEmitter<any> = new EventEmitter<any>();
 
-  tableDataSource!: MatTableDataSource<any>;
+  @ViewChild('dt') dt!: Table;
 
-  constructor() {
-    this.tableDataSource = new MatTableDataSource(this.dataSource);
-  }
+  constructor() {}
 
   ngOnInit() {}
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.tableDataSource.filter = filterValue.trim().toLowerCase();
-    if (this.tableDataSource.paginator) {
-      this.tableDataSource.paginator.firstPage();
+    const value = (event.target as HTMLInputElement).value;
+    if (this.dt) {
+      this.dt.filterGlobal(value.trim().toLowerCase(), 'contains');
     }
   }
 
-  ngAfterViewInit() {
-    this.tableDataSource.paginator = this.paginator;
-    this.tableDataSource.sort = this.sort;
-  }
-
   ngOnChanges() {
-    this.tableDataSource = new MatTableDataSource(this.dataSource);
-    this.tableDataSource.paginator = this.paginator;
-    this.tableDataSource.sort = this.sort;
-
-    this.dataSource.forEach((element) => {
-      for (let key in element) {
-        if (typeof element[key] === 'object') {
-          if (element[key]?.name) {
-            element[key] = element[key].name;
-          } else if (element[key]?.description) {
-            element[key] = element[key].description;
+    if (this.dataSource) {
+      this.dataSource.forEach((element) => {
+        for (let key in element) {
+          if (typeof element[key] === 'object' && element[key] !== null) {
+            if (element[key]?.name) {
+              element[key] = element[key].name;
+            } else if (element[key]?.description) {
+              element[key] = element[key].description;
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   editarFila(row: any) {
@@ -88,7 +68,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     this.deleteItem.emit(row);
   }
 
-  // Nueva función para manejar el clic en una fila
   filaClickeada(row: any) {
     this.rowClick.emit(row);
   }
