@@ -1,87 +1,45 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import baseUrl from '../helper';
-import Swal from 'sweetalert2';
+import { Observable } from 'rxjs';
+import { MuscularGroup } from '../../models/muscular-group.interface';
+import { ApiResponse } from '../../models/api-response.interface';
+import { unwrapData } from '../unwrap-api-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MuscularGroupService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  public getMuscularGroups(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/muscularGroup/all`).subscribe(
-        (res) => {
-
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public getMuscularGroups(): Observable<MuscularGroup[]> {
+    return this.http
+      .get<ApiResponse<MuscularGroup[]>>(`${baseUrl}/api/v1/muscular-groups`)
+      .pipe(unwrapData<MuscularGroup[]>());
   }
 
-
-  public saveMuscularGroup(muscularGroup: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(`${baseUrl}/muscularGroup/save`, muscularGroup)
-        .subscribe(
-          (res) => {
-            Swal.fire('Success', 'Muscular Group saved successfully', 'success');
-          },
-          (err) => {
-            Swal.fire('Error', 'Muscular Group not saved', 'error');
-          }
-        );
-    });
+  public saveMuscularGroup(muscularGroup: any): Observable<MuscularGroup> {
+    return this.http
+      .post<ApiResponse<MuscularGroup>>(`${baseUrl}/api/v1/muscular-groups`, muscularGroup)
+      .pipe(unwrapData<MuscularGroup>());
   }
 
-  public deleteMuscularGroup(id: String): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.delete(`${baseUrl}/muscularGroup/delete/${id}`).subscribe(
-        (res) => {
-          Swal.fire('Success', 'Muscular Group deleted successfully', 'success');
-        },
-        (err) => {
-          Swal.fire('Error', 'Muscular Group not deleted', 'error');
-        }
-      );
-    });
+  public deleteMuscularGroup(id: string | number): Observable<any> {
+    return this.http
+      .delete<ApiResponse<any>>(`${baseUrl}/api/v1/muscular-groups/${id}`)
+      .pipe(unwrapData<any>());
   }
 
-  public getMuscularGroup(id: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/muscularGroup/id/${id}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-          Swal.fire('Error', 'Muscular Group not found', 'error');
-        }
-      );
-    });
+  public getMuscularGroup(id: string | number): Observable<MuscularGroup> {
+    return this.http
+      .get<ApiResponse<MuscularGroup>>(`${baseUrl}/api/v1/muscular-groups/${id}`)
+      .pipe(unwrapData<MuscularGroup>());
   }
 
-  public updateMuscularGroup(muscularGroup: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .put(`${baseUrl}/muscularGroup/update`, muscularGroup)
-        .subscribe(
-          (res) => {
-            console.log(res);
-            Swal.fire('Success', 'Muscular Group updated successfully', 'success');
-          },
-          (err) => {
-            console.log(err);
-            Swal.fire('Error', 'Muscular Group not updated', 'error');
-          }
-        );
-    });
+  public updateMuscularGroup(id: string | number, muscularGroup: any): Observable<MuscularGroup> {
+    return this.http
+      .put<ApiResponse<MuscularGroup>>(`${baseUrl}/api/v1/muscular-groups/${id}`, muscularGroup)
+      .pipe(unwrapData<MuscularGroup>());
   }
-
 }

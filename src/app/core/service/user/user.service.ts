@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import baseUrl from '../helper';
 import { CookieService } from 'ngx-cookie-service';
+import { Observable } from 'rxjs';
 import { User } from '../../models/user.interface';
-import { Role } from '../../models/role.enum';
+import { ApiResponse } from '../../models/api-response.interface';
+import { unwrapData } from '../unwrap-api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -16,141 +18,66 @@ export class UserService {
     private cookieService: CookieService
   ) {}
 
-  public addUser(user: any): Promise<any> {
-    //add to user the property createdBy
-    let userCreator = {} as User;
-    return new Promise((resolve, reject) => {
-      Promise.resolve(this.cookieService.get('user')).then((res) => {
-        if (res !== null && res !== '') {
-          //console.log(res);
-          userCreator = JSON.parse(res);
-          user.createdBy = userCreator.id;
-          this.http.post(`${baseUrl}/user/save`, user).subscribe(
-            (res) => {
-              resolve(res);
-            },
-            (err) => {
-              reject(err);
-            }
-          );
-        }
-      });
-    });
+  public addUser(user: any): Observable<User> {
+    const raw = this.cookieService.get('user');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      user.createdBy = parsed.data?.userId ?? parsed.id;
+    }
+    return this.http
+      .post<ApiResponse<User>>(`${baseUrl}/api/v1/users`, user)
+      .pipe(unwrapData<User>());
   }
 
-  public getUser(idUser: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/user/id/${idUser}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public getUser(id: number | string): Observable<User> {
+    return this.http
+      .get<ApiResponse<User>>(`${baseUrl}/api/v1/users/${id}`)
+      .pipe(unwrapData<User>());
   }
 
-  public getUsers(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/user/all`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public getUsers(): Observable<User[]> {
+    return this.http
+      .get<ApiResponse<User[]>>(`${baseUrl}/api/v1/users`)
+      .pipe(unwrapData<User[]>());
   }
 
-  deleteUser(id: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.delete(`${baseUrl}/user/delete/${id}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public deleteUser(id: number): Observable<any> {
+    return this.http
+      .delete<ApiResponse<any>>(`${baseUrl}/api/v1/users/${id}`)
+      .pipe(unwrapData<any>());
   }
 
-  public updateUser(value: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.put(`${baseUrl}/user/update`, value).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public updateUser(id: number, value: any): Observable<User> {
+    return this.http
+      .put<ApiResponse<User>>(`${baseUrl}/api/v1/users/${id}`, value)
+      .pipe(unwrapData<User>());
   }
 
-  public getUserById(id: String): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/user/id/${id}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
-  }
-  public getUsersCreatedBy(): Promise<any> {
-    let user = {} as User;
-
-    //console.log(user);
-    return new Promise((resolve, reject) => {
-      Promise.resolve(this.cookieService.get('user')).then((res) => {
-        if (res !== null && res !== '') {
-          //console.log(res);
-          user = JSON.parse(res);
-
-          this.http.get(`${baseUrl}/user/createdBy/${user.id}`).subscribe(
-            (res) => {
-              resolve(res);
-            },
-            (err) => {
-              reject(err);
-            }
-          );
-        }
-      });
-    });
+  /** @deprecated Use the paginated user list endpoint instead. Will be removed in a future cleanup. */
+  public getUserById(id: number | string): Observable<User> {
+    return this.getUser(id);
   }
 
-  public getUserByCookie(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      Promise.resolve(this.cookieService.get('user')).then((res) => {
-        if (res !== null && res !== '') {
-          //console.log(res);
-          let user = JSON.parse(res);
-          this.http.get(`${baseUrl}/user/id/${user.id}`).subscribe(
-            (res) => {
-              resolve(res);
-            },
-            (err) => {
-              reject(err);
-            }
-          );
-        }
-      });
-    });
+  public getUsersCreatedBy(): Observable<User[]> {
+    const raw = this.cookieService.get('user');
+    const parsed = JSON.parse(raw);
+    const trainerId = parsed.data?.userId ?? parsed.id;
+    return this.http
+      .get<ApiResponse<User[]>>(`${baseUrl}/api/v1/users/trainer/${trainerId}/clients`)
+      .pipe(unwrapData<User[]>());
   }
 
-  public getUSerRoleByCookie(): Promise<Boolean> {
-    return Promise.resolve(this.cookieService.get('user')).then((res) => {
-      if (res !== null && res !== '') {
-        console.log(res);
-        return true;
-      }
-      return false;
-    });
+  public getUserByCookie(): Observable<User> {
+    const raw = this.cookieService.get('user');
+    const parsed = JSON.parse(raw);
+    const userId = parsed.data?.userId ?? parsed.id;
+    return this.http
+      .get<ApiResponse<User>>(`${baseUrl}/api/v1/users/${userId}`)
+      .pipe(unwrapData<User>());
+  }
+
+  public getUserRoleFromCookie(): boolean {
+    const raw = this.cookieService.get('user');
+    return raw !== null && raw !== '';
   }
 }

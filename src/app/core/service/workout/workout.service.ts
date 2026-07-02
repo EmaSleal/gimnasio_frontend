@@ -1,70 +1,51 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import baseUrl from '../helper';
-import { tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Workout } from '../../models/workout.interface';
-
+import { ApiResponse } from '../../models/api-response.interface';
+import { unwrapData } from '../unwrap-api-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
-  
-  public saveWorkout(exercise: Workout): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(`${baseUrl}/workout/save`, exercise)
-        .pipe(
-          tap((res) => {
-            resolve(res);
-          })
-        )
-        .subscribe(
-          (res) => {
-            resolve(res);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  public getWorkouts() {
+  public saveWorkout(workout: Workout): Observable<Workout> {
     return this.http
-      .get<any>(`${baseUrl}/workout/all`)
-      .pipe(
-        tap((res) => {
-          return res;
-        })
-      );
+      .post<ApiResponse<Workout>>(`${baseUrl}/api/v1/workouts`, workout)
+      .pipe(unwrapData<Workout>());
   }
 
-  deleteWorkout(id: String): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.delete(`${baseUrl}/workout/delete/${id}`).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
+  public getWorkouts(): Observable<Workout[]> {
+    return this.http
+      .get<ApiResponse<Workout[]>>(`${baseUrl}/api/v1/workouts`)
+      .pipe(unwrapData<Workout[]>());
   }
 
-  public getWorkout(id: string): Promise<Workout> {
-    return new Promise((resolve, reject) => {
-      this.http.get(`${baseUrl}/workout/id/${id}`).subscribe(
-        (res) => {
-          resolve(res as Workout);
-        },
-        (err) => {
-          reject(err); 
-        }
-      );
-    });
+  public deleteWorkout(id: string | number): Observable<any> {
+    return this.http
+      .delete<ApiResponse<any>>(`${baseUrl}/api/v1/workouts/${id}`)
+      .pipe(unwrapData<any>());
+  }
+
+  public getWorkout(id: string | number): Observable<Workout> {
+    return this.http
+      .get<ApiResponse<Workout>>(`${baseUrl}/api/v1/workouts/${id}`)
+      .pipe(unwrapData<Workout>());
+  }
+
+  public updateWorkout(id: string | number, workout: any): Observable<Workout> {
+    return this.http
+      .put<ApiResponse<Workout>>(`${baseUrl}/api/v1/workouts/${id}`, workout)
+      .pipe(unwrapData<Workout>());
+  }
+
+  public getWorkoutsByMuscularGroup(muscularGroupId: string | number): Observable<Workout[]> {
+    return this.http
+      .get<ApiResponse<Workout[]>>(`${baseUrl}/api/v1/workouts/muscular-group/${muscularGroupId}`)
+      .pipe(unwrapData<Workout[]>());
   }
 }
