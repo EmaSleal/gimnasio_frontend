@@ -1,0 +1,65 @@
+.add-user-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 40rem;
+  margin: 0 auto;
+
+  background: var(--color-bg-primary);
+
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--color-text-primary);
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  &__label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-primary);
+  }
+
+  &__required {
+    color: var(--color-danger);
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

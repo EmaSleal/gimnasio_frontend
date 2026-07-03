@@ -1,85 +1,77 @@
-<app-card title="Add User">
+<div class="add-user-card">
+  <div class="add-user-card__header">
+    <h1 class="add-user-card__title">Agregar Usuario</h1>
+    <p class="add-user-card__subtitle">Completá los datos para crear un nuevo usuario.</p>
+  </div>
+
   <form [formGroup]="userForm">
-    <div class="flex flex-column gap-5 p-3">
+    <div class="add-user-card__body">
+      <div class="add-user-card__field">
+        <label for="username" class="add-user-card__label">Nombre de usuario <span class="add-user-card__required">*</span></label>
+        <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+      </div>
 
-      <p-floatLabel>
-        <input
-          pInputText
-          id="username"
-          formControlName="username"
+      <div class="add-user-card__field">
+        <label for="email" class="add-user-card__label">Correo electrónico <span class="add-user-card__required">*</span></label>
+        <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+      </div>
+
+      <div class="add-user-card__field">
+        <label for="role" class="add-user-card__label">Rol <span class="add-user-card__required">*</span></label>
+        <p-dropdown
+          id="role"
+          formControlName="role"
+          [options]="roleOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccioná un rol"
           class="w-full"
         />
-        <label for="username">Username</label>
-      </p-floatLabel>
+      </div>
 
-      <p-floatLabel>
-        <input
-          pInputText
-          id="email"
-          type="email"
-          formControlName="email"
-          class="w-full"
-        />
-        <label for="email">Email</label>
-      </p-floatLabel>
-
-      <p-dropdown
-        id="role"
-        formControlName="role"
-        [options]="roleOptions"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Seleccionar Rol"
-        class="w-full"
-      />
-
-      <p-floatLabel>
-  <p-password 
-    inputId="password" 
-    formControlName="password" 
-    styleClass="w-full" 
-    inputStyleClass="w-full"
-    [toggleMask]="true" 
-    [feedback]="false">
-  </p-password>
-  <label for="password">Password</label>
-</p-floatLabel>
-      @if (password?.invalid && (password?.dirty || password?.touched)) {
-        @if (password?.errors?.['required']) {
-          <small class="p-error block mt-1">La contraseña es requerida.</small>
+      <div class="add-user-card__field">
+        <label for="password" class="add-user-card__label">Contraseña <span class="add-user-card__required">*</span></label>
+        <p-password
+          inputId="password"
+          formControlName="password"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          [toggleMask]="true"
+          [feedback]="false">
+        </p-password>
+        @if (password?.invalid && (password?.dirty || password?.touched)) {
+          @if (password?.errors?.['required']) {
+            <small class="p-error block mt-1">La contraseña es requerida.</small>
+          }
+          @if (password?.errors?.['pattern']) {
+            <small class="p-error block mt-1">La contraseña debe tener al menos 8 caracteres, un número, una mayúscula y un carácter especial.</small>
+          }
         }
-        @if (password?.errors?.['pattern']) {
-          <small class="p-error block mt-1">La contraseña debe tener al menos 8 caracteres, un número, una mayúscula y un carácter especial.</small>
-        }
-      }
+      </div>
 
-      <p-floatLabel>
-        <input
-          pInputText
-          id="confirmPassword"
-          type="password"
-          formControlName="confirmPassword"
-          class="w-full"
-        />
-        <label for="confirmPassword">Confirm Password</label>
-      </p-floatLabel>
-      @if (confirmPassword!!.invalid && (confirmPassword!!.dirty || confirmPassword!!.touched)) {
-        @if (confirmPassword!!.errors?.['required']) {
-          <small class="p-error">La confirmación de contraseña es requerida.</small>
+      <div class="add-user-card__field">
+        <label for="confirmPassword" class="add-user-card__label">Confirmar contraseña <span class="add-user-card__required">*</span></label>
+        <input id="confirmPassword" type="password" pInputText formControlName="confirmPassword" class="w-full" />
+        @if (confirmPassword!!.invalid && (confirmPassword!!.dirty || confirmPassword!!.touched)) {
+          @if (confirmPassword!!.errors?.['required']) {
+            <small class="p-error">La confirmación de contraseña es requerida.</small>
+          }
+          @if (userForm.errors && userForm.errors?.['passwordMismatch']) {
+            <small class="p-error">Las contraseñas no coinciden.</small>
+          }
         }
-        @if (userForm.errors && userForm.errors?.['passwordMismatch']) {
-          <small class="p-error">Las contraseñas no coinciden.</small>
-        }
-      }
+      </div>
+    </div>
 
-      
-
+    <div class="add-user-card__footer">
       <p-button
-        label="Add User"
-        severity="primary"
-        (click)="submitForm()"
+        severity="contrast"
+        [loading]="loading"
+        [disabled]="userForm.invalid || loading"
+        label="Crear Usuario"
+        icon="pi pi-check"
+        (onClick)="submitForm()"
       />
-
     </div>
   </form>
-</app-card>
+</div>
