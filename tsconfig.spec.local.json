@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "exclude": [
+    "src/app/core/guards/role.guard.spec.ts",
+    "src/app/core/service/auth/auth.service.spec.ts"
+  ]
+}

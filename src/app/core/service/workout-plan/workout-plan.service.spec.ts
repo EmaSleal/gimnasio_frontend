@@ -9,8 +9,8 @@ const BASE = 'http://localhost:8080';
 
 const mockPlan: WorkoutPlan = {
   id: 10,
-  idUser: 1,
-  idTrainer: 2,
+  userId: 1,
+  trainerId: 2,
   description: 'Strength plan',
   status: 'ACTIVE',
   startDate: '2024-01-01',

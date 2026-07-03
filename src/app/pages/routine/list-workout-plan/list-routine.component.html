@@ -1,1 +1,47 @@
-<p>list-routine works!</p>
+<div class="card w-3/4">
+  <!-- button to add another workout plan -->
+  <div class="flex justify-content-end">
+    <p-button severity="contrast" class="m-4" label="Agregar Rutina" icon="pi pi-plus" (onClick)="goToCreate()" />
+  </div>
+  <p-scrollPanel [style]="{width: '100%'}">
+    <p-dataView #dv [value]="dataSource" layout="list">
+      <ng-template pTemplate="list" let-plans>
+        @if(plans.length>0){
+        <div class="grid grid-nogutter">
+          @for(plan of plans; track plan.id) {
+          <div class="col-12">
+            <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3">
+              <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                  <div>
+                    <span class="font-medium text-secondary text-sm">{{ plan.startDate | date }} - {{ plan.endDate | date }}</span>
+                    <div class="text-lg font-medium text-900 mt-2">{{ plan.description }}</div>
+                  </div>
+                  <div class="flex gap-2">
+                    <p-tag [value]="plan.status" [severity]="statusSeverity(plan.status)" />
+                    @if(plan.isTemplate) {
+                    <p-tag value="Plantilla" severity="info" />
+                    }
+                  </div>
+                </div>
+                <div class="flex flex-column md:align-items-end gap-5">
+                  <div class="flex flex-row-reverse md:flex-row gap-2">
+                    <p-button icon="pi pi-pencil" [outlined]="true" (onClick)="editPlan(plan)" />
+                    <p-button icon="pi pi-eye" class="flex-auto md:flex-initial white-space-nowrap" label="VER"
+                      (onClick)="selectPlan(plan)" />
+                    <p-button icon="pi pi-trash" class="flex-auto md:flex-initial white-space-nowrap" label="Eliminar"
+                      severity="danger" (onClick)="deletePlan(plan)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <p class="p-4 text-secondary">No hay rutinas para mostrar.</p>
+        }
+      </ng-template>
+    </p-dataView>
+  </p-scrollPanel>
+</div>
