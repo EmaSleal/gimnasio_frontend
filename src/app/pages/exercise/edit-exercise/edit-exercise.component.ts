@@ -1,4 +1,5 @@
 import { Component, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CardComponent } from '../../../utils/card/card.component';
 import { FormularioInputComponent } from '../../../utils/formulario-input/formulario-input.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -6,20 +7,23 @@ import Swal from 'sweetalert2';
 import { MuscularLoad } from '../../../core/models/muscular-load.enum';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
 import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
+import { ImageService } from '../../../core/service/image/image.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MuscularGroup } from '../../../core/models/muscular-group.interface';
 import { Workout } from '../../../core/models/workout.interface';
+import { ImageResponse } from '../../../core/models/image.interface';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
+import baseUrl from '../../../core/service/helper';
 
 @Component({
   selector: 'app-edit-exercise',
   standalone: true,
-  imports: [CardComponent, FormularioInputComponent, FloatLabelModule, FormsModule, ListboxModule, InputTextModule, ReactiveFormsModule, ButtonModule],
+  imports: [CommonModule, CardComponent, FormularioInputComponent, FloatLabelModule, FormsModule, ListboxModule, InputTextModule, ReactiveFormsModule, ButtonModule],
   templateUrl: './edit-exercise.component.html',
   styleUrl: './edit-exercise.component.scss'
 })
@@ -28,6 +32,7 @@ export class EditExerciseComponent implements OnInit, OnChanges {
   constructor(
     private exerciseService: WorkoutService,
     private muscularGroupService: MuscularGroupService,
+    private imageService: ImageService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig
   ) {}
@@ -35,6 +40,9 @@ export class EditExerciseComponent implements OnInit, OnChanges {
   workout: Workout = {
     muscularGroup: {}
   };
+
+  images: ImageResponse[] = [];
+  baseUrl = baseUrl;
 
   ngOnChanges(): void {
     console.log(this.muscularGroups);
@@ -98,6 +106,14 @@ export class EditExerciseComponent implements OnInit, OnChanges {
         this.muscularGroups = muscularGroups;
       }
     });
+
+    if (workout.id) {
+      this.imageService.getImagesByWorkout(workout.id).subscribe({
+        next: (images) => {
+          this.images = images;
+        }
+      });
+    }
   }
 
   form: FormGroup = new FormGroup({});
@@ -113,7 +129,15 @@ export class EditExerciseComponent implements OnInit, OnChanges {
 
   fields: any[] = [];
   loading: boolean = false;
-  muscularLoads = [MuscularLoad.LOW, MuscularLoad.MEDIUM, MuscularLoad.HIGH];
+  muscularLoadOptions: { value: MuscularLoad; label: string; description: string }[] = [
+    { value: MuscularLoad.LOW, label: 'Baja', description: 'Ideal para calentamiento o recuperación activa.' },
+    { value: MuscularLoad.MEDIUM, label: 'Media', description: 'Carga de trabajo estándar para la mayoría de las rutinas.' },
+    { value: MuscularLoad.HIGH, label: 'Alta', description: 'Mayor esfuerzo — requiere más tiempo de recuperación.' },
+  ];
+
+  get isFormValid(): boolean {
+    return !!this.workout.name?.trim() && !!this.workout.muscularGroup?.id && !!this.workout.muscularLoad;
+  }
 
   formSubmit(data: any) {
     this.loading = true;

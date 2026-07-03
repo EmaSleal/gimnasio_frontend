@@ -1,24 +1,46 @@
+<div class="edit-exercise-card">
+  <div class="edit-exercise-card__body">
+    <div class="edit-exercise-card__field">
+      <label for="name" class="edit-exercise-card__label">Nombre <span class="edit-exercise-card__required">*</span></label>
+      <input id="name" type="text" pInputText [(ngModel)]="workout.name" placeholder="Ej: Press de banca" class="w-full" />
+    </div>
 
-  <div class="card w-full" >
-    <h1 class="m-2">Editar Ejercicio</h1>
-    <div class="m-4 modal-body">
-      <div class="mb-4">
-        <p-floatLabel>
-          <input id="name" type="text" pInputText [(ngModel)]="workout.name" />
-          <label for="name">Nombre</label>
-        </p-floatLabel>
-      </div>
-      <div class="mb-4">
+    <div class="edit-exercise-card__row">
+      <div class="edit-exercise-card__field">
+        <label class="edit-exercise-card__label">Grupo Muscular <span class="edit-exercise-card__required">*</span></label>
+        <p class="edit-exercise-card__hint">Elegí el grupo muscular principal que trabaja este ejercicio.</p>
         <p-listbox [options]="muscularGroups" [(ngModel)]="workout.muscularGroup.id" optionValue="id" optionLabel="name"
-          [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
+          [filter]="true" filterBy="name" filterPlaceHolder="Buscar grupo muscular..."
+          [style]="{'width':'100%'}" [listStyle]="{'max-height': '220px'}" />
       </div>
-      <div class="mb-4">
-        <p-listbox [options]="muscularLoads" [(ngModel)]="workout.muscularLoad"
-          [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
+
+      <div class="edit-exercise-card__field">
+        <label class="edit-exercise-card__label">Carga Muscular <span class="edit-exercise-card__required">*</span></label>
+        <p class="edit-exercise-card__hint">Indicá qué tan exigente es el ejercicio.</p>
+        <p-listbox [options]="muscularLoadOptions" [(ngModel)]="workout.muscularLoad" optionValue="value" optionLabel="label"
+          [style]="{'width':'100%'}" [listStyle]="{'max-height': '220px'}">
+          <ng-template let-option pTemplate="item">
+            <div class="edit-exercise-card__load-option">
+              <span class="edit-exercise-card__load-label">{{ option.label }}</span>
+              <span class="edit-exercise-card__load-description">{{ option.description }}</span>
+            </div>
+          </ng-template>
+        </p-listbox>
       </div>
     </div>
-    <div class="m-4">
-      <p-button severity="contrast" [loading]="loading" label="Submit" icon="pi pi-check" (onClick)="formSubmit(workout)" />
-      <p-button severity="secondary" label="Cancel" icon="pi pi-times" class="ml-2" (onClick)="ref.close()" />
+
+    <div class="edit-exercise-card__field" *ngIf="images.length > 0">
+      <label class="edit-exercise-card__label">Imágenes</label>
+      <div class="edit-exercise-card__image-grid">
+        <div class="edit-exercise-card__image-thumb" *ngFor="let image of images">
+          <img [src]="baseUrl + image.downloadUrl" [alt]="image.originalFilename" class="edit-exercise-card__image-preview" />
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="edit-exercise-card__footer">
+    <p-button severity="secondary" label="Cancelar" icon="pi pi-times" (onClick)="ref.close()" />
+    <p-button severity="contrast" [loading]="loading" [disabled]="!isFormValid" label="Guardar Cambios" icon="pi pi-check" (onClick)="formSubmit(workout)" />
+  </div>
+</div>

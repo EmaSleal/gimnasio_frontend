@@ -1,3 +1,15 @@
 <div class="container">
-    <app-list-exercise />
+  <h1>Panel de Ejercicios</h1>
+  @if (isActive('/exercise/list') || isActive('/exercise')) {
+    <p-tabView [(activeIndex)]="index" (onChange)="onTabChange($event)">
+      <p-tabPanel header="Ejercicios">
+        <app-list-exercise />
+      </p-tabPanel>
+      <p-tabPanel header="Agregar Ejercicio">
+        <app-add-exercise />
+      </p-tabPanel>
+    </p-tabView>
+  } @else {
+    <router-outlet></router-outlet>
+  }
 </div>

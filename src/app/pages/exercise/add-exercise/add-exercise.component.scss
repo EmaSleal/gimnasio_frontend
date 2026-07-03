@@ -1,8 +1,199 @@
+.add-exercise-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 70rem;
+  margin: 0 auto;
 
-/* con un minimo de pantalla de 768px modal-body va a tener un ancho de 75%*/
-@media (min-width: 768px) {
-    .modal-body {
-      width: 75%;
-      margin: 0 auto !important;
+  background: var(--color-bg-primary);
+
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--color-text-primary);
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
     }
   }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  &__label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-primary);
+  }
+
+  &__required {
+    color: var(--color-danger);
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__load-option {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-1) 0;
+  }
+
+  &__load-label {
+    font-weight: var(--weight-medium);
+    color: var(--color-text-primary);
+  }
+
+  &__load-description {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  &__image-input-hidden {
+    display: none;
+  }
+
+  &__dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-8) var(--space-4);
+    border: 2px dashed var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-subtle);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-accent);
+    }
+
+    &--active {
+      border-color: var(--color-accent);
+      background: var(--color-accent-subtle);
+    }
+  }
+
+  &__dropzone-icon {
+    font-size: var(--text-2xl);
+    color: var(--color-text-muted);
+  }
+
+  &__dropzone-text {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  &__dropzone-or {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  &__image-button {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-bg-primary);
+    }
+  }
+
+  &__image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  &__image-thumb {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border-default);
+  }
+
+  &__image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__image-remove {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--space-5);
+    height: var(--space-5);
+    border: none;
+    border-radius: var(--radius-full, 50%);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      background: var(--color-danger);
+      color: var(--color-bg-primary);
+    }
+  }
+}

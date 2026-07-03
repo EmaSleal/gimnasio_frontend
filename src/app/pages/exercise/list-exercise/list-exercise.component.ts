@@ -3,7 +3,9 @@ import { AfterViewInit, Component, HostListener, Input, OnChanges, OnInit } from
 import { TableComponent } from '../../../utils/table/table.component';
 import { CardComponent } from '../../../utils/card/card.component';
 import { WorkoutService } from '../../../core/service/workout/workout.service';
+import { MuscularGroupService } from '../../../core/service/muscular-group/muscular-group.service';
 import { Workout } from '../../../core/models/workout.interface';
+import { MuscularGroup } from '../../../core/models/muscular-group.interface';
 import { EditExerciseComponent } from '../edit-exercise/edit-exercise.component';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import Swal from 'sweetalert2';
@@ -11,26 +13,83 @@ import { Router } from '@angular/router';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
-import { AddExerciseComponent } from '../add-exercise/add-exercise.component';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { FormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
+import { forkJoin } from 'rxjs';
+import { ImageService } from '../../../core/service/image/image.service';
+import baseUrl from '../../../core/service/helper';
 
 @Component({
   selector: 'app-list-exercise',
   standalone: true,
-  imports: [TableComponent, CardComponent, DynamicDialogModule, DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule],
+  imports: [TableComponent, CardComponent, DynamicDialogModule, DataViewModule, TagModule, ButtonModule, DropdownModule, InputTextModule, CommonModule, FormsModule],
   templateUrl: './list-exercise.component.html',
   styleUrl: './list-exercise.component.scss'
 })
 export class ListExerciseComponent implements OnInit, AfterViewInit {
-  constructor(private exerciseService: WorkoutService, private dialogService: DialogService, private router: Router, private cookieService: CookieService) { }
+  constructor(
+    private exerciseService: WorkoutService,
+    private muscularGroupService: MuscularGroupService,
+    private dialogService: DialogService,
+    private router: Router,
+    private cookieService: CookieService,
+    private imageService: ImageService
+  ) { }
   sidebarHeight: number = 0;
   screenWidth: number | null = 0;
+
+  muscularGroups: MuscularGroup[] = [];
+  searchTerm: string = '';
+  selectedMuscularGroupId: string | null = null;
+  filtersExpanded: boolean = false;
+  filteredDataSource: Workout[] = [];
+  filteredTableDataSource: Workout[] = [];
 
   ngOnInit(): void {
     this.exerciseService.getWorkouts().subscribe((exercises) => {
       this.dataSource = exercises;
+      this.tableDataSource = exercises.map((e) => ({ ...e }));
+      this.loadWorkoutImages();
+      this.applyFilters();
+    });
+
+    this.muscularGroupService.getMuscularGroups().subscribe({
+      next: (muscularGroups) => {
+        this.muscularGroups = muscularGroups;
+      }
+    });
+  }
+
+  applyFilters(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    const matches = (workout: Workout) => {
+      const matchesTerm = !term || (workout.name?.toLowerCase().includes(term) ?? false);
+      const matchesGroup = !this.selectedMuscularGroupId || workout.muscularGroup?.id === this.selectedMuscularGroupId;
+      return matchesTerm && matchesGroup;
+    };
+    this.filteredDataSource = this.dataSource.filter(matches);
+    this.filteredTableDataSource = this.tableDataSource.filter(matches);
+  }
+
+  private loadWorkoutImages(): void {
+    const requests = this.dataSource
+      .filter((workout) => !!workout.id)
+      .map((workout) => this.imageService.getImagesByWorkout(workout.id!));
+
+    if (!requests.length) {
+      return;
+    }
+
+    forkJoin(requests).subscribe((imagesByWorkout) => {
+      const workoutsWithId = this.dataSource.filter((workout) => !!workout.id);
+      imagesByWorkout.forEach((images, index) => {
+        if (images.length > 0) {
+          workoutsWithId[index].imageUrl = `${baseUrl}${images[0].downloadUrl}`;
+        }
+      });
     });
   }
 
@@ -53,15 +112,14 @@ export class ListExerciseComponent implements OnInit, AfterViewInit {
     "acciones"
   ];
   dataSource: Workout[] = [];
+  tableDataSource: Workout[] = [];
 
-  addWorkout() {
-    this.dialogService.open(AddExerciseComponent, {
-      header: 'Add Exercise',
-      width: '50%',
-    });
+  private resolveWorkout(workout: Workout): Workout {
+    return this.dataSource.find((w) => w.id === workout.id) ?? workout;
   }
 
   editWorkout(workout: Workout) {
+    workout = this.resolveWorkout(workout);
     console.log(workout);
     const width = window.innerWidth > 768 ? '38%' : '90%';
     this.dialogService.open(EditExerciseComponent, {
@@ -85,6 +143,8 @@ export class ListExerciseComponent implements OnInit, AfterViewInit {
         this.exerciseService.deleteWorkout(workout.id || "").subscribe({
           next: () => {
             this.dataSource = this.dataSource.filter((u) => u.id !== workout.id);
+            this.tableDataSource = this.tableDataSource.filter((u) => u.id !== workout.id);
+            this.applyFilters();
             Swal.fire('¡Eliminado!', 'El ejercicio ha sido eliminado.', 'success');
           }
         });
@@ -93,6 +153,7 @@ export class ListExerciseComponent implements OnInit, AfterViewInit {
   }
 
   selectWorkout(workout: any) {
+    workout = this.resolveWorkout(workout);
     this.router.navigate(['exercise', workout.id], { state: { workout } });
   }
 

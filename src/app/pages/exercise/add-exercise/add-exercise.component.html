@@ -1,30 +1,64 @@
-<div class="card w-full">
-  <h1 class="m-4">Agregar Ejercicio</h1>
-  <div class="m-2">
-
-    <div class="mb-4">
-      <p-floatLabel>
-        <input id="name" type="text" pInputText [(ngModel)]="workout.name" />
-        <label for="name">Nombre</label>
-      </p-floatLabel>
-    </div>
-    <div class="mb-4">
-      <p-listbox [options]="muscularGroups" [(ngModel)]="workout.muscularGroup.id" optionValue="id" optionLabel="name"
-        [style]="{'width':'15rem'}" [listStyle]="{'max-height': '220px'}" />
-    </div>
-    <div class="mb-4">
-      <p-listbox [options]="muscularLoads" [(ngModel)]="workout.muscularLoad" [style]="{'width':'15rem'}"
-        [listStyle]="{'max-height': '220px'}" />
-    </div>
+<div class="add-exercise-card">
+  <div class="add-exercise-card__header">
+    <h1 class="add-exercise-card__title">Agregar Ejercicio</h1>
+    <p class="add-exercise-card__subtitle">Completá los datos para sumar un nuevo ejercicio a la biblioteca.</p>
   </div>
-  <!-- (ngSubmit)="onSubmit()"> -->
 
 
-<div class="ml-2 mb-2">
-   <p-button severity="contrast" [loading]="loading" label="Submit" icon="pi pi-check" (onClick)="formSubmit(workout)" />
+    <div class="add-exercise-card__field">
+      <label for="name" class="add-exercise-card__label">Nombre <span class="add-exercise-card__required">*</span></label>
+      <input id="name" type="text" pInputText [(ngModel)]="workout.name" placeholder="Ej: Press de banca" class="w-full" />
+    </div>
 
-</div>
+    <div class="add-exercise-card__row">
+      <div class="add-exercise-card__field mr-4">
+        <label class="add-exercise-card__label">Grupo Muscular <span class="add-exercise-card__required">*</span></label>
+        <p class="add-exercise-card__hint">Elegí el grupo muscular principal que trabaja este ejercicio.</p>
+        <p-listbox [options]="muscularGroups" [(ngModel)]="workout.muscularGroup.id" optionValue="id" optionLabel="name"
+          [filter]="true" filterBy="name" filterPlaceHolder="Buscar grupo muscular..."
+          [style]="{'width':'100%'}" [listStyle]="{'max-height': '220px'}" />
+      </div>
 
- 
+      <div class="add-exercise-card__field">
+        <label class="add-exercise-card__label">Carga Muscular <span class="add-exercise-card__required">*</span></label>
+        <p class="add-exercise-card__hint">Indicá qué tan exigente es el ejercicio.</p>
+        <p-listbox [options]="muscularLoadOptions" [(ngModel)]="workout.muscularLoad" optionValue="value" optionLabel="label"
+          [style]="{'width':'100%'}" [listStyle]="{'max-height': '220px'}">
+          <ng-template let-option pTemplate="item">
+            <div class="add-exercise-card__load-option">
+              <span class="add-exercise-card__load-label">{{ option.label }}</span>
+              <span class="add-exercise-card__load-description">{{ option.description }}</span>
+            </div>
+          </ng-template>
+        </p-listbox>
+      </div>
+    </div>
 
+    <div class="add-exercise-card__field">
+      <label class="add-exercise-card__label">Imágenes</label>
+      <p class="add-exercise-card__hint">Podés subir una o varias imágenes del ejercicio. Se comprimen automáticamente antes de subirse.</p>
+      <div class="add-exercise-card__dropzone" [class.add-exercise-card__dropzone--active]="isDraggingImages"
+        (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+        (click)="fileInput.click()">
+        <i class="pi pi-cloud-upload add-exercise-card__dropzone-icon"></i>
+        <p class="add-exercise-card__dropzone-text">Arrastrá y soltá las imágenes acá</p>
+        <span class="add-exercise-card__dropzone-or">o</span>
+        <button type="button" class="add-exercise-card__image-button" (click)="fileInput.click(); $event.stopPropagation()">
+          Seleccionar archivos
+        </button>
+        <input #fileInput type="file" accept="image/*" multiple (change)="onImagesSelected($event)" class="add-exercise-card__image-input-hidden" />
+      </div>
+
+      <div class="add-exercise-card__image-grid" *ngIf="imagePreviews.length">
+        <div class="add-exercise-card__image-thumb" *ngFor="let preview of imagePreviews; let i = index">
+          <img [src]="preview.url" [alt]="preview.file.name" class="add-exercise-card__image-preview" />
+          <button type="button" class="add-exercise-card__image-remove" (click)="removeImage(i)" aria-label="Quitar imagen">&times;</button>
+        </div>
+      </div>
+    </div>
+  
+
+  <div class="add-exercise-card__footer">
+    <p-button severity="contrast" [loading]="loading" [disabled]="!isFormValid" label="Guardar Ejercicio" icon="pi pi-check" (onClick)="formSubmit(workout)" />
+  </div>
 </div>
