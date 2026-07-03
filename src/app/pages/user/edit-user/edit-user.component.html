@@ -1,38 +1,37 @@
-<app-card title="Edit User">
+<div class="edit-user-card">
   <form [formGroup]="userForm">
-    <div class="mb-3">
-      <p-floatLabel>
-        <input pInputText id="username" type="text" formControlName="username" required />
-        <label for="username">Username</label>
-      </p-floatLabel>
+    <div class="edit-user-card__body">
+      <div class="edit-user-card__field">
+        <label for="username" class="edit-user-card__label">Nombre de usuario <span class="edit-user-card__required">*</span></label>
+        <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+      </div>
+
+      <div class="edit-user-card__field">
+        <label for="email" class="edit-user-card__label">Correo electrónico <span class="edit-user-card__required">*</span></label>
+        <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+      </div>
+
+      <div class="edit-user-card__field">
+        <label for="role" class="edit-user-card__label">Rol <span class="edit-user-card__required">*</span></label>
+        <p-dropdown
+          id="role"
+          formControlName="role"
+          [options]="roleOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccioná un rol"
+          class="w-full"
+        />
+      </div>
+
+      <div class="edit-user-card__field">
+        <p-checkbox formControlName="enabled" [binary]="true" label="Habilitado"></p-checkbox>
+      </div>
     </div>
 
-    <div class="mb-3">
-      <p-floatLabel>
-        <input pInputText id="email" type="email" formControlName="email" required />
-        <label for="email">Email</label>
-      </p-floatLabel>
-    </div>
-
-    <div class="mb-3">
-      <p-dropdown
-        id="role"
-        formControlName="role"
-        [options]="roleOptions"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Select Role"
-        required
-      ></p-dropdown>
-    </div>
-
-    <div class="mb-3">
-      <p-checkbox formControlName="enabled" [binary]="true" label="Enabled"></p-checkbox>
-    </div>
-
-    <div class="flex gap-2">
-      <p-button label="Save" severity="primary" (onClick)="submitForm()"></p-button>
-      <p-button label="Cancel" severity="secondary" (onClick)="cerrarModal()"></p-button>
+    <div class="edit-user-card__footer">
+      <p-button severity="secondary" label="Cancelar" icon="pi pi-times" (onClick)="cerrarModal()" />
+      <p-button severity="contrast" [loading]="loading" [disabled]="userForm.invalid || loading" label="Guardar Cambios" icon="pi pi-check" (onClick)="submitForm()" />
     </div>
   </form>
-</app-card>
+</div>

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
-import { CardComponent } from '../../../utils/card/card.component';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../core/service/user/user.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { User } from '../../../core/models/user.interface';
+import { roleOptions } from '../../../core/models/role.enum';
 
 @Component({
   selector: 'app-edit-user',
@@ -17,8 +16,6 @@ import { User } from '../../../core/models/user.interface';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    CardComponent,
-    FloatLabelModule,
     InputTextModule,
     ButtonModule,
     DropdownModule,
@@ -30,11 +27,8 @@ import { User } from '../../../core/models/user.interface';
 export class EditUserComponent implements OnInit {
   userForm: FormGroup = new FormGroup({});
 
-  roleOptions = [
-    { label: 'Admin', value: 'ADMIN' },
-    { label: 'Trainer', value: 'TRAINER' },
-    { label: 'Client', value: 'CLIENT' },
-  ];
+  roleOptions = roleOptions;
+  loading: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -56,12 +50,15 @@ export class EditUserComponent implements OnInit {
     if (this.userForm.invalid) {
       return;
     }
+    this.loading = true;
     this.userService.updateUser(this.config.data.user.id, this.userForm.value).subscribe({
       next: () => {
+        this.loading = false;
         Swal.fire('Usuario actualizado', 'El usuario ha sido actualizado con éxito', 'success');
         this.ref.close(true);
       },
       error: () => {
+        this.loading = false;
         Swal.fire('Error', 'Ha ocurrido un error al actualizar el usuario', 'error');
       }
     });
