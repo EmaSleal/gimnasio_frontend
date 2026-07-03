@@ -1,6 +1,15 @@
 <div class="container">
-    <h1> Panel de Grupo Muscular</h1>
-
-                <app-list-muscular-group/>
-           
+  <h1>Panel de Grupo Muscular</h1>
+  @if (isActive('/muscular-group/list') || isActive('/muscular-group')) {
+    <p-tabView [(activeIndex)]="index" (onChange)="onTabChange($event)">
+      <p-tabPanel header="Grupos Musculares">
+        <app-list-muscular-group />
+      </p-tabPanel>
+      <p-tabPanel header="Agregar Grupo Muscular">
+        <app-add-muscular-group />
+      </p-tabPanel>
+    </p-tabView>
+  } @else {
+    <router-outlet></router-outlet>
+  }
 </div>

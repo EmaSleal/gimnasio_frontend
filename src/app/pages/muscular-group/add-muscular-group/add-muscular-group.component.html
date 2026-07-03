@@ -1,24 +1,42 @@
-<app-card title="Add Muscular Group">
+<div class="add-muscular-group-card">
+  <div class="add-muscular-group-card__header">
+    <h1 class="add-muscular-group-card__title">Agregar Grupo Muscular</h1>
+    <p class="add-muscular-group-card__subtitle">Completá los datos para sumar un nuevo grupo muscular.</p>
+  </div>
+
   <form [formGroup]="muscularGroupForm">
-    <div class="flex flex-column gap-3 p-3">
+    <div class="add-muscular-group-card__body">
+      <div class="add-muscular-group-card__field">
+        <label for="name" class="add-muscular-group-card__label">Nombre <span class="add-muscular-group-card__required">*</span></label>
+        <input id="name" type="text" pInputText formControlName="name" placeholder="Ej: Pecho" class="w-full" />
+      </div>
 
-      <p-floatLabel>
-        <input
-          pInputText
-          id="name"
-          type="text"
-          formControlName="name"
-          class="w-full"
-        />
-        <label for="name">Name</label>
-      </p-floatLabel>
+      <div class="add-muscular-group-card__field">
+        <label class="add-muscular-group-card__label">Imágenes</label>
+        <p class="add-muscular-group-card__hint">Podés subir una o varias imágenes del grupo muscular. Se comprimen automáticamente antes de subirse.</p>
+        <div class="add-muscular-group-card__dropzone" [class.add-muscular-group-card__dropzone--active]="isDraggingImages"
+          (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+          (click)="fileInput.click()">
+          <i class="pi pi-cloud-upload add-muscular-group-card__dropzone-icon"></i>
+          <p class="add-muscular-group-card__dropzone-text">Arrastrá y soltá las imágenes acá</p>
+          <span class="add-muscular-group-card__dropzone-or">o</span>
+          <button type="button" class="add-muscular-group-card__image-button" (click)="fileInput.click(); $event.stopPropagation()">
+            Seleccionar archivos
+          </button>
+          <input #fileInput type="file" accept="image/*" multiple (change)="onImagesSelected($event)" class="add-muscular-group-card__image-input-hidden" />
+        </div>
 
-      <p-button
-        label="Add Muscular Group"
-        severity="primary"
-        (click)="submitForm()"
-      />
+        <div class="add-muscular-group-card__image-grid" *ngIf="imagePreviews.length">
+          <div class="add-muscular-group-card__image-thumb" *ngFor="let preview of imagePreviews; let i = index">
+            <img [src]="preview.url" [alt]="preview.file.name" class="add-muscular-group-card__image-preview" />
+            <button type="button" class="add-muscular-group-card__image-remove" (click)="removeImage(i)" aria-label="Quitar imagen">&times;</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="add-muscular-group-card__footer">
+      <p-button severity="contrast" [loading]="loading" [disabled]="muscularGroupForm.invalid || loading" label="Guardar Grupo Muscular" icon="pi pi-check" (onClick)="submitForm()" />
     </div>
   </form>
-</app-card>
+</div>

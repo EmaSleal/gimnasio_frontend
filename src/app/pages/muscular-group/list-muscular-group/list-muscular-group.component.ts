@@ -12,23 +12,39 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
-import { AddMuscularGroupComponent } from '../add-muscular-group/add-muscular-group.component';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { forkJoin } from 'rxjs';
+import { ImageService } from '../../../core/service/image/image.service';
+import baseUrl from '../../../core/service/helper';
 
 @Component({
   selector: 'app-list-muscular-group',
   standalone: true,
-  imports: [TableComponent, CardComponent, DynamicDialogModule, DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule],
+  imports: [TableComponent, CardComponent, DynamicDialogModule, DataViewModule, TagModule, ButtonModule, CommonModule, ScrollPanelModule, FormsModule, InputTextModule],
   templateUrl: './list-muscular-group.component.html',
   styleUrl: './list-muscular-group.component.scss'
 })
 export class ListMuscularGroupComponent {
-  constructor(private muscularGroupService: MuscularGroupService, private dialogService: DialogService, private router: Router) {}
+  constructor(
+    private muscularGroupService: MuscularGroupService,
+    private dialogService: DialogService,
+    private router: Router,
+    private imageService: ImageService
+  ) {}
 
   ngOnInit(): void {
+    this.refresh();
+  }
+
+  private refresh(): void {
     this.muscularGroupService.getMuscularGroups().subscribe({
       next: (muscularGroups) => {
         this.dataSource = muscularGroups;
+        this.tableDataSource = muscularGroups.map((m) => ({ ...m }));
+        this.loadMuscularGroupImages();
+        this.applyFilters();
       }
     });
   }
@@ -39,6 +55,43 @@ export class ListMuscularGroupComponent {
   ];
 
   dataSource: MuscularGroup[] = [];
+  tableDataSource: MuscularGroup[] = [];
+  filteredDataSource: MuscularGroup[] = [];
+  filteredTableDataSource: MuscularGroup[] = [];
+  searchTerm: string = '';
+  filtersExpanded: boolean = false;
+
+  applyFilters(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    const matches = (muscularGroup: MuscularGroup) => !term || (muscularGroup.name?.toLowerCase().includes(term) ?? false);
+    this.filteredDataSource = this.dataSource.filter(matches);
+    this.filteredTableDataSource = this.tableDataSource.filter(matches);
+  }
+
+  private loadMuscularGroupImages(): void {
+    const requests = this.dataSource
+      .filter((muscularGroup) => !!muscularGroup.id)
+      .map((muscularGroup) => this.imageService.getImagesByMuscularGroup(muscularGroup.id!));
+
+    if (!requests.length) {
+      return;
+    }
+
+    forkJoin(requests).subscribe((imagesByMuscularGroup) => {
+      const muscularGroupsWithId = this.dataSource.filter((muscularGroup) => !!muscularGroup.id);
+      imagesByMuscularGroup.forEach((images, index) => {
+        if (images.length > 0) {
+          const imageUrl = `${baseUrl}${images[0].downloadUrl}`;
+          muscularGroupsWithId[index].imageUrl = imageUrl;
+          const tableEntry = this.tableDataSource.find((m) => m.id === muscularGroupsWithId[index].id);
+          if (tableEntry) {
+            tableEntry.imageUrl = imageUrl;
+          }
+        }
+      });
+      this.applyFilters();
+    });
+  }
 
   editMuscularGroup(muscularGroup: MuscularGroup) {
     const ref = this.dialogService.open(EditMuscularGroupComponent, {
@@ -48,7 +101,9 @@ export class ListMuscularGroupComponent {
     });
 
     ref.onClose.subscribe((result) => {
-      console.log('Modal cerrado con resultado:', result);
+      if (result) {
+        this.refresh();
+      }
     });
   }
 
@@ -66,7 +121,9 @@ export class ListMuscularGroupComponent {
         this.muscularGroupService.deleteMuscularGroup(muscularGroup.id || '').subscribe({
           next: () => {
             this.dataSource = this.dataSource.filter((u) => u.id !== muscularGroup.id);
-            Swal.fire('¡Eliminado!', 'El usuario ha sido eliminado.', 'success');
+            this.tableDataSource = this.tableDataSource.filter((u) => u.id !== muscularGroup.id);
+            this.applyFilters();
+            Swal.fire('¡Eliminado!', 'El grupo muscular ha sido eliminado.', 'success');
           }
         });
       }
@@ -75,12 +132,5 @@ export class ListMuscularGroupComponent {
 
   selectMuscularGroup(muscularGroup: any) {
     this.router.navigate(['muscular-group', muscularGroup.id], { state: { muscularGroup } });
-  }
-
-  addMuscularGroup() {
-    this.dialogService.open(AddMuscularGroupComponent, {
-      header: 'Add Muscular Group',
-      width: '50%',
-    });
   }
 }

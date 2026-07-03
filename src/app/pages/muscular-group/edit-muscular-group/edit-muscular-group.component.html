@@ -1,17 +1,52 @@
-<app-card title="Edit Muscular Group">
+<div class="edit-muscular-group-card">
   <form [formGroup]="muscularGroupForm">
     <div style="display: none;">
       <input type="hidden" formControlName="id" />
     </div>
-    <div class="mb-3">
-      <p-floatLabel>
-        <input pInputText id="name" type="text" formControlName="name" required />
-        <label for="name">Name</label>
-      </p-floatLabel>
+
+    <div class="edit-muscular-group-card__body">
+      <div class="edit-muscular-group-card__field">
+        <label for="name" class="edit-muscular-group-card__label">Nombre <span class="edit-muscular-group-card__required">*</span></label>
+        <input id="name" type="text" pInputText formControlName="name" placeholder="Ej: Pecho" class="w-full" />
+      </div>
+
+      <div class="edit-muscular-group-card__field" *ngIf="images.length > 0">
+        <label class="edit-muscular-group-card__label">Imágenes actuales</label>
+        <div class="edit-muscular-group-card__image-grid">
+          <div class="edit-muscular-group-card__image-thumb" *ngFor="let image of images">
+            <img [src]="baseUrl + image.downloadUrl" [alt]="image.originalFilename" class="edit-muscular-group-card__image-preview" />
+            <button type="button" class="edit-muscular-group-card__image-remove" (click)="removeExistingImage(image)" aria-label="Eliminar imagen">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-muscular-group-card__field">
+        <label class="edit-muscular-group-card__label">Agregar imágenes</label>
+        <p class="edit-muscular-group-card__hint">Podés subir una o varias imágenes del grupo muscular. Se comprimen automáticamente antes de subirse.</p>
+        <div class="edit-muscular-group-card__dropzone" [class.edit-muscular-group-card__dropzone--active]="isDraggingImages"
+          (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+          (click)="fileInput.click()">
+          <i class="pi pi-cloud-upload edit-muscular-group-card__dropzone-icon"></i>
+          <p class="edit-muscular-group-card__dropzone-text">Arrastrá y soltá las imágenes acá</p>
+          <span class="edit-muscular-group-card__dropzone-or">o</span>
+          <button type="button" class="edit-muscular-group-card__image-button" (click)="fileInput.click(); $event.stopPropagation()">
+            Seleccionar archivos
+          </button>
+          <input #fileInput type="file" accept="image/*" multiple (change)="onImagesSelected($event)" class="edit-muscular-group-card__image-input-hidden" />
+        </div>
+
+        <div class="edit-muscular-group-card__image-grid" *ngIf="imagePreviews.length">
+          <div class="edit-muscular-group-card__image-thumb" *ngFor="let preview of imagePreviews; let i = index">
+            <img [src]="preview.url" [alt]="preview.file.name" class="edit-muscular-group-card__image-preview" />
+            <button type="button" class="edit-muscular-group-card__image-remove" (click)="removeImage(i)" aria-label="Quitar imagen">&times;</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="flex gap-2">
-      <p-button label="Save" severity="primary" (onClick)="submitForm()"></p-button>
-      <p-button label="Cancel" severity="secondary" (onClick)="cerrarModal()"></p-button>
+
+    <div class="edit-muscular-group-card__footer">
+      <p-button severity="secondary" label="Cancelar" icon="pi pi-times" (onClick)="cerrarModal()" />
+      <p-button severity="contrast" [loading]="loading" [disabled]="muscularGroupForm.invalid || loading" label="Guardar Cambios" icon="pi pi-check" (onClick)="submitForm()" />
     </div>
   </form>
-</app-card>
+</div>

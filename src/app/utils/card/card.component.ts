@@ -20,13 +20,9 @@ export class CardComponent implements OnInit {
   }
 
   @Input() title: string | undefined;
+  @Input() menuItems: MenuItem[] = [];
 
   isMobile: boolean = false;
-
-  menuItems: MenuItem[] = [
-    { label: 'Expand' },
-    { label: 'Remove' },
-  ];
 
   checkBreakpoint(): void {
     if (typeof window !== 'undefined') {
