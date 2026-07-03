@@ -5,4 +5,5 @@ export interface MuscularGroup {
     exercises?: [];
     createdAt?: Date;
     updatedAt?: Date;
+    imageUrl?: string;
 }

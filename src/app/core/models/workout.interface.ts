@@ -8,4 +8,5 @@ export interface Workout {
   name?: string;
   muscularGroup: MuscularGroup;
   muscularLoad?: string;
+  imageUrl?: string;
 }
