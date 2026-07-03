@@ -1,0 +1,66 @@
+.workout-plan-details-container {
+  padding: 1rem 1rem;
+}
+
+.workout-plan-state {
+  padding: 1rem;
+}
+
+.plan-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  &__dates {
+    color: #666;
+  }
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background-color: lightgray;
+  font-size: 0.85rem;
+
+  &--active {
+    background-color: #d4f5dd;
+    color: #1e7d34;
+  }
+
+  &--template {
+    background-color: #dce6f7;
+    color: #2554a3;
+  }
+}
+
+.daily-routine {
+  margin-bottom: 1.5rem;
+
+  &__days {
+    text-transform: capitalize;
+    margin-bottom: 0.5rem;
+  }
+
+  &__empty {
+    color: #888;
+    font-style: italic;
+  }
+}
+
+.exercise-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    color: #555;
+    font-weight: 600;
+  }
+}

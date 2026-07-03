@@ -1,1 +1,54 @@
-<pre>{{ workoutPlan | json }}</pre>
+@if (workoutPlan) {
+  <div class="workout-plan-details-container">
+    <app-card [title]="workoutPlan.description || 'Plan de entrenamiento'">
+      <div class="plan-meta">
+        <span class="badge" [class.badge--active]="workoutPlan.status === 'ACTIVE'">{{ workoutPlan.status }}</span>
+        <span class="plan-meta__dates">{{ workoutPlan.startDate }} → {{ workoutPlan.endDate }}</span>
+        @if (workoutPlan.isTemplate) {
+          <span class="badge badge--template">Plantilla</span>
+        }
+      </div>
+
+      @for (daily of workoutPlan.dailyRoutine; track daily.id) {
+        <div class="daily-routine">
+          <h3 class="daily-routine__days">{{ daily.days.join(', ') }}</h3>
+
+          @if (daily.workoutSpecification?.length) {
+            <table class="exercise-table">
+              <thead>
+                <tr>
+                  <th>Ejercicio</th>
+                  <th>Grupo muscular</th>
+                  <th>Series</th>
+                  <th>Reps / Tiempo</th>
+                  <th>Peso recomendado</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (spec of daily.workoutSpecification; track spec.id) {
+                  <tr>
+                    <td>{{ spec.workout?.name }}</td>
+                    <td>{{ spec.workout?.muscularGroup?.name }}</td>
+                    <td>{{ spec.setsNumber }}</td>
+                    <td>{{ spec.timeBased ? (spec.time + ' s') : spec.repsNumber }}</td>
+                    <td>{{ spec.recommendedWeight }} kg</td>
+                    <td>{{ spec.trainerRating }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="daily-routine__empty">Sin ejercicios cargados para este día.</p>
+          }
+        </div>
+      } @empty {
+        <p>Este plan todavía no tiene rutinas diarias asignadas.</p>
+      }
+    </app-card>
+  </div>
+} @else if (notFound) {
+  <p class="workout-plan-state">No se encontró el plan de entrenamiento.</p>
+} @else {
+  <p class="workout-plan-state">Cargando plan de entrenamiento...</p>
+}
