@@ -1,5 +1,53 @@
-<app-card title="Lista de Usuarios">
-    <app-table [dataSource]="dataSource" [displayedColumns]="displayedColumns" 
-    (editItem)="editUser($event)"  (deleteItem)="eliminarUser($event)" (rowClick)="selectUser($event)"/>
+<div class="card w-3/4">
+  <div class="flex md:hidden justify-content-end mb-3">
+    <button type="button" class="list-user__filters-toggle" (click)="filtersExpanded = !filtersExpanded">
+      <i class="pi pi-filter"></i>
+      Filtros
+      <i class="pi" [ngClass]="filtersExpanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+    </button>
+  </div>
 
-</app-card>
+  <div class="list-user__filters" [class.list-user__filters--expanded]="filtersExpanded">
+    <span class="p-input-icon-left list-user__search">
+      <i class="pi pi-search"></i>
+      <input type="text" pInputText placeholder="Buscar usuario..." [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
+    </span>
+    <p-dropdown [options]="roleOptions" optionLabel="label" optionValue="value" [(ngModel)]="selectedRole"
+      (onChange)="applyFilters()" [showClear]="true" placeholder="Rol" class="list-user__role-filter" />
+  </div>
+
+  <div class="hidden lg:block">
+    <app-table [dataSource]="filteredTableDataSource" [displayedColumns]="displayedColumns" (editItem)="editUser($event)"
+      (deleteItem)="eliminarUser($event)" (rowClick)="selectUser($event)" />
+  </div>
+  <div class="lg:hidden">
+    <p-dataView #dv [value]="filteredDataSource" layout="list" [paginator]="true" [rows]="8">
+      <ng-template pTemplate="list" let-users>
+        @if(users.length>0){
+        <div class="grid grid-nogutter">
+            @for(user of users; track user.id) {
+            <div class="col-12">
+              <div class="flex">
+                <div class="list-card w-full">
+                  <div class="list-card__body">
+                    <span class="list-card__eyebrow">{{ user.email }}</span>
+                    <div class="list-card__title">{{ user.username }}</div>
+                    <p-tag [value]="roleLabel(user.role)" />
+                    <span>{{ user.enabled ? 'Habilitado' : 'Deshabilitado' }}</span>
+                  </div>
+                  <div class="list-card__actions">
+                    <p-button icon="pi pi-pencil" [outlined]="true" (onClick)="editUser(user)" />
+                    <p-button icon="pi pi-eye" label="Ver" (onClick)="selectUser(user)" />
+                    <p-button icon="pi pi-trash" label="Eliminar" severity="danger" (onClick)="eliminarUser(user)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            }
+        </div>
+        }
+      </ng-template>
+    </p-dataView>
+  </div>
+</div>
