@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { finalize, shareReplay, tap } from 'rxjs/operators';
 import { Role } from '../../models/role.enum';
 import { SessionUser } from '../../models/session-user.interface';
 import baseUrl from '../helper';
@@ -16,11 +16,15 @@ export class AuthService {
 
   readonly currentUser$: Observable<SessionUser | null> = this.currentUserSubject.asObservable();
 
+  private refreshInProgress$: Observable<any> | null = null;
+
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly cookieService: CookieService
-  ) {}
+  ) {
+    this.getCurrentUserFromCookie();
+  }
 
   get currentUser(): SessionUser | null {
     return this.currentUserSubject.getValue();
@@ -47,14 +51,36 @@ export class AuthService {
       .post(`${baseUrl}/api/v1/auth/login`, credentials)
       .pipe(
         tap((res: any) => {
-          this.cookieService.set('user', JSON.stringify(res));
+          this.cookieService.set('user', JSON.stringify(res), { path: '/' });
           this.setSession(res.data);
         })
       );
   }
 
+  refresh(): Observable<any> {
+    if (this.refreshInProgress$) {
+      return this.refreshInProgress$;
+    }
+
+    const raw = this.cookieService.get('user');
+    const refreshToken = raw ? JSON.parse(raw)?.data?.refreshToken : null;
+    this.refreshInProgress$ = this.http
+      .post(`${baseUrl}/api/v1/auth/refresh`, { refreshToken })
+      .pipe(
+        tap((res: any) => {
+          this.cookieService.set('user', JSON.stringify(res), { path: '/' });
+          this.setSession(res.data);
+        }),
+        finalize(() => {
+          this.refreshInProgress$ = null;
+        }),
+        shareReplay(1)
+      );
+    return this.refreshInProgress$;
+  }
+
   logout(): void {
-    this.cookieService.delete('user');
+    this.cookieService.delete('user', '/');
     this.currentUserSubject.next(null);
     this.router.navigateByUrl('/login');
   }
@@ -72,6 +98,7 @@ export class AuthService {
         const sessionUser: SessionUser = {
           id: data.userId,
           role: data.role as Role,
+          username: data.username,
         };
         this.currentUserSubject.next(sessionUser);
         return sessionUser;
@@ -84,11 +111,12 @@ export class AuthService {
     }
   }
 
-  private setSession(data: { userId: number; role: string }): void {
+  private setSession(data: { userId: number; role: string; username?: string }): void {
     if (data?.userId != null && data?.role) {
       this.currentUserSubject.next({
         id: data.userId,
         role: data.role as Role,
+        username: data.username as string,
       });
     }
   }

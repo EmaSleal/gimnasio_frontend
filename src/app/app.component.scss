@@ -28,11 +28,95 @@
   text-align: center;
   border-radius: 0.3rem;
   padding: 10px;
-  margin-right: 10px;
+  
+  min-width: 200px;
 }
 
 .card-sidenav {
   width: 250px; /* Establece el ancho fijo que desees */
+  flex-shrink: 0;
+}
+
+.sidenav-menu {
+  text-align: left;
+}
+
+.sidenav-shell {
+  overflow: hidden;
+}
+
+.sidenav-content {
+  overflow-y: auto;
+  height: 100%;
+  padding-left: 1rem; 
+  background-color: #f5f5f5
+}
+
+.active-nav-item {
+  background-color: var(--surface-100);
+  color: var(--primary-color) !important;
+}
+
+// --- Sticky toolbars ---
+//
+// Mobile/tablet branch (< 1024): the toolbar's wrapping div only has a
+// computed pixel height (`sidebarHeight()`), no `overflow` of its own, so the
+// actual scrolling ancestor is the document/viewport. `position: sticky` on
+// the toolbar pins it to `top: 0` of that viewport as the page scrolls — no
+// padding-compensation needed because sticky keeps the element in normal
+// flow (its box still contributes to layout/height), which is exactly what
+// `updateSidebarHeight()`'s `clientHeight` lookup depends on.
+//
+// Desktop branch (>= 1024): `.sidenav-content` is the actual scrolling
+// ancestor (`overflow-y: auto; height: 100%`) and the toolbar is its direct
+// child, so `position: sticky; top: 0` pins the toolbar to the top of that
+// container while `.sidenav-content` scrolls beneath it. Same mechanism,
+// different scrolling ancestor — sticky resolves it automatically in both
+// cases without any compensation math.
+//
+// PrimeNG's `p-toolbar` renders its real `.p-toolbar` element inside its own
+// (ViewEncapsulation.None) template, so this component's scoped styles can't
+// reach it directly — `styleClass` + `::ng-deep` bridges that gap.
+:host ::ng-deep {
+  .app-toolbar-mobile,
+  .app-toolbar-desktop {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-bg-primary);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+// --- Avatar + account menu ---
+
+.app-avatar-btn {
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  border: none;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-accent-hover);
+  }
+}
+
+.app-user-menu-header {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-default);
+  white-space: nowrap;
 }
 
 

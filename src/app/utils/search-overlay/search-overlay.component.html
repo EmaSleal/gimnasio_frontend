@@ -1,0 +1,82 @@
+@if (variant === 'overlay') {
+<div class="search-overlay-backdrop" (click)="close()" aria-hidden="true"></div>
+<div class="search-overlay-panel" role="dialog" aria-modal="true" aria-label="Buscar ejercicios">
+  <span class="search-input-wrapper">
+    <i class="pi pi-search search-icon"></i>
+    <input
+      #searchInput
+      type="text"
+      pInputText
+      class="search-input"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchChange($event)"
+      (keydown.escape)="onEscape()"
+      placeholder="Buscar ejercicios..."
+      autocomplete="off"
+    />
+    @if (hasQuery()) {
+    <button
+      type="button"
+      class="search-clear-btn"
+      (click)="clear()"
+      aria-label="Limpiar búsqueda"
+    >
+      <i class="pi pi-times"></i>
+    </button>
+    }
+  </span>
+  <div class="search-results-container">
+    <ng-container *ngTemplateOutlet="resultsBlock"></ng-container>
+  </div>
+</div>
+} @else {
+<div class="search-inline">
+  <span class="search-input-wrapper search-input-wrapper-inline">
+    <i class="pi pi-search search-icon"></i>
+    <input
+      #searchInput
+      type="text"
+      pInputText
+      class="search-input"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchChange($event)"
+      placeholder="Buscar ejercicios..."
+      autocomplete="off"
+    />
+    @if (hasQuery()) {
+    <button
+      type="button"
+      class="search-clear-btn"
+      (click)="clear()"
+      aria-label="Limpiar búsqueda"
+    >
+      <i class="pi pi-times"></i>
+    </button>
+    }
+  </span>
+  @if (hasQuery()) {
+  <div class="search-inline-results">
+    <ng-container *ngTemplateOutlet="resultsBlock"></ng-container>
+  </div>
+  }
+</div>
+}
+
+<ng-template #resultsBlock>
+  @if (loading()) {
+  <p class="search-status">Buscando...</p>
+  } @else if (hasQuery() && results().length === 0) {
+  <p class="search-status">Sin resultados</p>
+  } @else if (results().length > 0) {
+  <ul class="search-results-list">
+    @for (workout of results(); track workout.id) {
+    <li>
+      <button type="button" class="search-result-item" (click)="selectWorkout(workout)">
+        <i class="pi pi-caret-right"></i>
+        <span class="search-result-name">{{ workout.name }}</span>
+      </button>
+    </li>
+    }
+  </ul>
+  }
+</ng-template>
