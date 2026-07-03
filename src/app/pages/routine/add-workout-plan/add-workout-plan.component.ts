@@ -155,8 +155,8 @@ export class AddWorkoutPlanComponent implements OnInit {
     });
 
     let workoutPlan: WorkoutPlan = {
-      idUser: this.Formulario1.value.user,
-      idTrainer: this.currentUser.id,
+      userId: this.Formulario1.value.user,
+      trainerId: this.currentUser.id,
       description: this.Formulario1.value.description,
       status: '',
       startDate: this.Formulario1.value.startDate,

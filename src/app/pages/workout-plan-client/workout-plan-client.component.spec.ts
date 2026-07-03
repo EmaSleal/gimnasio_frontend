@@ -17,8 +17,8 @@ const mockWorkout: Workout = {
 
 const mockWorkoutPlan: WorkoutPlan = {
   id: 1,
-  idUser: 1,
-  idTrainer: 1,
+  userId: 1,
+  trainerId: 1,
   description: 'Plan de prueba',
   status: 'ACTIVE',
   startDate: '2024-01-01',
