@@ -1,5 +1,7 @@
 /* Design tokens — must be first */
 @import './styles/tokens';
+@import './styles/list-card';
+@import './styles/tabs';
 
 /* PrimeNG theme base */
 /* (angular.json loads lara-light-blue/theme.css, primeng/resources/primeng.min.css, primeicons/primeicons.css before this file) */
