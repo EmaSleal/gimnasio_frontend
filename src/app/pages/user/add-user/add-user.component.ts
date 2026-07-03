@@ -2,14 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
-import { CardComponent } from '../../../utils/card/card.component';
+import { PasswordModule } from 'primeng/password';
 import Swal from 'sweetalert2';
 import { UserService } from '../../../core/service/user/user.service';
-import { ImportsModule } from "../../../utils/utils";
-import { PasswordModule } from 'primeng/password';
+import { roleOptions } from '../../../core/models/role.enum';
 
 @Component({
   selector: 'app-add-user',
@@ -18,25 +15,18 @@ import { PasswordModule } from 'primeng/password';
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
-    FloatLabelModule,
-    ButtonModule,
-    CheckboxModule,
     DropdownModule,
-    CardComponent,
-    ImportsModule,
+    ButtonModule,
     PasswordModule,
-],
+  ],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.scss'
 })
 export class AddUserComponent implements OnInit {
   userForm: FormGroup = new FormGroup({});
 
-  roleOptions = [
-    { label: 'Admin', value: 'ADMIN' },
-    { label: 'Trainer', value: 'TRAINER' },
-    { label: 'Client', value: 'CLIENT' },
-  ];
+  roleOptions = roleOptions;
+  loading: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private userService: UserService) {}
 
@@ -74,11 +64,14 @@ export class AddUserComponent implements OnInit {
     if (this.userForm.invalid) {
       return;
     }
+    this.loading = true;
     this.userService.addUser(this.userForm.value).subscribe({
       next: () => {
+        this.loading = false;
         Swal.fire('Usuario creado', 'El usuario ha sido creado con éxito', 'success');
       },
       error: () => {
+        this.loading = false;
         Swal.fire('Error', 'Ha ocurrido un error al crear el usuario', 'error');
       }
     });
